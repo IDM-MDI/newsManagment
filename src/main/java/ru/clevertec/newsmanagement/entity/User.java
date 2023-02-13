@@ -28,8 +28,6 @@ import java.util.List;
 @Data
 public class User implements UserDetails {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
     @Column(name = "username")
     private String username;
     @Column(name = "password")
