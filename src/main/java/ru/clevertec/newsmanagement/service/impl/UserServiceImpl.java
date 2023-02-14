@@ -2,6 +2,7 @@ package ru.clevertec.newsmanagement.service.impl;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,6 +17,7 @@ import ru.clevertec.newsmanagement.service.UserService;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService {
     private final UserRepository repository;
     private final JwtService jwtService;
@@ -23,16 +25,23 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     @Override
     public AuthenticationResponse registration(@Valid AuthenticationRequest authentication) {
-        User user = User.builder()
-                .username(authentication.getUsername())
-                .password(passwordEncoder.encode(authentication.getPassword()))
-                .role(Role.SUBSCRIBER)
-                .build();
-        User saved = repository.save(user);
+        User saved = saveDefaultUser(authentication);
         return AuthenticationResponse.builder()
                 .username(saved.getUsername())
                 .jwt(jwtService.generateToken(saved))
                 .build();
+    }
+    @Override
+    public User saveUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return repository.save(user);
+    }
+    private User saveDefaultUser(AuthenticationRequest user) {
+        return repository.save(User.builder()
+                .username(user.getUsername())
+                .password(passwordEncoder.encode(user.getPassword()))
+                .role(Role.SUBSCRIBER)
+                .build());
     }
 
     @Override
