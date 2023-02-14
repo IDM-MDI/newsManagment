@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://db/news_management
+    username: username
+    password: password
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  flyway:
+    url: jdbc:postgresql://db/news_management
+    user: username
+    password: password
