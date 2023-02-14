@@ -28,7 +28,7 @@ public class Comment {
     @JoinColumn(name = "username")
     private User user;
     @ManyToOne
-    @JoinColumn(name = "comment_id")
+    @JoinColumn(name = "news_id")
     private News news;
     @CreatedDate
     private Date date;

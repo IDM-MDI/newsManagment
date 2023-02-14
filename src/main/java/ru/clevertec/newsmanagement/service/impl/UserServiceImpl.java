@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.clevertec.newsmanagement.entity.Role;
 import ru.clevertec.newsmanagement.entity.User;
@@ -19,11 +20,12 @@ public class UserServiceImpl implements UserService {
     private final UserRepository repository;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final PasswordEncoder passwordEncoder;
     @Override
     public AuthenticationResponse registration(@Valid AuthenticationRequest authentication) {
         User user = User.builder()
                 .username(authentication.getUsername())
-                .password(authentication.getPassword())
+                .password(passwordEncoder.encode(authentication.getPassword()))
                 .role(Role.SUBSCRIBER)
                 .build();
         User saved = repository.save(user);
