@@ -10,7 +10,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,12 +25,13 @@ import java.util.List;
 @Data
 public class User implements UserDetails {
     @Id
-    @Column(name = "username")
+    @Column(name = "username",nullable = false)
     private String username;
-    @Column(name = "password")
+    @Column(name = "password",nullable = false)
     private String password;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "role",nullable = false)
     private Role role;
 
     @Override
