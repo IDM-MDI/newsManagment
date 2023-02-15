@@ -33,7 +33,6 @@ public class CommentServiceImpl implements CommentService {
                 .map(comment -> mapper.map(comment,CommentDto.class))
                 .toList();
     }
-
     @Override
     public CommentDto findComment(long news, long id) throws Exception {
         return mapper.map(findCommentEntity(news,id),CommentDto.class);
@@ -41,31 +40,39 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentDto saveComment(long news, String username, CommentDto comment) throws Exception {
-        Comment result = mapper.map(comment, Comment.class);
-        result.setNews(newsService.findNewsEntity(news));                   //TODO: REFACTOR TO SEPARATE METHOD
-        result.setUser(userService.findUser(username));
-        return mapper.map(repository.save(result), CommentDto.class);
+        return mapper.map(repository.save(setDefaultComment(news, username, comment)), CommentDto.class);
     }
 
     @Override
     public CommentDto updateComment(long news, long id, String username, CommentDto comment) throws Exception {
-        Comment entity = findCommentEntity(news, id);
-        if(!(UserValidator.isUserValid(entity.getUser(),username) &&
-                repository.existsCommentByIdAndNews_Id(id,news))) {
-            throw new Exception();
-        }
-        entity.setText(comment.getText());
-        return mapper.map(repository.save(entity), CommentDto.class);
+        return mapper.map(repository.save(updateCommentField(news,id,username,comment)), CommentDto.class);
     }
 
     @Override
     public void deleteComment(long id, long news, String username) throws Exception {
+        Comment entity = getValidComment(news, id, username);
+        repository.delete(entity);
+    }
+
+    private Comment setDefaultComment(long news, String username, CommentDto comment) throws Exception {
+        Comment result = mapper.map(comment, Comment.class);
+        result.setNews(newsService.findNewsEntity(news));
+        result.setUser(userService.findUser(username));
+        return result;
+    }
+    private Comment updateCommentField(long news, long id, String username, CommentDto comment) throws Exception {
+        Comment entity = getValidComment(news, id, username);
+        entity.setText(comment.getText());
+        return entity;
+    }
+
+    private Comment getValidComment(long news, long id, String username) throws Exception {
         Comment entity = findCommentEntity(news, id);
-        if(!(UserValidator.isUserValid(entity.getUser(),username) &&
-                repository.existsCommentByIdAndNews_Id(id,news))) {
+        if(!(UserValidator.isUserValid(entity.getUser(), username) &&
+                repository.existsCommentByIdAndNews_Id(id, news))) {
             throw new Exception();
         }
-        repository.delete(entity);
+        return entity;
     }
     private Comment findCommentEntity(long news, long id) throws Exception {
         return repository.findCommentByIdAndNews_Id(id,news)
