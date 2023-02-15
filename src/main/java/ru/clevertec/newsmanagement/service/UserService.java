@@ -8,5 +8,6 @@ import ru.clevertec.newsmanagement.model.AuthenticationResponse;
 public interface UserService {
     AuthenticationResponse registration(AuthenticationRequest authentication);
     User saveUser(User user);
+    User findUser(String username) throws Exception;
     AuthenticationResponse authenticate(AuthenticationRequest authentication) throws Exception;
 }

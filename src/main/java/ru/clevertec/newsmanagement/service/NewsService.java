@@ -1,16 +1,18 @@
 package ru.clevertec.newsmanagement.service;
 
+import ru.clevertec.newsmanagement.entity.News;
 import ru.clevertec.newsmanagement.model.NewsDto;
 
 import java.util.List;
 
 public interface NewsService {
-    List<NewsDto> getNews(int page, int size, String filter, String direction);
-    NewsDto getNews(long id);
+    List<NewsDto> findNews(int page, int size, String filter, String direction);
+    NewsDto findNews(long id) throws Exception;
+    News findNewsEntity(long id) throws Exception;
 
-    NewsDto saveNews(String username,NewsDto news);
+    NewsDto saveNews(String username,NewsDto news) throws Exception;
 
-    NewsDto updateNews(long id, String username, NewsDto news);
+    NewsDto updateNews(long id, String username, NewsDto news) throws Exception;
 
-    void deleteNews(long id, String username, NewsDto news);
+    void deleteNews(long id, String username) throws Exception;
 }

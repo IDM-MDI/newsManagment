@@ -1,6 +1,8 @@
 package ru.clevertec.newsmanagement.config;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -10,4 +12,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories(basePackages = "ru.clevertec.newsmanagement")
 @EnableJpaAuditing
 public class PersistenceConfig {
+    @Bean
+    public ModelMapper modelMapper(){
+        return new ModelMapper();
+    }
 }

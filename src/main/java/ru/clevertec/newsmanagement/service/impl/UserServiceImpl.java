@@ -36,6 +36,13 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return repository.save(user);
     }
+
+    @Override
+    public User findUser(String username) throws Exception {
+        return repository.findUserByUsername(username)
+                .orElseThrow(Exception::new);        //TODO:FINISH EXCEPTION;
+    }
+
     private User saveDefaultUser(AuthenticationRequest user) {
         return repository.save(User.builder()
                 .username(user.getUsername())
