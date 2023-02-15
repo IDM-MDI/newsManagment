@@ -7,12 +7,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.clevertec.newsmanagement.entity.Comment;
-import ru.clevertec.newsmanagement.entity.News;
 import ru.clevertec.newsmanagement.model.CommentDto;
 import ru.clevertec.newsmanagement.persistence.CommentRepository;
 import ru.clevertec.newsmanagement.service.CommentService;
 import ru.clevertec.newsmanagement.service.NewsService;
 import ru.clevertec.newsmanagement.service.UserService;
+import ru.clevertec.newsmanagement.validator.UserValidator;
 
 import java.util.List;
 
@@ -27,7 +27,7 @@ public class CommentServiceImpl implements CommentService {
     private final NewsService newsService;
     private final UserService userService;
     @Override
-    public List<CommentDto> getComments(long news, int page, int size, String filter, String direction) {
+    public List<CommentDto> findComments(long news, int page, int size, String filter, String direction) {
         return repository.findCommentsByNews_Id(news, PageRequest.of(page,size, getDirection(Sort.by(filter),direction)))
                 .stream()
                 .map(comment -> mapper.map(comment,CommentDto.class))
@@ -35,10 +35,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public CommentDto getComment(long news, long id) throws Exception {
-        return repository.findCommentByIdAndNews_Id(id,news)
-                .map(comment -> mapper.map(comment,CommentDto.class))
-                .orElseThrow(Exception::new);           //TODO: FINISH EXCEPTION
+    public CommentDto findComment(long news, long id) throws Exception {
+        return mapper.map(findCommentEntity(news,id),CommentDto.class);
     }
 
     @Override
@@ -50,12 +48,27 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public CommentDto updateComment(long news, long id, String username, CommentDto comment) {
-        return null;
+    public CommentDto updateComment(long news, long id, String username, CommentDto comment) throws Exception {
+        Comment entity = findCommentEntity(news, id);
+        if(!(UserValidator.isUserValid(entity.getUser(),username) &&
+                repository.existsCommentByIdAndNews_Id(id,news))) {
+            throw new Exception();
+        }
+        entity.setText(comment.getText());
+        return mapper.map(repository.save(entity), CommentDto.class);
     }
 
     @Override
-    public void deleteComment(long id, long news, String username) {
-
+    public void deleteComment(long id, long news, String username) throws Exception {
+        Comment entity = findCommentEntity(news, id);
+        if(!(UserValidator.isUserValid(entity.getUser(),username) &&
+                repository.existsCommentByIdAndNews_Id(id,news))) {
+            throw new Exception();
+        }
+        repository.delete(entity);
+    }
+    private Comment findCommentEntity(long news, long id) throws Exception {
+        return repository.findCommentByIdAndNews_Id(id,news)
+                .orElseThrow(Exception::new);
     }
 }

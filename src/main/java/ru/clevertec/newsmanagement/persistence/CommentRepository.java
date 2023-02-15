@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface CommentRepository extends JpaRepository<Comment,Long> {
     List<Comment> findCommentsByNews_Id(long id, Pageable pageable);
     Optional<Comment> findCommentByIdAndNews_Id(Long id, Long news_id);
+    boolean existsCommentByIdAndNews_Id(Long id, Long news_id);
 }
