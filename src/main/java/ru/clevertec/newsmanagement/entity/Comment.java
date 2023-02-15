@@ -31,5 +31,5 @@ public class Comment {
     @JoinColumn(name = "news_id")
     private News news;
     @CreatedDate
-    private Date date;
+    private Date createdDate;
 }

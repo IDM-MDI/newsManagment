@@ -27,12 +27,6 @@ public class SecurityConfig {
         http
                 .csrf()
                 .disable()
-                .authorizeHttpRequests()
-                .requestMatchers("/api/v1/auth/**").permitAll()
-                .requestMatchers("/api/v1/news/**").hasAnyRole(Role.ADMIN.name(),Role.JOURNALIST.name())
-                .requestMatchers("/api/v1/comment/**").hasAnyRole()
-                .requestMatchers(HttpMethod.GET).permitAll()
-                .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()

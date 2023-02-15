@@ -30,5 +30,5 @@ public class News {
     @JoinColumn(name = "news_id")
     private List<Comment> comments;
     @CreatedDate
-    private Date date;
+    private Date createdDate;
 }
