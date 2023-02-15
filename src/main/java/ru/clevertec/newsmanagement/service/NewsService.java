@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface NewsService {
     List<NewsDto> getNews(int page, int size, String filter, String direction);
-    NewsDto getNewsWithComments(long id, int page, int size, String filter, String direction);
+    NewsDto getNews(long id);
 
     NewsDto saveNews(String username,NewsDto news);
 

@@ -9,6 +9,8 @@ public interface CommentService {
 
     List<CommentDto> getComments(long id, int page, int size, String filter, String direction);
 
+    NewsDto getComment(long news, long id);
+
     CommentDto saveComment(long news, String username, CommentDto comment);
 
     NewsDto updateComment(long news, long id, String username, CommentDto comment);

@@ -32,12 +32,8 @@ public class NewsController {
     }
 
     @GetMapping("/{id}")
-    public NewsDto getNewsWithComment(@PathVariable long id,
-                                      @RequestParam(defaultValue = "0") int page,
-                                      @RequestParam(defaultValue = "10") int size,
-                                      @RequestParam(defaultValue = "id") String filter,
-                                      @RequestParam(defaultValue = "asc") String direction) {
-        return service.getNewsWithComments(id,page,size,filter,direction);
+    public NewsDto getNewsWithComment(@PathVariable long id) {
+        return service.getNews(id);
     }
 
     @PostMapping
