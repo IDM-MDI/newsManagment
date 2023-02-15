@@ -1,12 +1,13 @@
 package ru.clevertec.newsmanagement.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -28,15 +29,15 @@ public class NewsController {
     private final NewsService service;
 
     @GetMapping
-    public List<NewsDto> findNews(@RequestParam(defaultValue = "0") int page,
-                                 @RequestParam(defaultValue = "10") int size,
-                                 @RequestParam(defaultValue = "id") String filter,
-                                 @RequestParam(defaultValue = "asc") String direction) {
+    public List<NewsDto> findNews(@RequestParam(defaultValue = "0") @Min(1) int page,
+                                 @RequestParam(defaultValue = "10") @Min(1) int size,
+                                 @RequestParam(defaultValue = "id") @NotBlank String filter,
+                                 @RequestParam(defaultValue = "asc") @NotBlank String direction) {
         return service.findNews(page,size,filter,direction);
     }
 
     @GetMapping("/{id}")
-    public NewsDto findNewsWithComment(@PathVariable long id) throws Exception {
+    public NewsDto findNewsWithComment(@PathVariable @Min(1) long id) throws Exception {
         return service.findNews(id);
     }
 
@@ -47,13 +48,13 @@ public class NewsController {
     }
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','JOURNALIST')")
-    public NewsDto updateNews(@PathVariable long id,
+    public NewsDto updateNews(@PathVariable @Min(1) long id,
                               @RequestBody @Valid NewsDto news) throws Exception {
         return service.updateNews(id,getUsernameByContext(),news);
     }
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','JOURNALIST')")
-    public ResponseEntity<String> deleteNews(@PathVariable long id) throws Exception {
+    public ResponseEntity<String> deleteNews(@PathVariable @Min(1) long id) throws Exception {
         service.deleteNews(id,getUsernameByContext());
         return ResponseEntity.ok("The news successfully was deleted");
     }

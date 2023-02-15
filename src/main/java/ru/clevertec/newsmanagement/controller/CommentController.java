@@ -1,6 +1,8 @@
 package ru.clevertec.newsmanagement.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,34 +30,34 @@ public class CommentController {
 
     @GetMapping("/{news}/comment")
     public List<CommentDto> getNewsComment(@PathVariable long news,
-                                           @RequestParam(defaultValue = "0") int page,
-                                           @RequestParam(defaultValue = "10") int size,
-                                           @RequestParam(defaultValue = "id") String filter,
-                                           @RequestParam(defaultValue = "asc") String direction) {
+                                           @RequestParam(defaultValue = "0") @Min(1) int page,
+                                           @RequestParam(defaultValue = "10") @Min(1) int size,
+                                           @RequestParam(defaultValue = "id") @NotBlank String filter,
+                                           @RequestParam(defaultValue = "asc") @NotBlank String direction) {
         return service.findComments(news,page,size,filter,direction);
     }
     @GetMapping("/{news}/comment/{id}")
-    public CommentDto getComment(@PathVariable long news,
-                              @PathVariable long id) throws Exception {
+    public CommentDto getComment(@PathVariable @Min(1) long news,
+                                @PathVariable @Min(1) long id) throws Exception {
         return service.findComment(news,id);
     }
     @PostMapping("/{news}/comment")
     @PreAuthorize("hasAnyRole()")
-    public CommentDto saveComment(@PathVariable long news,
+    public CommentDto saveComment(@PathVariable @Min(1) long news,
                                   @RequestBody @Valid CommentDto comment) throws Exception {
         return service.saveComment(news,getUsernameByContext(),comment);
     }
     @PutMapping("/{news}/comment/{id}")
     @PreAuthorize("hasAnyRole()")
-    public CommentDto updateNews(@PathVariable long news,
-                              @PathVariable long id,
+    public CommentDto updateNews(@PathVariable @Min(1) long news,
+                              @PathVariable @Min(1) long id,
                               @RequestBody @Valid CommentDto comment) throws Exception {
         return service.updateComment(news,id,getUsernameByContext(),comment);
     }
     @DeleteMapping("/{news}/comment/{id}")
     @PreAuthorize("hasAnyRole()")
-    public ResponseEntity<String> deleteComment(@PathVariable long id,
-                                                @PathVariable long news) throws Exception {
+    public ResponseEntity<String> deleteComment(@PathVariable @Min(1) long id,
+                                                @PathVariable @Min(1) long news) throws Exception {
         service.deleteComment(id,news,getUsernameByContext());
         return ResponseEntity.ok("The news successfully was deleted");
     }
