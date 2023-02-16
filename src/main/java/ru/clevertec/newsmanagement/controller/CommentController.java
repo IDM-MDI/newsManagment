@@ -1,5 +1,9 @@
 package ru.clevertec.newsmanagement.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -29,36 +33,85 @@ public class CommentController {
     private final CommentService service;
 
     @GetMapping("/{news}/comment")
-    public List<CommentDto> getNewsComment(@PathVariable long news,
-                                           @RequestParam(defaultValue = "0") @Min(1) int page,
-                                           @RequestParam(defaultValue = "10") @Min(1) int size,
-                                           @RequestParam(defaultValue = "id") @NotBlank String filter,
-                                           @RequestParam(defaultValue = "asc") @NotBlank String direction) {
+    @Operation(
+            summary = "News Comments",
+            description = "API Point made for return comment page by news"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Comments found"
+    )
+    public List<CommentDto> getNewsComment(@Parameter(description = "News ID")
+                                               @PathVariable long news,
+                                           @Parameter(description = "Page number(def: 0,min: 0)")
+                                                @RequestParam(defaultValue = "0") @Min(0) int page,
+                                           @Parameter(description = "Page size(def: 10, min: 1)")
+                                                @RequestParam(defaultValue = "10") @Min(1) int size,
+                                           @Parameter(description = "Filter by field(def: id)")
+                                                @RequestParam(defaultValue = "id") @NotBlank String filter,
+                                           @Parameter(description = "asc or desc(def: asc)")
+                                                @RequestParam(defaultValue = "asc") @NotBlank String direction) {
         return service.findComments(news,page,size,filter,direction);
     }
     @GetMapping("/{news}/comment/{id}")
-    public CommentDto getComment(@PathVariable @Min(1) long news,
-                                @PathVariable @Min(1) long id) throws Exception {
+    @Operation(
+            summary = "News Comment by ID",
+            description = "API Point made for return comment by ID & news"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Comments found"
+    )
+    public CommentDto getComment(@Parameter(description = "News ID") @PathVariable @Min(1) long news,
+                                 @Parameter(description = "Comment ID") @PathVariable @Min(1) long id) throws Exception {
         return service.findComment(news,id);
     }
+
     @PostMapping("/{news}/comment")
     @PreAuthorize("isAuthenticated()")
-    public CommentDto saveComment(@PathVariable @Min(1) long news,
+    @Operation(
+            summary = "Save News Comment",
+            description = "API Point made for saving news comment"
+    )
+    @ApiResponse(
+            responseCode = "201",
+            description = "Comment created"
+    )
+    @SecurityRequirement(name = "Bearer Authentication")
+    public CommentDto saveComment(@Parameter(description = "News ID") @PathVariable @Min(1) long news,
                                   @RequestBody @Valid CommentDto comment) throws Exception {
         return service.saveComment(news,getUsernameByContext(),comment);
     }
     @PutMapping("/{news}/comment/{id}")
     @PreAuthorize("isAuthenticated()")
-    public CommentDto updateNews(@PathVariable @Min(1) long news,
-                              @PathVariable @Min(1) long id,
+    @Operation(
+            summary = "Update News Comment",
+            description = "API Point made for updating news comment"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Comment updated"
+    )
+    @SecurityRequirement(name = "Bearer Authentication")
+    public CommentDto updateNews(@Parameter(description = "News ID") @PathVariable @Min(1) long news,
+                                 @Parameter(description = "Comment ID") @PathVariable @Min(1) long id,
                               @RequestBody @Valid CommentDto comment) throws Exception {
         return service.updateComment(news,id,getUsernameByContext(),comment);
     }
     @DeleteMapping("/{news}/comment/{id}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<String> deleteComment(@PathVariable @Min(1) long id,
-                                                @PathVariable @Min(1) long news) throws Exception {
+    @Operation(
+            summary = "Delete News Comment",
+            description = "API Point made for deleting news comment"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Comment deleted"
+    )
+    @SecurityRequirement(name = "Bearer Authentication")
+    public ResponseEntity<String> deleteComment(@Parameter(description = "News ID") @PathVariable @Min(1) long news,
+                                                @Parameter(description = "Comment ID") @PathVariable @Min(1) long id) throws Exception {
         service.deleteComment(id,news,getUsernameByContext());
-        return ResponseEntity.ok("The news successfully was deleted");
+        return ResponseEntity.ok("The comment successfully was deleted");
     }
 }

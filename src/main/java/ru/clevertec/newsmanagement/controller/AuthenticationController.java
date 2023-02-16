@@ -1,7 +1,8 @@
 package ru.clevertec.newsmanagement.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,12 +17,28 @@ import ru.clevertec.newsmanagement.service.UserService;
 public class AuthenticationController {
     private final UserService service;
 
+    @Operation(
+            summary = "User registration",
+            description = "API Point made for save user data to database"
+    )
+    @ApiResponse(
+            responseCode = "201",
+            description = "User created"
+    )
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(@RequestBody AuthenticationRequest request) {
-        return ResponseEntity.ok(service.registration(request));
+    public AuthenticationResponse register(@RequestBody AuthenticationRequest request) {
+        return service.registration(request);
     }
+    @Operation(
+            summary = "User authentication",
+            description = "API Point made for authenticate existed user"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "User authenticated"
+    )
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) throws Exception {
-        return ResponseEntity.ok(service.authenticate(request));
+    public AuthenticationResponse authenticate(@RequestBody AuthenticationRequest request) throws Exception {
+        return service.authenticate(request);
     }
 }

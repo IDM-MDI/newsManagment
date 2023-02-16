@@ -1,3 +1,5 @@
+jwt:
+  key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
 spring:
   datasource:
     url: jdbc:postgresql://db:5432/news_management
@@ -15,3 +17,6 @@ spring:
     password: password
     driver-class-name: org.postgresql.Driver
     baseline-on-migrate: true
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
