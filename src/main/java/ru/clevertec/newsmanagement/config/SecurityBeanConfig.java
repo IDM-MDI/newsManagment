@@ -13,6 +13,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.clevertec.newsmanagement.persistence.UserRepository;
 
+import static ru.clevertec.newsmanagement.exception.ExceptionStatus.USER_NOT_FOUND;
+
 @Configuration
 @RequiredArgsConstructor
 public class SecurityBeanConfig {
@@ -21,7 +23,7 @@ public class SecurityBeanConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> repository.findUserByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND.toString()));
     }
 
     @Bean

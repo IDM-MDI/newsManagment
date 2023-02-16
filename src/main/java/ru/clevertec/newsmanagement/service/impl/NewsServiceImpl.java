@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 import ru.clevertec.newsmanagement.entity.News;
 import ru.clevertec.newsmanagement.entity.User;
+import ru.clevertec.newsmanagement.exception.CustomException;
 import ru.clevertec.newsmanagement.model.NewsDto;
 import ru.clevertec.newsmanagement.persistence.NewsRepository;
 import ru.clevertec.newsmanagement.service.CommentService;
@@ -21,6 +22,9 @@ import ru.clevertec.newsmanagement.validator.UserValidator;
 
 import java.util.List;
 
+import static ru.clevertec.newsmanagement.exception.ExceptionStatus.ENTITY_NOT_FOUND;
+import static ru.clevertec.newsmanagement.exception.ExceptionStatus.NO_ACCESS;
+import static ru.clevertec.newsmanagement.handler.ListHandler.checkPageListExist;
 import static ru.clevertec.newsmanagement.handler.SortDirectionHandler.getDirection;
 
 @Service
@@ -43,60 +47,61 @@ public class NewsServiceImpl implements NewsService {
         this.mapper = mapper;
     }
     @Override
-    public List<NewsDto> findNews(int page, int size, String filter, String direction) {
-        return repository.findAll(PageRequest.of(page,size, getDirection(Sort.by(filter),direction)))
+    public List<NewsDto> findNews(int page, int size, String filter, String direction) throws CustomException {
+        List<NewsDto> pageResult = repository.findAll(PageRequest.of(page, size, getDirection(Sort.by(filter), direction)))
                 .stream()
-                .map(news -> mapper.map(news,NewsDto.class))
+                .map(news -> mapper.map(news, NewsDto.class))
                 .toList();
+        checkPageListExist(pageResult);
+        return pageResult;
     }
     @Override
-    public NewsDto findNews(long id) throws Exception {
+    public NewsDto findNews(long id) throws CustomException {
         return mapper.map(findNewsEntity(id),NewsDto.class);
     }
 
     @Override
-    public News findNewsEntity(long id) throws Exception {
+    public News findNewsEntity(long id) throws CustomException {
         return repository.findById(id)
-                .orElseThrow(Exception::new); // TODO:FINISH EXCEPTION
+                .orElseThrow(() -> new CustomException(ENTITY_NOT_FOUND.toString()));
     }
 
     @Override
     public NewsDto saveNews(String username,
-                            NewsDto news) throws Exception {
+                            NewsDto news) throws CustomException {
         return mapper.map(repository.save(setDefaultNews(username,news)),NewsDto.class);
     }
 
     @Override
     public NewsDto updateNews(long id,
                               String username,
-                              NewsDto news) throws Exception {
+                              NewsDto news) throws CustomException {
         return mapper.map(repository.save(updateNewsField(id,news)),NewsDto.class);
     }
 
     @Override
     @Transactional
-    public void deleteNews(long id, String username) throws Exception {
-        findValidEntity(id, username);
+    public void deleteNews(long id, String username) throws CustomException {
+        checkBeforeOperation(id, username);
         commentService.deleteAllComment(id);
         repository.deleteById(id);
     }
 
-    private News findValidEntity(long id, String username) throws Exception {
-        News fromDB = findNewsEntity(id);
-        User fromUsername = userService.findUser(username);
-        if(!UserValidator.isUserValid(fromDB.getUser(), fromUsername)) {
-            throw new Exception();
+    private void checkBeforeOperation(long id, String username) throws CustomException {
+        if(!UserValidator.isUserValid(
+                findNewsEntity(id).getUser(),
+                userService.findUser(username))) {
+            throw new CustomException(NO_ACCESS.toString());
         }
-        return fromDB;
     }
 
-    private News updateNewsField(long id, NewsDto client) throws Exception {
+    private News updateNewsField(long id, NewsDto client) throws CustomException {
         News fromDB = findNewsEntity(id);
         fromDB.setTitle(client.getTitle());
         fromDB.setText(client.getText());
         return fromDB;
     }
-    private News setDefaultNews(String username,NewsDto client) throws Exception {
+    private News setDefaultNews(String username,NewsDto client) throws CustomException {
         User user = userService.findUser(username);
         News result = mapper.map(client, News.class);
         result.setUser(user);

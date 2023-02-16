@@ -2,11 +2,13 @@ package ru.clevertec.newsmanagement.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.clevertec.newsmanagement.exception.CustomException;
 import ru.clevertec.newsmanagement.model.AuthenticationRequest;
 import ru.clevertec.newsmanagement.model.AuthenticationResponse;
 import ru.clevertec.newsmanagement.service.UserService;
@@ -26,7 +28,7 @@ public class AuthenticationController {
             description = "User created"
     )
     @PostMapping("/register")
-    public AuthenticationResponse register(@RequestBody AuthenticationRequest request) {
+    public AuthenticationResponse register(@RequestBody @Valid AuthenticationRequest request) throws CustomException {
         return service.registration(request);
     }
     @Operation(
@@ -38,7 +40,7 @@ public class AuthenticationController {
             description = "User authenticated"
     )
     @PostMapping("/authenticate")
-    public AuthenticationResponse authenticate(@RequestBody AuthenticationRequest request) throws Exception {
+    public AuthenticationResponse authenticate(@RequestBody @Valid AuthenticationRequest request) throws CustomException {
         return service.authenticate(request);
     }
 }
