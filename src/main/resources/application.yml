@@ -1,15 +1,17 @@
 spring:
   datasource:
-    url: jdbc:postgresql://db/news_management
+    url: jdbc:postgresql://db:5432/news_management
     username: username
     password: password
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: create-drop
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   flyway:
-    url: jdbc:postgresql://db/news_management
+    url: jdbc:postgresql://db:5432/news_management
     user: username
     password: password
+    driver-class-name: org.postgresql.Driver
+    baseline-on-migrate: true

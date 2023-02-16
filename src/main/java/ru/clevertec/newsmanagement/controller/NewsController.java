@@ -42,18 +42,18 @@ public class NewsController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN','JOURNALIST')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_JOURNALIST')")
     public NewsDto saveNews(@RequestBody @Valid NewsDto news) throws Exception {
         return service.saveNews(getUsernameByContext(),news);
     }
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','JOURNALIST')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_JOURNALIST')")
     public NewsDto updateNews(@PathVariable @Min(1) long id,
                               @RequestBody @Valid NewsDto news) throws Exception {
         return service.updateNews(id,getUsernameByContext(),news);
     }
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','JOURNALIST')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_JOURNALIST')")
     public ResponseEntity<String> deleteNews(@PathVariable @Min(1) long id) throws Exception {
         service.deleteNews(id,getUsernameByContext());
         return ResponseEntity.ok("The news successfully was deleted");

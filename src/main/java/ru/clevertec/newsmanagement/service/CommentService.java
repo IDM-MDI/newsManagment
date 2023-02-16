@@ -15,4 +15,5 @@ public interface CommentService {
     CommentDto updateComment(long news, long id, String username, CommentDto comment) throws Exception;
 
     void deleteComment(long id, long news, String username) throws Exception;
+    void deleteAllComment(long news);
 }

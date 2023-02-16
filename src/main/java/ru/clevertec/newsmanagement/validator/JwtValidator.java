@@ -13,7 +13,7 @@ public class JwtValidator {
     }
 
     public static boolean isUsernameExist(String username) {
-        return Objects.nonNull(username) && !isSecurityAuthenticationEmpty();
+        return Objects.nonNull(username) && isSecurityAuthenticationEmpty();
     }
 
     public static boolean isSecurityAuthenticationEmpty() {

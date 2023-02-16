@@ -16,6 +16,6 @@ public class SystemNewsManagementApplication {
     }
     @EventListener(ApplicationReadyEvent.class)
     public void generateAdmins() {
-        generator.generateAdmins();
+        generator.generateEntity();
     }
 }

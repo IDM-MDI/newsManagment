@@ -27,11 +27,11 @@ public class Comment {
     private Long id;
     @Column(name = "text",nullable = false)
     private String text;
-    @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    @JoinColumn(name = "username",nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "username",updatable = false, nullable = false)
     private User user;
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    @JoinColumn(name = "news_id",nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "news_id", updatable = false, nullable = false)
     private News news;
     @CreatedDate
     @Column(name = "createdDate",nullable = false)

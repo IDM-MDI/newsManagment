@@ -12,7 +12,7 @@ CREATE TABLE news
     title        VARCHAR(255)                            NOT NULL,
     text         TEXT                                    NOT NULL,
     username     VARCHAR(255)                            NOT NULL,
-    created_date TIMESTAMP WITHOUT TIME ZONE             NOT NULL,
+    createdDate TIMESTAMP WITHOUT TIME ZONE             NOT NULL,
     CONSTRAINT pk_news PRIMARY KEY (id)
 );
 

@@ -31,13 +31,10 @@ public class News {
     private String title;
     @Column(name = "text", nullable = false)
     private String text;
-    @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    @JoinColumn(name = "username",nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "username",updatable = false, nullable = false)
     private User user;
-    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    @JoinColumn(name = "news_id",nullable = false)
-    private List<Comment> comments;
     @CreatedDate
-    @Column(name = "createdDate",nullable = false)
+    @Column(name = "createdDate",updatable = false, nullable = false)
     private Date createdDate;
 }

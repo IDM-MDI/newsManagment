@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.clevertec.newsmanagement.entity.Role;
 import ru.clevertec.newsmanagement.entity.User;
-import ru.clevertec.newsmanagement.model.AuthenticationRequest;
 
 @Component
 @RequiredArgsConstructor
@@ -15,7 +14,10 @@ public class UserGenerator {
 
     private final UserService service;
 
-    public void generateAdmins() {
+    public void generateEntity() {
+        generateUsers();
+    }
+    private void generateUsers() {
         service.saveUser(new User(ADMIN + 1,ADMIN + 1, Role.ADMIN));
         service.saveUser(new User(ADMIN + 2,ADMIN + 2, Role.ADMIN));
         service.saveUser(new User(JOURNALIST + 1,JOURNALIST + 1, Role.JOURNALIST));

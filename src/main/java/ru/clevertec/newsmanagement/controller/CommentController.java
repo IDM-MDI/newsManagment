@@ -42,20 +42,20 @@ public class CommentController {
         return service.findComment(news,id);
     }
     @PostMapping("/{news}/comment")
-    @PreAuthorize("hasAnyRole()")
+    @PreAuthorize("isAuthenticated()")
     public CommentDto saveComment(@PathVariable @Min(1) long news,
                                   @RequestBody @Valid CommentDto comment) throws Exception {
         return service.saveComment(news,getUsernameByContext(),comment);
     }
     @PutMapping("/{news}/comment/{id}")
-    @PreAuthorize("hasAnyRole()")
+    @PreAuthorize("isAuthenticated()")
     public CommentDto updateNews(@PathVariable @Min(1) long news,
                               @PathVariable @Min(1) long id,
                               @RequestBody @Valid CommentDto comment) throws Exception {
         return service.updateComment(news,id,getUsernameByContext(),comment);
     }
     @DeleteMapping("/{news}/comment/{id}")
-    @PreAuthorize("hasAnyRole()")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<String> deleteComment(@PathVariable @Min(1) long id,
                                                 @PathVariable @Min(1) long news) throws Exception {
         service.deleteComment(id,news,getUsernameByContext());
