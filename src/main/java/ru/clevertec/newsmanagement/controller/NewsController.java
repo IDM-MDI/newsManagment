@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ru.clevertec.newsmanagement.exception.CustomException;
 import ru.clevertec.newsmanagement.model.NewsDto;
 import ru.clevertec.newsmanagement.service.NewsService;
 
@@ -48,7 +49,7 @@ public class NewsController {
                                   @Parameter(description = "Filter by field(def: id)")
                                     @RequestParam(defaultValue = "id") @NotBlank String filter,
                                   @Parameter(description = "asc or desc(def: asc)")
-                                    @RequestParam(defaultValue = "asc") @NotBlank String direction) {
+                                    @RequestParam(defaultValue = "asc") @NotBlank String direction) throws CustomException {
         return service.findNews(page,size,filter,direction);
     }
 
