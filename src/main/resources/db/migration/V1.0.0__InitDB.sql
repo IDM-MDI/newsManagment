@@ -12,7 +12,7 @@ CREATE TABLE news
     title        VARCHAR(255)                            NOT NULL,
     text         TEXT                                    NOT NULL,
     username     VARCHAR(255)                            NOT NULL,
-    createdDate TIMESTAMP WITHOUT TIME ZONE             NOT NULL,
+    created_date TIMESTAMP WITHOUT TIME ZONE             NOT NULL,
     CONSTRAINT pk_news PRIMARY KEY (id)
 );
 
@@ -22,7 +22,7 @@ CREATE TABLE comments
     text     VARCHAR(255)                            NOT NULL,
     username VARCHAR(255)                            NOT NULL,
     news_id  BIGINT                                  NOT NULL,
-    createdDate     TIMESTAMP WITHOUT TIME ZONE      NOT NULL,
+    created_date     TIMESTAMP WITHOUT TIME ZONE      NOT NULL,
     CONSTRAINT pk_comments PRIMARY KEY (id)
 );
 ALTER TABLE news

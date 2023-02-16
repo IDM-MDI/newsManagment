@@ -18,5 +18,7 @@ public class NewsDto {
     @Length(min = 1, message = "Text must have at least ${min} symbol")
     private String text;
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private String username;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Date createdDate;
 }

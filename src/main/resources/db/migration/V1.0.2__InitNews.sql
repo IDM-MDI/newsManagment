@@ -1,4 +1,4 @@
-INSERT INTO news(title,text,username,createdDate)
+INSERT INTO news(title,text,username,created_date)
 VALUES
 ('This is template title 1','This is template text 1','journalist1','2023-02-14 01:01:00'),
 ('This is template title 2','This is template text 2','journalist1','2023-02-14 01:02:00'),

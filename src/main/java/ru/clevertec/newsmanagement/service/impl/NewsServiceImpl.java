@@ -30,11 +30,17 @@ import static ru.clevertec.newsmanagement.handler.SortDirectionHandler.getDirect
 public class NewsServiceImpl implements NewsService {
     private final NewsRepository repository;
     private final UserService userService;
-    private final ModelMapper mapper;
     private CommentService commentService;
+    private ModelMapper mapper;
     @Autowired
     public void setCommentService(@Lazy CommentService commentService) {
         this.commentService = commentService;
+    }
+    @Autowired
+    public void setMapper(ModelMapper mapper) {
+        mapper.createTypeMap(News.class, NewsDto.class)
+                .addMappings(mapping -> mapping.map(src -> src.getUser().getUsername(),NewsDto::setUsername));
+        this.mapper = mapper;
     }
     @Override
     public List<NewsDto> findNews(int page, int size, String filter, String direction) {

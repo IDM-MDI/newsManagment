@@ -1,4 +1,4 @@
-INSERT INTO comments(text,username,news_id,createdDate)
+INSERT INTO comments(text,username,news_id,created_date)
 VALUES
 ('This is template text 1','subscriber1',1,'2023-02-14 01:01:00'),
 ('This is template text 2','subscriber1',2,'2023-02-14 01:02:00'),

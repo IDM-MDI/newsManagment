@@ -34,6 +34,6 @@ public class Comment {
     @JoinColumn(name = "news_id", updatable = false, nullable = false)
     private News news;
     @CreatedDate
-    @Column(name = "createdDate",nullable = false)
+    @Column(name = "created_date",nullable = false)
     private Date createdDate;
 }
