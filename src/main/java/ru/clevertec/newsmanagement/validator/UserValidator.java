@@ -8,8 +8,8 @@ import ru.clevertec.newsmanagement.entity.User;
 
 @NoArgsConstructor
 public class UserValidator {
-    public static boolean isUserValid(@NotNull User fromComment,
-                                      @NotBlank User fromUsername) {
-        return Role.ADMIN.equals(fromUsername.getRole()) || fromUsername.getUsername().equals(fromComment.getUsername());
+    public static boolean isUserInvalid(@NotNull User fromComment,
+                                        @NotBlank User fromUsername) {
+        return !Role.ADMIN.equals(fromUsername.getRole()) && !fromUsername.getUsername().equals(fromComment.getUsername());
     }
 }

@@ -95,7 +95,7 @@ public class CommentServiceImpl implements CommentService {
     private Comment findValidEntity(long news, long id, String username) throws CustomException {
         Comment entity = findCommentEntity(news, id);
         User user = userService.findUser(username);
-        if(!UserValidator.isUserValid(entity.getUser(), user)) {
+        if(UserValidator.isUserInvalid(entity.getUser(), user)) {
             throw new CustomException(NO_ACCESS.toString());
         }
         return entity;

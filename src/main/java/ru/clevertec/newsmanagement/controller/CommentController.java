@@ -64,7 +64,7 @@ public class CommentController {
             description = "Comments found"
     )
     public CommentDto getComment(@Parameter(description = "News ID") @PathVariable @Min(1) long news,
-                                 @Parameter(description = "Comment ID") @PathVariable @Min(1) long id) throws Exception {
+                                 @Parameter(description = "Comment ID") @PathVariable @Min(1) long id) throws CustomException {
         return service.findComment(news,id);
     }
 
@@ -80,7 +80,7 @@ public class CommentController {
     )
     @SecurityRequirement(name = "Bearer Authentication")
     public CommentDto saveComment(@Parameter(description = "News ID") @PathVariable @Min(1) long news,
-                                  @RequestBody @Valid CommentDto comment) throws Exception {
+                                  @RequestBody @Valid CommentDto comment) throws CustomException {
         return service.saveComment(news,getUsernameByContext(),comment);
     }
     @PutMapping("/{news}/comment/{id}")
@@ -96,7 +96,7 @@ public class CommentController {
     @SecurityRequirement(name = "Bearer Authentication")
     public CommentDto updateNews(@Parameter(description = "News ID") @PathVariable @Min(1) long news,
                                  @Parameter(description = "Comment ID") @PathVariable @Min(1) long id,
-                              @RequestBody @Valid CommentDto comment) throws Exception {
+                              @RequestBody @Valid CommentDto comment) throws CustomException {
         return service.updateComment(news,id,getUsernameByContext(),comment);
     }
     @DeleteMapping("/{news}/comment/{id}")
@@ -111,7 +111,7 @@ public class CommentController {
     )
     @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<String> deleteComment(@Parameter(description = "News ID") @PathVariable @Min(1) long news,
-                                                @Parameter(description = "Comment ID") @PathVariable @Min(1) long id) throws Exception {
+                                                @Parameter(description = "Comment ID") @PathVariable @Min(1) long id) throws CustomException {
         service.deleteComment(id,news,getUsernameByContext());
         return ResponseEntity.ok("The comment successfully was deleted");
     }

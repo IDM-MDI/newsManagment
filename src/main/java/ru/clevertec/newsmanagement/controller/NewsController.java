@@ -62,7 +62,7 @@ public class NewsController {
             responseCode = "200",
             description = "News found"
     )
-    public NewsDto findNewsWithComment(@PathVariable @Min(1) long id) throws Exception {
+    public NewsDto findNewsWithComment(@PathVariable @Min(1) long id) throws CustomException {
         return service.findNews(id);
     }
 
@@ -77,7 +77,7 @@ public class NewsController {
             description = "News created"
     )
     @SecurityRequirement(name = "Bearer Authentication")
-    public NewsDto saveNews(@RequestBody @Valid NewsDto news) throws Exception {
+    public NewsDto saveNews(@RequestBody @Valid NewsDto news) throws CustomException {
         return service.saveNews(getUsernameByContext(),news);
     }
     @PutMapping("/{id}")
@@ -92,7 +92,7 @@ public class NewsController {
     )
     @SecurityRequirement(name = "Bearer Authentication")
     public NewsDto updateNews(@PathVariable @Min(1) long id,
-                              @RequestBody @Valid NewsDto news) throws Exception {
+                              @RequestBody @Valid NewsDto news) throws CustomException {
         return service.updateNews(id,getUsernameByContext(),news);
     }
     @DeleteMapping("/{id}")
@@ -106,7 +106,7 @@ public class NewsController {
             description = "News deleted"
     )
     @SecurityRequirement(name = "Bearer Authentication")
-    public ResponseEntity<String> deleteNews(@PathVariable @Min(1) long id) throws Exception {
+    public ResponseEntity<String> deleteNews(@PathVariable @Min(1) long id) throws CustomException {
         service.deleteNews(id,getUsernameByContext());
         return ResponseEntity.ok("The news successfully was deleted");
     }

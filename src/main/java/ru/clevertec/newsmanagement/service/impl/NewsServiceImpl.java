@@ -88,7 +88,7 @@ public class NewsServiceImpl implements NewsService {
     }
 
     private void checkBeforeOperation(long id, String username) throws CustomException {
-        if(!UserValidator.isUserValid(
+        if(UserValidator.isUserInvalid(
                 findNewsEntity(id).getUser(),
                 userService.findUser(username))) {
             throw new CustomException(NO_ACCESS.toString());
