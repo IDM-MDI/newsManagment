@@ -13,14 +13,14 @@ import java.util.Optional;
 
 public interface CommentRepository extends JpaRepository<Comment,Long> {
     @Cacheable(cacheNames = "commentCache",key = "{#id,#pageable}")
-    List<Comment> findCommentsByNews_Id(long id, Pageable pageable);
+    List<Comment> findCommentsByNews_Id(Long id, Pageable pageable);
 
-    @Cacheable(cacheNames = "commentCache",key = "{#id,#news_id}")
-    Optional<Comment> findCommentByIdAndNews_Id(long id, long news_id);
+    @Cacheable(cacheNames = "commentCache",key = "{#id,#newsID}")
+    Optional<Comment> findCommentByIdAndNews_Id(Long id, long newsID);
 
-    @Cacheable(cacheNames = "commentCache",key = "{#news_id}")
-    @Query("SELECT c.id FROM Comment c WHERE c.news.id = :news_id")
-    List<Long> findByNews_Id(@Param("news_id") long news_id);
+    @Cacheable(cacheNames = "commentCache",key = "{#newsID}")
+    @Query("SELECT c.id FROM Comment c WHERE c.news.id = :newsID")
+    List<Long> findByNews_Id(@Param("newsID") Long newsID);
 
     @Override
     @CacheEvict(cacheNames = "commentCache",key = "{#entity.id,#entity.news.id}",allEntries = true)
