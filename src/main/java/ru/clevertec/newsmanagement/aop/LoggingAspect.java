@@ -5,10 +5,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
+import ru.clevertec.newsmanagement.exception.CustomException;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -35,6 +37,11 @@ public class LoggingAspect {
         beforeLayerLogging(joinPoint);
     }
 
+    @AfterThrowing(value = "inServiceLayer()", throwing = "exception")
+    public void afterThrowing(CustomException exception) {
+        log.error(exception.getMessage());
+    }
+
     @Before("inControllerLayer()")
     public void beforeControllerLayerLogging(JoinPoint joinPoint) throws IOException {
         beforeLayerLogging(joinPoint);
@@ -42,7 +49,6 @@ public class LoggingAspect {
                 request.getRequestURL().toString(),
                 request.getMethod());
     }
-
     @AfterReturning(value = "inPersistenceLayer() || inServiceLayer() || inControllerLayer()",
                     returning = "result")
     public void afterServiceLayerLogging(JoinPoint joinPoint, Object result) {
