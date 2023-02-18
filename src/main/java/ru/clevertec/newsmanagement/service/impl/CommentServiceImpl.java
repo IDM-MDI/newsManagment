@@ -22,7 +22,6 @@ import java.util.List;
 
 import static ru.clevertec.newsmanagement.exception.ExceptionStatus.ENTITY_NOT_FOUND;
 import static ru.clevertec.newsmanagement.exception.ExceptionStatus.NO_ACCESS;
-import static ru.clevertec.newsmanagement.handler.ListHandler.checkPageListExist;
 import static ru.clevertec.newsmanagement.handler.SortDirectionHandler.getDirection;
 
 @Service
@@ -46,12 +45,10 @@ public class CommentServiceImpl implements CommentService {
     }
     @Override
     public List<CommentDto> findComments(long news, int page, int size, String filter, String direction) throws CustomException {
-        List<CommentDto> pageResult = repository.findCommentsByNews_Id(news, PageRequest.of(page, size, getDirection(Sort.by(filter), direction)))
+        return repository.findCommentsByNews_Id(news, PageRequest.of(page, size, getDirection(Sort.by(filter), direction)))
                 .stream()
                 .map(comment -> mapper.map(comment, CommentDto.class))
                 .toList();
-        checkPageListExist(pageResult);
-        return pageResult;
     }
     @Override
     public CommentDto findComment(long news, long id) throws CustomException {

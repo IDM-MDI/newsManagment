@@ -24,7 +24,6 @@ import java.util.List;
 
 import static ru.clevertec.newsmanagement.exception.ExceptionStatus.ENTITY_NOT_FOUND;
 import static ru.clevertec.newsmanagement.exception.ExceptionStatus.NO_ACCESS;
-import static ru.clevertec.newsmanagement.handler.ListHandler.checkPageListExist;
 import static ru.clevertec.newsmanagement.handler.SortDirectionHandler.getDirection;
 
 @Service
@@ -48,12 +47,10 @@ public class NewsServiceImpl implements NewsService {
     }
     @Override
     public List<NewsDto> findNews(int page, int size, String filter, String direction) throws CustomException {
-        List<NewsDto> pageResult = repository.findAll(PageRequest.of(page, size, getDirection(Sort.by(filter), direction)))
+        return repository.findAll(PageRequest.of(page, size, getDirection(Sort.by(filter), direction)))
                 .stream()
                 .map(news -> mapper.map(news, NewsDto.class))
                 .toList();
-        checkPageListExist(pageResult);
-        return pageResult;
     }
     @Override
     public NewsDto findNews(long id) throws CustomException {
