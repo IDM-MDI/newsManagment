@@ -13,7 +13,7 @@ import java.util.Date;
 public class NewsDto {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Schema(description = "News ID")
-    private long id;
+    private Long id;
     @NotBlank
     @Length(min = 1,max = 100,message = "Title must have from ${min} to ${max} symbol")
     @Schema(description = "The title of news(min:1/max:100)")

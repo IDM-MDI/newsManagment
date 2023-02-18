@@ -65,7 +65,21 @@ public class CommentController {
     )
     public CommentDto getComment(@Parameter(description = "News ID") @PathVariable @Min(1) long news,
                                  @Parameter(description = "Comment ID") @PathVariable @Min(1) long id) throws CustomException {
-        return service.findComment(news,id);
+        return service.findComments(news,id);
+    }
+
+    @GetMapping("/{news}/comment/search")
+    @Operation(
+            summary = "News Comments by search",
+            description = "API Point made for return comment by search query parameters"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Comments found"
+    )
+    public List<CommentDto> getComment(@Parameter(description = "News ID") @PathVariable long news,
+                                 @Parameter(description = "comment field") CommentDto comment) throws CustomException {
+        return service.findComments(news,comment);
     }
 
     @PostMapping("/{news}/comment")

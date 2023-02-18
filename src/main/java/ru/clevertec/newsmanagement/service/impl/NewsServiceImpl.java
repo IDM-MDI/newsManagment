@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ import java.util.List;
 
 import static ru.clevertec.newsmanagement.exception.ExceptionStatus.ENTITY_NOT_FOUND;
 import static ru.clevertec.newsmanagement.exception.ExceptionStatus.NO_ACCESS;
+import static ru.clevertec.newsmanagement.handler.ExampleHandler.ENTITY_SEARCH_MATCHER;
 import static ru.clevertec.newsmanagement.handler.SortDirectionHandler.getDirection;
 
 @Service
@@ -61,6 +63,14 @@ public class NewsServiceImpl implements NewsService {
     public News findNewsEntity(long id) throws CustomException {
         return repository.findById(id)
                 .orElseThrow(() -> new CustomException(ENTITY_NOT_FOUND.toString()));
+    }
+
+    @Override
+    public List<NewsDto> findNews(NewsDto news) {
+        return repository.findAll(Example.of(mapper.map(news,News.class), ENTITY_SEARCH_MATCHER))
+                .stream()
+                .map(n -> mapper.map(n, NewsDto.class))
+                .toList();
     }
 
     @Override

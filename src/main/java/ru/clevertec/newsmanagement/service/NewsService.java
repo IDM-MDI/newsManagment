@@ -16,4 +16,6 @@ public interface NewsService {
     NewsDto updateNews(long id, String username, NewsDto news) throws CustomException;
 
     void deleteNews(long id, String username) throws CustomException;
+
+    List<NewsDto> findNews(NewsDto news);
 }

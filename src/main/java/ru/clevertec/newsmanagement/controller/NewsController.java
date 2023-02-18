@@ -62,8 +62,21 @@ public class NewsController {
             responseCode = "200",
             description = "News found"
     )
-    public NewsDto findNewsWithComment(@PathVariable @Min(1) long id) throws CustomException {
+    public NewsDto findNews(@PathVariable @Min(1) long id) throws CustomException {
         return service.findNews(id);
+    }
+
+    @GetMapping("/search")
+    @Operation(
+            summary = "News by search",
+            description = "API Point made for return news by search"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "News found"
+    )
+    public List<NewsDto> findNews(@Parameter(description = "News search by") NewsDto news) throws CustomException {
+        return service.findNews(news);
     }
 
     @PostMapping

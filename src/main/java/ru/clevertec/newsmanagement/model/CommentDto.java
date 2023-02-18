@@ -13,7 +13,7 @@ import java.util.Date;
 public class CommentDto {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Schema(description = "Comment ID")
-    private long id;
+    private Long id;
     @NotBlank
     @Length(min = 1,max = 250,message = "Text must have from ${min} to ${max} symbol")
     @Schema(description = "Comment text/message(min:1/max:250)")

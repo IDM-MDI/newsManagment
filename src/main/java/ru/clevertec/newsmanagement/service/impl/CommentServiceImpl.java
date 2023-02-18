@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ import java.util.List;
 import static ru.clevertec.newsmanagement.exception.ExceptionStatus.ENTITY_NOT_FOUND;
 import static ru.clevertec.newsmanagement.exception.ExceptionStatus.NO_ACCESS;
 import static ru.clevertec.newsmanagement.handler.SortDirectionHandler.getDirection;
+import static ru.clevertec.newsmanagement.handler.ExampleHandler.ENTITY_SEARCH_MATCHER;
 
 @Service
 @Slf4j
@@ -51,8 +53,18 @@ public class CommentServiceImpl implements CommentService {
                 .toList();
     }
     @Override
-    public CommentDto findComment(long news, long id) throws CustomException {
+    public CommentDto findComments(long news, long id) throws CustomException {
         return mapper.map(findCommentEntity(news,id),CommentDto.class);
+    }
+
+    @Override
+    public List<CommentDto> findComments(long news, CommentDto comment) throws CustomException {
+        Comment entity = mapper.map(comment, Comment.class);
+        entity.setNews(newsService.findNewsEntity(news));
+        return repository.findAll(Example.of(entity, ENTITY_SEARCH_MATCHER))
+                .stream()
+                .map(com -> mapper.map(com, CommentDto.class))
+                .toList();
     }
 
     @Override

@@ -14,10 +14,18 @@ import static ru.clevertec.newsmanagement.handler.ListHandler.checkPageListExist
 @Component
 @Slf4j
 public class PageAspect {
-    @AfterReturning(value = "execution(* ru.clevertec.newsmanagement.service.impl.CommentServiceImpl.findComments(*)) " +
-            "|| execution(* ru.clevertec.newsmanagement.service.impl.NewsServiceImpl.findNews(int,int,String,String))",
+    @AfterReturning(value =
+            "execution(* ru.clevertec.newsmanagement.service.impl.CommentServiceImpl.findComments(long,int,int,String,String)) " +
+            "|| execution(* ru.clevertec.newsmanagement.service.impl.CommentServiceImpl.findComments(long, ru.clevertec.newsmanagement.model.CommentDto))" +
+            "|| execution(* ru.clevertec.newsmanagement.service.impl.NewsServiceImpl.findNews(int,int,String,String)) " +
+            "|| execution(* ru.clevertec.newsmanagement.service.impl.NewsServiceImpl.findNews(ru.clevertec.newsmanagement.model.NewsDto))",
             returning = "result")
     public void afterCommentsPage(List<?> result) throws CustomException {
-        checkPageListExist(result);
+        try {
+            checkPageListExist(result);
+        } catch (CustomException e) {
+            log.error(e.getMessage());
+            throw new CustomException(e.getMessage());
+        }
     }
 }
