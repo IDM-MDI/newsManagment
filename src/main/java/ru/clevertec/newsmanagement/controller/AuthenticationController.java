@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.clevertec.newsmanagement.exception.CustomException;
-import ru.clevertec.newsmanagement.model.AuthenticationRequest;
-import ru.clevertec.newsmanagement.model.AuthenticationResponse;
+import ru.clevertec.newsmanagement.handler.DtoHandler;
+import ru.clevertec.newsmanagement.model.DTO;
 import ru.clevertec.newsmanagement.service.UserService;
 
 @RestController
@@ -28,8 +28,8 @@ public class AuthenticationController {
             description = "User created"
     )
     @PostMapping("/register")
-    public AuthenticationResponse register(@RequestBody @Valid AuthenticationRequest request) throws CustomException {
-        return service.registration(request);
+    public String register(@RequestBody @Valid DTO.AuthenticationRequest request) throws CustomException {
+        return DtoHandler.toJson(service.registration(request));
     }
     @Operation(
             summary = "User authentication",
@@ -40,7 +40,7 @@ public class AuthenticationController {
             description = "User authenticated"
     )
     @PostMapping("/authenticate")
-    public AuthenticationResponse authenticate(@RequestBody @Valid AuthenticationRequest request) throws CustomException {
-        return service.authenticate(request);
+    public String authenticate(@RequestBody @Valid DTO.AuthenticationRequest request) throws CustomException {
+        return DtoHandler.toJson(service.authenticate(request));
     }
 }

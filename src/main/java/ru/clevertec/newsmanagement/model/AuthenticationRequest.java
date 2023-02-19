@@ -19,7 +19,7 @@ public class AuthenticationRequest {
     @Schema(description = "Client username/login(min:2/max:20)")
     private String username;
     @NotBlank(message = "Password mandatory")
-    @Length(min = 8,max = 20)
+    @Length(min = 6,max = 20)
     @Schema(description = "Client password(min:8/max:20)")
     private String password;
 }

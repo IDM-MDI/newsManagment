@@ -1,21 +1,21 @@
 package ru.clevertec.newsmanagement.service;
 
 import ru.clevertec.newsmanagement.exception.CustomException;
-import ru.clevertec.newsmanagement.model.CommentDto;
+import ru.clevertec.newsmanagement.model.DTO;
 
 import java.util.List;
 
 public interface CommentService {
 
-    List<CommentDto> findComments(long news, int page, int size, String filter, String direction) throws CustomException;
+    List<DTO.Comment> findComments(long news, int page, int size, String filter, String direction) throws CustomException;
 
-    CommentDto findComments(long news, long id) throws CustomException;
+    DTO.Comment findComments(long news, long id) throws CustomException;
 
-    List<CommentDto> findComments(long news, CommentDto comment) throws CustomException;
+    List<DTO.Comment> findComments(long news, DTO.Comment comment) throws CustomException;
 
-    CommentDto saveComment(long news, String username, CommentDto comment) throws CustomException;
+    DTO.Comment saveComment(long news, String username, DTO.Comment comment) throws CustomException;
 
-    CommentDto updateComment(long news, long id, String username, CommentDto comment) throws CustomException;
+    DTO.Comment updateComment(long news, long id, String username, DTO.Comment comment) throws CustomException;
     void deleteComment(long id, long news, String username) throws CustomException;
 
     void deleteAllComment(long news);

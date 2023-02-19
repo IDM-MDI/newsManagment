@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -20,12 +21,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.clevertec.newsmanagement.exception.CustomException;
-import ru.clevertec.newsmanagement.model.NewsDto;
+import ru.clevertec.newsmanagement.model.DTO;
 import ru.clevertec.newsmanagement.service.NewsService;
 
-import java.util.List;
-
+import static ru.clevertec.newsmanagement.handler.DtoHandler.toJson;
 import static ru.clevertec.newsmanagement.handler.JwtSecurityHandler.getUsernameByContext;
+import static ru.clevertec.newsmanagement.handler.QueryParameterHandler.getNewsByQuery;
 
 @RestController
 @RequestMapping("/api/v1/news")
@@ -42,7 +43,7 @@ public class NewsController {
             responseCode = "200",
             description = "News found"
     )
-    public List<NewsDto> findNews(@Parameter(description = "Page number(def: 0,min: 0)")
+    public String findNews(@Parameter(description = "Page number(def: 0,min: 0)")
                                     @RequestParam(defaultValue = "0") @Min(0) int page,
                                   @Parameter(description = "Page size(def: 10, min: 1)")
                                     @RequestParam(defaultValue = "10") @Min(1) int size,
@@ -50,7 +51,7 @@ public class NewsController {
                                     @RequestParam(defaultValue = "id") @NotBlank String filter,
                                   @Parameter(description = "asc or desc(def: asc)")
                                     @RequestParam(defaultValue = "asc") @NotBlank String direction) throws CustomException {
-        return service.findNews(page,size,filter,direction);
+        return toJson(service.findNews(page,size,filter,direction));
     }
 
     @GetMapping("/{id}")
@@ -62,8 +63,8 @@ public class NewsController {
             responseCode = "200",
             description = "News found"
     )
-    public NewsDto findNews(@PathVariable @Min(1) long id) throws CustomException {
-        return service.findNews(id);
+    public String findNews(@PathVariable @Min(1) long id) throws CustomException {
+        return toJson(service.findNews(id));
     }
 
     @GetMapping("/search")
@@ -75,8 +76,8 @@ public class NewsController {
             responseCode = "200",
             description = "News found"
     )
-    public List<NewsDto> findNews(@Parameter(description = "News search by") NewsDto news) throws CustomException {
-        return service.findNews(news);
+    public String findNews(@Parameter(description = "News search by")HttpServletRequest request) throws CustomException {
+        return toJson(service.findNews(getNewsByQuery(request.getParameterMap())));
     }
 
     @PostMapping
@@ -90,8 +91,8 @@ public class NewsController {
             description = "News created"
     )
     @SecurityRequirement(name = "Bearer Authentication")
-    public NewsDto saveNews(@RequestBody @Valid NewsDto news) throws CustomException {
-        return service.saveNews(getUsernameByContext(),news);
+    public String saveNews(@RequestBody @Valid DTO.News news) throws CustomException {
+        return toJson(service.saveNews(getUsernameByContext(),news));
     }
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_JOURNALIST')")
@@ -104,9 +105,9 @@ public class NewsController {
             description = "News updated"
     )
     @SecurityRequirement(name = "Bearer Authentication")
-    public NewsDto updateNews(@PathVariable @Min(1) long id,
-                              @RequestBody @Valid NewsDto news) throws CustomException {
-        return service.updateNews(id,getUsernameByContext(),news);
+    public String updateNews(@PathVariable @Min(1) long id,
+                              @RequestBody @Valid DTO.News news) throws CustomException {
+        return toJson(service.updateNews(id,getUsernameByContext(),news));
     }
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_JOURNALIST')")

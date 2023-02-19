@@ -4,10 +4,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,12 +22,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.clevertec.newsmanagement.exception.CustomException;
-import ru.clevertec.newsmanagement.model.CommentDto;
+import ru.clevertec.newsmanagement.model.DTO;
 import ru.clevertec.newsmanagement.service.CommentService;
 
-import java.util.List;
-
+import static ru.clevertec.newsmanagement.handler.DtoHandler.toJson;
 import static ru.clevertec.newsmanagement.handler.JwtSecurityHandler.getUsernameByContext;
+import static ru.clevertec.newsmanagement.handler.QueryParameterHandler.getCommentByQuery;
 
 @RestController
 @RequestMapping("/api/v1/news")
@@ -33,7 +35,7 @@ import static ru.clevertec.newsmanagement.handler.JwtSecurityHandler.getUsername
 public class CommentController {
     private final CommentService service;
 
-    @GetMapping("/{news}/comment")
+    @GetMapping(value = "/{news}/comment", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(
             summary = "News Comments",
             description = "API Point made for return comment page by news"
@@ -42,19 +44,19 @@ public class CommentController {
             responseCode = "200",
             description = "Comments found"
     )
-    public List<CommentDto> getNewsComment(@Parameter(description = "News ID")
+    public String getNewsComment(@Parameter(description = "News ID")
                                                @PathVariable long news,
-                                           @Parameter(description = "Page number(def: 0,min: 0)")
+                                            @Parameter(description = "Page number(def: 0,min: 0)")
                                                 @RequestParam(defaultValue = "0") @Min(0) int page,
-                                           @Parameter(description = "Page size(def: 10, min: 1)")
+                                            @Parameter(description = "Page size(def: 10, min: 1)")
                                                 @RequestParam(defaultValue = "10") @Min(1) int size,
-                                           @Parameter(description = "Filter by field(def: id)")
+                                            @Parameter(description = "Filter by field(def: id)")
                                                 @RequestParam(defaultValue = "id") @NotBlank String filter,
-                                           @Parameter(description = "asc or desc(def: asc)")
+                                            @Parameter(description = "asc or desc(def: asc)")
                                                 @RequestParam(defaultValue = "asc") @NotBlank String direction) throws CustomException {
-        return service.findComments(news,page,size,filter,direction);
+        return toJson(service.findComments(news,page,size,filter,direction));
     }
-    @GetMapping("/{news}/comment/{id}")
+    @GetMapping(value = "/{news}/comment/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(
             summary = "News Comment by ID",
             description = "API Point made for return comment by ID & news"
@@ -63,12 +65,12 @@ public class CommentController {
             responseCode = "200",
             description = "Comments found"
     )
-    public CommentDto getComment(@Parameter(description = "News ID") @PathVariable @Min(1) long news,
-                                 @Parameter(description = "Comment ID") @PathVariable @Min(1) long id) throws CustomException {
-        return service.findComments(news,id);
+    public String getComment(@Parameter(description = "News ID") @PathVariable @Min(1) long news,
+                                  @Parameter(description = "Comment ID") @PathVariable @Min(1) long id) throws CustomException {
+        return toJson(service.findComments(news,id));
     }
 
-    @GetMapping("/{news}/comment/search")
+    @GetMapping(value = "/{news}/comment/search", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(
             summary = "News Comments by search",
             description = "API Point made for return comment by search query parameters"
@@ -77,12 +79,12 @@ public class CommentController {
             responseCode = "200",
             description = "Comments found"
     )
-    public List<CommentDto> getComment(@Parameter(description = "News ID") @PathVariable long news,
-                                 @Parameter(description = "comment field") CommentDto comment) throws CustomException {
-        return service.findComments(news,comment);
+    public String getComment(@Parameter(description = "News ID") @PathVariable long news,
+                                 HttpServletRequest request) throws CustomException {
+        return toJson(service.findComments(news, getCommentByQuery(request.getParameterMap())));
     }
 
-    @PostMapping("/{news}/comment")
+    @PostMapping(value = "/{news}/comment", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
     @Operation(
             summary = "Save News Comment",
@@ -93,11 +95,11 @@ public class CommentController {
             description = "Comment created"
     )
     @SecurityRequirement(name = "Bearer Authentication")
-    public CommentDto saveComment(@Parameter(description = "News ID") @PathVariable @Min(1) long news,
-                                  @RequestBody @Valid CommentDto comment) throws CustomException {
-        return service.saveComment(news,getUsernameByContext(),comment);
+    public String saveComment(@Parameter(description = "News ID") @PathVariable @Min(1) long news,
+                                   @RequestBody @Valid DTO.Comment comment) throws CustomException {
+        return toJson(service.saveComment(news,getUsernameByContext(),comment));
     }
-    @PutMapping("/{news}/comment/{id}")
+    @PutMapping(value = "/{news}/comment/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
     @Operation(
             summary = "Update News Comment",
@@ -108,12 +110,12 @@ public class CommentController {
             description = "Comment updated"
     )
     @SecurityRequirement(name = "Bearer Authentication")
-    public CommentDto updateNews(@Parameter(description = "News ID") @PathVariable @Min(1) long news,
+    public String updateNews(@Parameter(description = "News ID") @PathVariable @Min(1) long news,
                                  @Parameter(description = "Comment ID") @PathVariable @Min(1) long id,
-                              @RequestBody @Valid CommentDto comment) throws CustomException {
-        return service.updateComment(news,id,getUsernameByContext(),comment);
+                              @RequestBody @Valid DTO.Comment comment) throws CustomException {
+        return toJson(service.updateComment(news,id,getUsernameByContext(),comment));
     }
-    @DeleteMapping("/{news}/comment/{id}")
+    @DeleteMapping(value = "/{news}/comment/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
     @Operation(
             summary = "Delete News Comment",

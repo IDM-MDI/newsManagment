@@ -18,5 +18,4 @@ public class PersistenceConfig {
     public ModelMapper modelMapper(){
         return new ModelMapper();
     }
-
 }

@@ -8,7 +8,7 @@ import ru.clevertec.newsmanagement.exception.CustomException;
 
 import java.util.List;
 
-import static ru.clevertec.newsmanagement.handler.ListHandler.checkPageListExist;
+import static ru.clevertec.newsmanagement.handler.DtoHandler.checkPageListExist;
 
 @Aspect
 @Component

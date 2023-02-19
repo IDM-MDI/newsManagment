@@ -2,7 +2,6 @@ package ru.clevertec.newsmanagement.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Example;
@@ -14,11 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.clevertec.newsmanagement.entity.News;
 import ru.clevertec.newsmanagement.entity.User;
 import ru.clevertec.newsmanagement.exception.CustomException;
-import ru.clevertec.newsmanagement.model.NewsDto;
+import ru.clevertec.newsmanagement.model.DTO;
 import ru.clevertec.newsmanagement.persistence.NewsRepository;
 import ru.clevertec.newsmanagement.service.CommentService;
 import ru.clevertec.newsmanagement.service.NewsService;
 import ru.clevertec.newsmanagement.service.UserService;
+import ru.clevertec.newsmanagement.util.impl.NewsMapper;
 import ru.clevertec.newsmanagement.validator.UserValidator;
 
 import java.util.List;
@@ -35,28 +35,22 @@ import static ru.clevertec.newsmanagement.handler.SortDirectionHandler.getDirect
 public class NewsServiceImpl implements NewsService {
     private final NewsRepository repository;
     private final UserService userService;
+    private final NewsMapper mapper;
     private CommentService commentService;
-    private ModelMapper mapper;
     @Autowired
     public void setCommentService(@Lazy CommentService commentService) {
         this.commentService = commentService;
     }
-    @Autowired
-    public void setMapper(ModelMapper mapper) {
-        mapper.createTypeMap(News.class, NewsDto.class)
-                .addMappings(mapping -> mapping.map(src -> src.getUser().getUsername(),NewsDto::setUsername));
-        this.mapper = mapper;
-    }
     @Override
-    public List<NewsDto> findNews(int page, int size, String filter, String direction) throws CustomException {
+    public List<DTO.News> findNews(int page, int size, String filter, String direction) throws CustomException {
         return repository.findAll(PageRequest.of(page, size, getDirection(Sort.by(filter), direction)))
                 .stream()
-                .map(news -> mapper.map(news, NewsDto.class))
+                .map(mapper::toDTO)
                 .toList();
     }
     @Override
-    public NewsDto findNews(long id) throws CustomException {
-        return mapper.map(findNewsEntity(id),NewsDto.class);
+    public DTO.News findNews(long id) throws CustomException {
+        return mapper.toDTO(findNewsEntity(id));
     }
 
     @Override
@@ -66,24 +60,24 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
-    public List<NewsDto> findNews(NewsDto news) {
-        return repository.findAll(Example.of(mapper.map(news,News.class), ENTITY_SEARCH_MATCHER))
+    public List<DTO.News> findNews(DTO.News news) {
+        return repository.findAll(Example.of(getEntityForSearch(news), ENTITY_SEARCH_MATCHER))
                 .stream()
-                .map(n -> mapper.map(n, NewsDto.class))
+                .map(mapper::toDTO)
                 .toList();
     }
 
     @Override
-    public NewsDto saveNews(String username,
-                            NewsDto news) throws CustomException {
-        return mapper.map(repository.save(setDefaultNews(username,news)),NewsDto.class);
+    public DTO.News saveNews(String username,
+                             DTO.News news) throws CustomException {
+        return mapper.toDTO(repository.save(setDefaultNews(username,news)));
     }
 
     @Override
-    public NewsDto updateNews(long id,
-                              String username,
-                              NewsDto news) throws CustomException {
-        return mapper.map(repository.save(updateNewsField(id,news)),NewsDto.class);
+    public DTO.News updateNews(long id,
+                               String username,
+                               DTO.News news) throws CustomException {
+        return mapper.toDTO(repository.save(updateNewsField(id,news)));
     }
 
     @Override
@@ -102,15 +96,21 @@ public class NewsServiceImpl implements NewsService {
         }
     }
 
-    private News updateNewsField(long id, NewsDto client) throws CustomException {
+    private News updateNewsField(long id, DTO.News client) throws CustomException {
         News fromDB = findNewsEntity(id);
         fromDB.setTitle(client.getTitle());
         fromDB.setText(client.getText());
         return fromDB;
     }
-    private News setDefaultNews(String username,NewsDto client) throws CustomException {
+    private News getEntityForSearch(DTO.News news) {
+        News result = mapper.toEntity(news);
+        result.setId(null);
+        result.setCreatedDate(null);
+        return result;
+    }
+    private News setDefaultNews(String username,DTO.News client) throws CustomException {
         User user = userService.findUser(username);
-        News result = mapper.map(client, News.class);
+        News result = mapper.toEntity(client);
         result.setUser(user);
         return result;
     }
