@@ -1,4 +1,4 @@
-package ru.clevertec.newsmanagement.handler;
+package ru.clevertec.newsmanagement.util;
 
 import com.google.protobuf.MessageOrBuilder;
 import com.google.protobuf.util.JsonFormat;
@@ -13,7 +13,7 @@ import java.util.Objects;
 import static ru.clevertec.newsmanagement.exception.ExceptionStatus.EMPTY_PAGE;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class DtoHandler {
+public class DtoUtil {
     public static void checkPageListExist(List<?> page) throws CustomException {
         if(Objects.isNull(page) || page.isEmpty()) {
             throw new CustomException(EMPTY_PAGE.toString());

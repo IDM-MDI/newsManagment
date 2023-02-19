@@ -24,9 +24,9 @@ import ru.clevertec.newsmanagement.exception.CustomException;
 import ru.clevertec.newsmanagement.model.DTO;
 import ru.clevertec.newsmanagement.service.NewsService;
 
-import static ru.clevertec.newsmanagement.handler.DtoHandler.toJson;
-import static ru.clevertec.newsmanagement.handler.JwtSecurityHandler.getUsernameByContext;
-import static ru.clevertec.newsmanagement.handler.QueryParameterHandler.getNewsByQuery;
+import static ru.clevertec.newsmanagement.util.DtoUtil.toJson;
+import static ru.clevertec.newsmanagement.util.JwtSecurityUtil.getUsernameByContext;
+import static ru.clevertec.newsmanagement.util.QueryParameterUtil.getNewsByQuery;
 
 @RestController
 @RequestMapping("/api/v1/news")

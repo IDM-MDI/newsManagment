@@ -1,4 +1,4 @@
-package ru.clevertec.newsmanagement.handler;
+package ru.clevertec.newsmanagement.util;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -13,7 +13,7 @@ import static ru.clevertec.newsmanagement.exception.ExceptionStatus.USER_NOT_AUT
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Slf4j
-public class JwtSecurityHandler {
+public class JwtSecurityUtil {
     public static String getUsernameByContext() throws CustomException {
         if(JwtValidator.isSecurityAuthenticationEmpty()) {
             throw new CustomException(USER_NOT_AUTHORIZE.toString());

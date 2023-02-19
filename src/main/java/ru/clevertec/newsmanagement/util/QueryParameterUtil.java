@@ -1,4 +1,4 @@
-package ru.clevertec.newsmanagement.handler;
+package ru.clevertec.newsmanagement.util;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class QueryParameterHandler {
+public class QueryParameterUtil {
     private static final String USERNAME = "username";
     private static final String TEXT = "text";
     private static final String TITLE = "title";

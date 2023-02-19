@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.clevertec.newsmanagement.exception.CustomException;
-import ru.clevertec.newsmanagement.handler.DtoHandler;
+import ru.clevertec.newsmanagement.util.DtoUtil;
 import ru.clevertec.newsmanagement.model.DTO;
 import ru.clevertec.newsmanagement.service.UserService;
 
@@ -29,7 +29,7 @@ public class AuthenticationController {
     )
     @PostMapping("/register")
     public String register(@RequestBody @Valid DTO.AuthenticationRequest request) throws CustomException {
-        return DtoHandler.toJson(service.registration(request));
+        return DtoUtil.toJson(service.registration(request));
     }
     @Operation(
             summary = "User authentication",
@@ -41,6 +41,6 @@ public class AuthenticationController {
     )
     @PostMapping("/authenticate")
     public String authenticate(@RequestBody @Valid DTO.AuthenticationRequest request) throws CustomException {
-        return DtoHandler.toJson(service.authenticate(request));
+        return DtoUtil.toJson(service.authenticate(request));
     }
 }

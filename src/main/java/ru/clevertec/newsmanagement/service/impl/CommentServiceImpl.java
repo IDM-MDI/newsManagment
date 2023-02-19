@@ -23,8 +23,8 @@ import java.util.List;
 
 import static ru.clevertec.newsmanagement.exception.ExceptionStatus.ENTITY_NOT_FOUND;
 import static ru.clevertec.newsmanagement.exception.ExceptionStatus.NO_ACCESS;
-import static ru.clevertec.newsmanagement.handler.ExampleHandler.ENTITY_SEARCH_MATCHER;
-import static ru.clevertec.newsmanagement.handler.SortDirectionHandler.getDirection;
+import static ru.clevertec.newsmanagement.util.ExampleUtil.ENTITY_SEARCH_MATCHER;
+import static ru.clevertec.newsmanagement.util.SortDirectionUtil.getDirection;
 
 @Service
 @Slf4j
