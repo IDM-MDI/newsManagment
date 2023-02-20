@@ -1,5 +1,6 @@
 package ru.clevertec.newsmanagement.controller;
 
+import com.google.protobuf.Timestamp;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.dao.DataAccessException;
@@ -12,77 +13,197 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.clevertec.newsmanagement.exception.CustomException;
-import ru.clevertec.newsmanagement.model.ExceptionResponse;
+import ru.clevertec.newsmanagement.model.DTO;
 
 import java.sql.SQLException;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
+import static ru.clevertec.newsmanagement.util.DtoUtil.toJson;
+
+
+/**
+ * This class handles exceptions thrown by the application controllers and provides a unified error response.
+ * @author Dayanch
+ */
 @RestControllerAdvice
 public class ExceptionController {
+
+
+    /**
+     * Handles CustomException and returns a custom exception response with the corresponding HTTP status code.
+     * @param exception the exception to be handled
+     * @param request the HTTP request
+     * @return the custom exception response
+     */
     @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
     @ExceptionHandler(CustomException.class)
-    public ExceptionResponse handleCustomException(CustomException exception, HttpServletRequest request) {
-        return ExceptionResponse.builder()
-                .exception(exception.getMessage())
-                .url(request.getRequestURL().toString())
-                .timestamp(LocalDateTime.now())
-                .build();
+    public String handleCustomException(CustomException exception, HttpServletRequest request) {
+        Instant now = Instant.now();
+        return toJson(
+                DTO.Exception.newBuilder()
+                        .setException(exception.getMessage())
+                        .setUrl(request.getRequestURL().toString())
+                        .setCreatedDate(
+                                Timestamp.newBuilder()
+                                        .setSeconds(now.getEpochSecond())
+                                        .setNanos(now.getNano())
+                                        .build()
+                        )
+                        .build()
+        );
     }
+
+
+    /**
+     * Handles MethodArgumentNotValidException and HttpMessageNotReadableException and returns a validation exception response with the corresponding HTTP status code.
+     * @param exception the exception to be handled
+     * @param request the HTTP request
+     * @return the validation exception response
+     */
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler({MethodArgumentNotValidException.class, HttpMessageNotReadableException.class})
-    public ExceptionResponse handleMethodArgumentException(MethodArgumentNotValidException exception, HttpServletRequest request) {
-        return ExceptionResponse.builder()
-                .exception(
-                        exception.getBindingResult()
+    public String handleMethodArgumentException(MethodArgumentNotValidException exception, HttpServletRequest request) {
+        Instant now = Instant.now();
+        return toJson(
+                DTO.Exception.newBuilder()
+                        .setException(
+                                exception.getBindingResult()
                                 .getFieldError()
                                 .getDefaultMessage()
-                )
-                .url(request.getRequestURL().toString())
-                .timestamp(LocalDateTime.now())
-                .build();
+                        )
+                        .setUrl(
+                                request.getRequestURL()
+                                        .toString()
+                        )
+                        .setCreatedDate(
+                                Timestamp.newBuilder()
+                                        .setSeconds(now.getEpochSecond())
+                                        .setNanos(now.getNano())
+                                        .build()
+                        )
+                        .build()
+        );
     }
+
+
+    /**
+     * Handles UsernameNotFoundException and returns a custom exception response with the corresponding HTTP status code.
+     * @param exception the exception to be handled
+     * @param request the HTTP request
+     * @return the custom exception response
+     */
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(UsernameNotFoundException.class)
-    public ExceptionResponse handleUsernameNotFoundException(UsernameNotFoundException exception, HttpServletRequest request) {
-        return ExceptionResponse.builder()
-                .exception(exception.getMessage())
-                .url(request.getRequestURL().toString())
-                .timestamp(LocalDateTime.now())
-                .build();
+    public String handleUsernameNotFoundException(UsernameNotFoundException exception, HttpServletRequest request) {
+        Instant now = Instant.now();
+        return toJson(
+                DTO.Exception.newBuilder()
+                        .setException(exception.getMessage())
+                        .setUrl(request.getRequestURL().toString())
+                        .setCreatedDate(
+                                Timestamp.newBuilder()
+                                        .setSeconds(now.getEpochSecond())
+                                        .setNanos(now.getNano())
+                                        .build()
+                        )
+                        .build()
+        );
     }
+
+
+    /**
+     * Handles HttpRequestMethodNotSupportedException and returns a custom exception response with the corresponding HTTP status code.
+     * @param exception the exception to be handled
+     * @param request the HTTP request
+     * @return the custom exception response
+     */
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ExceptionResponse handleMethodNotSupportException(HttpRequestMethodNotSupportedException exception, HttpServletRequest request) {
-        return ExceptionResponse.builder()
-                .exception(exception.getMessage())
-                .url(request.getRequestURL().toString())
-                .timestamp(LocalDateTime.now())
-                .build();
+    public String handleMethodNotSupportException(HttpRequestMethodNotSupportedException exception, HttpServletRequest request) {
+        Instant now = Instant.now();
+        return toJson(
+                DTO.Exception.newBuilder()
+                        .setException(exception.getMessage())
+                        .setUrl(request.getRequestURL().toString())
+                        .setCreatedDate(
+                                Timestamp.newBuilder()
+                                        .setSeconds(now.getEpochSecond())
+                                        .setNanos(now.getNano())
+                                        .build()
+                        )
+                        .build()
+        );
     }
+
+
+    /**
+     * Handles NoSuchMethodException and returns a custom exception response with the corresponding HTTP status code.
+     * @param exception the exception to be handled
+     * @param request the HTTP request
+     * @return the custom exception response
+     */
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NoSuchMethodException.class)
-    public ExceptionResponse handleNotFoundException(NoSuchMethodException exception, HttpServletRequest request) {
-        return ExceptionResponse.builder()
-                .exception(exception.getMessage())
-                .url(request.getRequestURL().toString())
-                .timestamp(LocalDateTime.now())
-                .build();
+    public String handleNotFoundException(NoSuchMethodException exception, HttpServletRequest request) {
+        Instant now = Instant.now();
+        return toJson(
+                DTO.Exception.newBuilder()
+                        .setException(exception.getMessage())
+                        .setUrl(request.getRequestURL().toString())
+                        .setCreatedDate(
+                                Timestamp.newBuilder()
+                                        .setSeconds(now.getEpochSecond())
+                                        .setNanos(now.getNano())
+                                        .build()
+                        )
+                        .build()
+        );
     }
+
+
+    /**
+     * Handles ConstraintViolationException and returns a custom exception response with the corresponding HTTP status code.
+     * @param exception the exception to be handled
+     * @param request the HTTP request
+     * @return the custom exception response
+     */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ConstraintViolationException.class)
-    public ExceptionResponse handleConstraintException(ConstraintViolationException exception, HttpServletRequest request) {
-        return ExceptionResponse.builder()
-                .exception(exception.getMessage())
-                .url(request.getRequestURL().toString())
-                .timestamp(LocalDateTime.now())
-                .build();
+    public String handleConstraintException(ConstraintViolationException exception, HttpServletRequest request) {
+        Instant now = Instant.now();
+        return toJson(
+                DTO.Exception.newBuilder()
+                        .setException(exception.getMessage())
+                        .setUrl(request.getRequestURL().toString())
+                        .setCreatedDate(
+                                Timestamp.newBuilder()
+                                        .setSeconds(now.getEpochSecond())
+                                        .setNanos(now.getNano())
+                                        .build()
+                        )
+                        .build()
+        );
     }
+    /**
+     * Handles SQLException and DataAccessException and returns a custom exception response with the corresponding HTTP status code.
+     * @param exception the exception to be handled
+     * @param request the HTTP request
+     * @return the custom exception response
+     */
     @ExceptionHandler({SQLException.class, DataAccessException.class})
-    public ExceptionResponse handleSQLException(SQLException exception, HttpServletRequest request) {
-        return ExceptionResponse.builder()
-                .exception(exception.getMessage())
-                .url(request.getRequestURL().toString())
-                .timestamp(LocalDateTime.now())
-                .build();
+    public String handleSQLException(SQLException exception, HttpServletRequest request) {
+        Instant now = Instant.now();
+        return toJson(
+                DTO.Exception.newBuilder()
+                        .setException(exception.getMessage())
+                        .setUrl(request.getRequestURL().toString())
+                        .setCreatedDate(
+                                Timestamp.newBuilder()
+                                        .setSeconds(now.getEpochSecond())
+                                        .setNanos(now.getNano())
+                                        .build()
+                        )
+                        .build()
+        );
     }
 }
