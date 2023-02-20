@@ -9,8 +9,17 @@ import ru.clevertec.newsmanagement.util.ModelMapper;
 
 import java.time.Instant;
 
+
+/**
+ * Realisation of mapper with Comment and DTO.Comment
+ * @author Dayanch
+ */
 @Component
 public class CommentMapper implements ModelMapper<Comment, DTO .Comment> {
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Comment toEntity(@NotNull DTO.Comment comment) {
         return Comment.builder()
@@ -19,6 +28,10 @@ public class CommentMapper implements ModelMapper<Comment, DTO .Comment> {
                 .build();
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public DTO.Comment toDTO(@NotNull Comment comment) {
         Instant instant = comment.getCreatedDate().toInstant();

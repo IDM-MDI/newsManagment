@@ -17,6 +17,11 @@ import ru.clevertec.newsmanagement.service.UserService;
 import static ru.clevertec.newsmanagement.exception.ExceptionStatus.USER_EXIST;
 import static ru.clevertec.newsmanagement.exception.ExceptionStatus.USER_NOT_FOUND;
 
+
+/**
+ * Service implementation for User-related operations.
+ * @author Dayanch
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -25,6 +30,11 @@ public class UserServiceImpl implements UserService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
+
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public DTO.AuthenticationResponse registration(DTO.AuthenticationRequest authentication) throws CustomException {
         if(repository.existsById(authentication.getUsername())) {
@@ -36,12 +46,21 @@ public class UserServiceImpl implements UserService {
                 .setJwt(jwtService.generateToken(saved))
                 .build();
     }
+
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public User findUser(String username) throws CustomException {
         return repository.findUserByUsername(username)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND.toString()));
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public DTO.AuthenticationResponse authenticate(DTO.AuthenticationRequest authentication) throws CustomException {
         authenticationManager.authenticate(
@@ -54,6 +73,12 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
+
+    /**
+     * Create user from client DTO, fill it with default role(subscriber) and encode password with PasswordEncoder
+     * @param user is data received from client
+     * @return User which goes to the database
+     */
     private User saveDefaultUser(DTO.AuthenticationRequest user) {
         return repository.save(User.builder()
                 .username(user.getUsername())

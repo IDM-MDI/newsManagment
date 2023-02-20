@@ -11,8 +11,16 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.Objects;
 
+
+/**
+ * Realisation of mapper with News and DTO.News
+ * @author Dayanch
+ */
 @Component
 public class NewsMapper implements ModelMapper<News, DTO.News> {
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public News toEntity(@NotNull DTO.News newsDTO) {
         return News.builder()
@@ -26,6 +34,10 @@ public class NewsMapper implements ModelMapper<News, DTO.News> {
                 .build();
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public DTO.News toDTO(@NotNull News news) {
         Instant instant = news.getCreatedDate().toInstant();

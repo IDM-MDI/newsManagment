@@ -28,7 +28,6 @@ import static ru.clevertec.newsmanagement.util.DtoUtil.toJson;
 @RestControllerAdvice
 public class ExceptionController {
 
-
     /**
      * Handles CustomException and returns a custom exception response with the corresponding HTTP status code.
      * @param exception the exception to be handled
