@@ -2,6 +2,7 @@ package ru.clevertec.newsmanagement.entity;
 
 /**
  * Enum to represent user roles in the system.
+ * @author Dayanch
  */
 public enum Role {
     /**

@@ -3,6 +3,11 @@ package ru.clevertec.newsmanagement.exception;
 import lombok.AllArgsConstructor;
 import lombok.ToString;
 
+
+/**
+ * This enum defines the exception status codes and messages that can be used in the application.
+ * @author Dayanch
+ */
 @AllArgsConstructor
 @ToString
 public enum ExceptionStatus {

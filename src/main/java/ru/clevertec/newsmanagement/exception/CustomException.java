@@ -1,5 +1,10 @@
 package ru.clevertec.newsmanagement.exception;
 
+
+/**
+ * CustomException class extends Exception class, and it represents a custom exception in the application.
+ * @author Dayanch
+ */
 public class CustomException extends Exception {
     public CustomException() {
         super();

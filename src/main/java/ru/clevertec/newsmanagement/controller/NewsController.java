@@ -28,12 +28,26 @@ import static ru.clevertec.newsmanagement.util.DtoUtil.toJson;
 import static ru.clevertec.newsmanagement.util.JwtSecurityUtil.getUsernameByContext;
 import static ru.clevertec.newsmanagement.util.QueryParameterUtil.getNewsByQuery;
 
+/**
+ * REST controller for News operations.
+ * @author Dayanch
+ */
 @RestController
 @RequestMapping("/api/v1/news")
 @RequiredArgsConstructor
 public class NewsController {
     private final NewsService service;
 
+
+    /**
+     * API Point made for returning news page.
+     * @param page The page number (default: 0, min: 0)
+     * @param size The page size (default: 10, min: 1)
+     * @param filter The field to filter by (default: id)
+     * @param direction The direction to sort in (default: asc)
+     * @return A JSON representation of the news found
+     * @throws CustomException if an error occurs during the operation
+     */
     @GetMapping
     @Operation(
             summary = "News",
@@ -54,6 +68,14 @@ public class NewsController {
         return toJson(service.findNews(page,size,filter,direction));
     }
 
+
+
+    /**
+     * API Point made for returning news by ID.
+     * @param id The ID of the news to retrieve (min: 1)
+     * @return A JSON representation of the news found
+     * @throws CustomException if an error occurs during the operation
+     */
     @GetMapping("/{id}")
     @Operation(
             summary = "News by ID",
@@ -67,6 +89,13 @@ public class NewsController {
         return toJson(service.findNews(id));
     }
 
+
+    /**
+     * API Point made for returning news by search query.
+     * @param request The HttpServletRequest containing the search query
+     * @return A JSON representation of the news found
+     * @throws CustomException if an error occurs during the operation
+     */
     @GetMapping("/search")
     @Operation(
             summary = "News by search",
@@ -80,6 +109,13 @@ public class NewsController {
         return toJson(service.findNews(getNewsByQuery(request.getParameterMap())));
     }
 
+
+    /**
+     * API Point made for saving news.
+     * @param news The DTO.News object representing the news to save
+     * @return A JSON representation of the news saved
+     * @throws CustomException if an error occurs during the operation
+     */
     @PostMapping
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_JOURNALIST')")
     @Operation(
@@ -94,6 +130,17 @@ public class NewsController {
     public String saveNews(@RequestBody @Valid DTO.News news) throws CustomException {
         return toJson(service.saveNews(getUsernameByContext(),news));
     }
+
+
+    /**
+     * Updates the news with the specified ID.
+     *
+     * @param id    the ID of the news to update
+     * @param news  the new news data to update
+     * @return      a JSON representation of the updated news
+     * @throws      CustomException if the news with the specified ID is not found
+     *                              or if the user does not have permission to update it
+     */
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_JOURNALIST')")
     @Operation(
@@ -109,6 +156,16 @@ public class NewsController {
                               @RequestBody @Valid DTO.News news) throws CustomException {
         return toJson(service.updateNews(id,getUsernameByContext(),news));
     }
+
+
+    /**
+     * Deletes the news with the specified ID.
+     *
+     * @param id    the ID of the news to delete
+     * @return      a response entity indicating that the news was deleted successfully
+     * @throws      CustomException if the news with the specified ID is not found
+     *                              or if the user does not have permission to delete it
+     */
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_JOURNALIST')")
     @Operation(

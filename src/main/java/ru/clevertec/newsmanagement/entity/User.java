@@ -20,6 +20,7 @@ import java.util.List;
 
 /**
  * An entity class representing a user.
+ * @author Dayanch
  */
 @Entity
 @Table(name = "users")

@@ -5,6 +5,10 @@ import ru.clevertec.newsmanagement.model.DTO;
 
 import java.util.List;
 
+/**
+ * A service interface that provides CRUD operations for comments on news.
+ * @author Dayanch
+ */
 public interface CommentService {
 
     List<DTO.Comment> findComments(long news, int page, int size, String filter, String direction) throws CustomException;
