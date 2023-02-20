@@ -9,7 +9,6 @@ import ru.clevertec.newsmanagement.util.ModelMapper;
 
 import java.time.Instant;
 import java.util.Date;
-import java.util.Objects;
 
 
 /**
@@ -28,7 +27,6 @@ public class NewsMapper implements ModelMapper<News, DTO.News> {
                 .title(newsDTO.getTitle())
                 .text(newsDTO.getText())
                 .createdDate(
-                        Objects.isNull(newsDTO.getCreatedDate()) ? null :
                         Date.from(Instant.ofEpochSecond(newsDTO.getCreatedDate().getSeconds(),
                                 newsDTO.getCreatedDate().getNanos())))
                 .build();

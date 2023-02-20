@@ -8,6 +8,7 @@ import ru.clevertec.newsmanagement.model.DTO;
 import ru.clevertec.newsmanagement.util.ModelMapper;
 
 import java.time.Instant;
+import java.util.Date;
 
 
 /**
@@ -25,6 +26,10 @@ public class CommentMapper implements ModelMapper<Comment, DTO .Comment> {
         return Comment.builder()
                 .id(comment.getId())
                 .text(comment.getText())
+                .createdDate(
+                        Date.from(Instant.ofEpochSecond(comment.getCreatedDate().getSeconds(),
+                                comment.getCreatedDate().getNanos()))
+                )
                 .build();
     }
 

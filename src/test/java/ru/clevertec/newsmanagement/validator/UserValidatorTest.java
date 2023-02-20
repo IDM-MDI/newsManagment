@@ -10,46 +10,46 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class UserValidatorTest {
     @Test
     void isUserInvalidShouldReturnFalseWithAdmin() {
-        // Before
+        // given
         User adminUser = new User("admin", "password", Role.ADMIN);
         User commentOwner = new User("john", "password", Role.SUBSCRIBER);
 
-        // Process
+        // when
         boolean result = UserValidator.isUserInvalid(commentOwner, adminUser);
 
-        // Assert
+        // then
         assertThat(result).isFalse();
     }
 
     @Test
     void isUserInvalidShouldReturnFalseMatching() {
-        // Before
+        // given
         User matchingUser = new User("john", "password", Role.SUBSCRIBER);
         User commentOwner = new User("john", "password", Role.SUBSCRIBER);
 
-        // Process
+        // when
         boolean result = UserValidator.isUserInvalid(commentOwner, matchingUser);
 
-        // Assert
+        // then
         assertThat(result).isFalse();
     }
 
     @Test
     void isUserInvalidShouldReturnTrue() {
-        // Before
+        // given
         User nonAdminUser = new User("mary", "password", Role.SUBSCRIBER);
         User commentOwner = new User("john", "password", Role.SUBSCRIBER);
 
-        // Process
+        // when
         boolean result = UserValidator.isUserInvalid(commentOwner, nonAdminUser);
 
-        // Assert
+        // then
         assertThat(result).isTrue();
     }
 
     @Test
     void isUserInvalidShouldThrowsException() {
-        // Assert
+        // then
         assertThatThrownBy(() -> UserValidator.isUserInvalid(null, null))
                 .isInstanceOf(NullPointerException.class);
     }

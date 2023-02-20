@@ -26,13 +26,19 @@ class JwtValidatorTest {
 
     @Test
     void isHeaderBearerExistWithNonBearerHeaderShouldReturnsFalse() {
+        //given
         String header = "Token abcdefg123456";
+
+        //then
         assertThat(JwtValidator.isHeaderBearerExist(header)).isFalse();
     }
 
     @Test
     void isHeaderBearerExistWithBearerHeaderShouldReturnsTrue() {
+        //given
         String header = "Bearer abcdefg123456";
+
+        //then
         assertThat(JwtValidator.isHeaderBearerExist(header)).isTrue();
     }
 
@@ -43,14 +49,20 @@ class JwtValidatorTest {
 
     @Test
     void isUsernameExistWithEmptyAuthenticationShouldReturnsTrue() {
+        //given
         String username = "testuser";
+
+        //then
         assertThat(JwtValidator.isUsernameExist(username)).isTrue();
     }
 
     @Test
     void isUsernameExistWithNonEmptyAuthenticationShouldReturnsFalse() {
+        //given
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String username = "testuser";
+
+        //then
         assertThat(JwtValidator.isUsernameExist(username)).isFalse();
     }
 
@@ -66,19 +78,28 @@ class JwtValidatorTest {
 
     @Test
     void isSecurityAuthenticationEmptyWithNonEmptyContextAndNullAuthShouldReturnsTrue() {
+        //given
         SecurityContextHolder.getContext().setAuthentication(null);
+
+        //then
         assertThat(JwtValidator.isSecurityAuthenticationEmpty()).isTrue();
     }
 
     @Test
     void isSecurityAuthenticationEmptyWithNonEmptySecurityContextAndNonEmptyAuthenticationShouldReturnsFalse() {
+        //given
         SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        //then
         assertThat(JwtValidator.isSecurityAuthenticationEmpty()).isFalse();
     }
 
     @Test
     void isSecurityContextEmptyWithNonEmptySecurityContextShouldReturnsFalse() {
+        //given
         SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        //then
         assertThat(JwtValidator.isSecurityContextEmpty()).isFalse();
     }
 }

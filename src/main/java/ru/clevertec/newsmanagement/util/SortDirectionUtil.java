@@ -1,5 +1,6 @@
 package ru.clevertec.newsmanagement.util;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -19,7 +20,7 @@ public class SortDirectionUtil {
      * @param direction the sorting direction
      * @return the sorted object
      */
-    public static Sort getDirection(Sort sort, String direction) {
+    public static Sort getDirection(@NotNull Sort sort, String direction) {
         return DESC.equalsIgnoreCase(direction) ? sort.descending() : sort.ascending();
     }
 }
