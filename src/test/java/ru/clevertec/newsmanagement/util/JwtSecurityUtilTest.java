@@ -1,8 +1,6 @@
 package ru.clevertec.newsmanagement.util;
 
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -10,7 +8,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import ru.clevertec.newsmanagement.entity.User;
 import ru.clevertec.newsmanagement.exception.CustomException;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -29,10 +26,9 @@ class JwtSecurityUtilTest {
     void getUsernameByContextWhenAuthenticationExistsShouldReturnUsername() throws CustomException {
         // given
         String username = "test_user";
-        User user = new User(username, "test_password", null);
 
         when(securityContext.getAuthentication()).thenReturn(authentication);
-        when(authentication.getPrincipal()).thenReturn(user);
+        when(authentication.getName()).thenReturn(username);
         SecurityContextHolder.setContext(securityContext);
 
         // when

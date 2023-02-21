@@ -11,7 +11,7 @@ spring:
     driver-class-name: org.h2.Driver
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     database: h2
   flyway:
     url: jdbc:h2:mem:news_management;DB_CLOSE_DELAY=-1

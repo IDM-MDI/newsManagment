@@ -111,7 +111,7 @@ public class NewsServiceImpl implements NewsService {
     public DTO.News updateNews(long id,
                                String username,
                                DTO.News news) throws CustomException {
-        return mapper.toDTO(repository.save(updateNewsField(id,news)));
+        return mapper.toDTO(repository.save(updateNewsField(id,username,news)));
     }
 
 
@@ -146,10 +146,12 @@ public class NewsServiceImpl implements NewsService {
      * Updates the fields of a news entity with the corresponding fields from a DTO.News object.
      * @param id the ID of the news entity to update
      * @param client the DTO.News object containing the updated fields
+     * @param username which created news
      * @return the updated news entity
      * @throws CustomException if the news entity does not exist
      */
-    private News updateNewsField(long id, DTO.News client) throws CustomException {
+    private News updateNewsField(long id,String username,DTO.News client) throws CustomException {
+        checkBeforeOperation(id,username);
         News fromDB = findNewsEntity(id);
         fromDB.setTitle(client.getTitle());
         fromDB.setText(client.getText());
