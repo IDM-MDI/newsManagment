@@ -104,11 +104,11 @@ class NewsControllerTest {
                 .thenReturn(newsList);
 
         // Act
-        mockMvc.perform(get("/api/v1/news/1/comment/search?title=test"))
+        mockMvc.perform(get("/api/v1/news/search?title=test"))
 
                 // Assert
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+                .andExpect(content().contentType(TEXT_CHARSET));
     }
 
     @Test

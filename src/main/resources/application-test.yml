@@ -5,21 +5,13 @@ jwt:
   key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
 spring:
   datasource:
-    url: jdbc:h2:mem:news_management;DB_CLOSE_DELAY=-1
-    username: test
-    password: test
+    url: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1
+    username: username
+    password: password
     driver-class-name: org.h2.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     database: h2
   flyway:
-    url: jdbc:h2:mem:news_management;DB_CLOSE_DELAY=-1
-    user: test
-    password: test
-    driver-class-name: org.h2.Driver
-    baseline-on-migrate: true
-    locations: classpath:/db/migration/test
-springdoc:
-  swagger-ui:
-    path: /swagger-ui.html
+    enabled: false
