@@ -93,48 +93,48 @@ class NewsServiceImplTest {
     }
     @Test
     void findNewsShouldBeCorrect() throws CustomException {
-        // given
+        // Arrange
         when(newsRepository.findAll(any(PageRequest.class)))
                 .thenReturn(new PageImpl<>(entities));
         IntStream.range(0, entities.size())
                 .forEach(integer -> when(mapper.toDTO(entities.get(integer)))
                         .thenReturn(dtos.get(integer)));
 
-        // when
+        // Act
         List<DTO.News> result = newsService.findNews(PAGE, SIZE, FILTER, DIRECTION);
 
-        // then
+        // Assert
         Assertions.assertThat(result).isEqualTo(dtos);
     }
 
     @Test
     void findNewsByIdShouldBeCorrect() throws CustomException {
-        // given
+        // Arrange
         when(newsRepository.findById(NEWS_ID)).thenReturn(Optional.of(entities.get(0)));
         when(mapper.toDTO(entities.get(0))).thenReturn(dtos.get(0));
 
-        // when
+        // Act
         DTO.News result = newsService.findNews(NEWS_ID);
 
-        // then
+        // Assert
         Assertions.assertThat(result).isEqualTo(dtos.get(0));
     }
 
     @Test
     void findNewsByIdNotFound() {
-        // given
+        // Arrange
         when(newsRepository.findById(NEWS_ID)).thenReturn(Optional.empty());
 
-        // when
+        // Act
         Assertions.assertThatThrownBy(() -> newsService.findNews(NEWS_ID))
                 .isInstanceOf(CustomException.class);
     }
     @Test
     void findNewsEntityByIdFound() throws CustomException {
-        // given
+        // Arrange
         when(newsRepository.findById(NEWS_ID)).thenReturn(Optional.of(entities.get(0)));
 
-        // when
+        // Act
         News result = newsService.findNewsEntity(NEWS_ID);
 
         //then
@@ -142,25 +142,25 @@ class NewsServiceImplTest {
     }
     @Test
     void findNewsEntityByIdNotFound() {
-        // given
+        // Arrange
         when(newsRepository.findById(NEWS_ID)).thenReturn(Optional.empty());
 
-        // when
+        // Act
         Assertions.assertThatThrownBy(() -> newsService.findNewsEntity(NEWS_ID))
                 .isInstanceOf(CustomException.class);
     }
     @Test
     void saveNewsShouldCreateNewsEntity() throws CustomException {
-        // given
+        // Arrange
         when(userService.findUser(USERNAME)).thenReturn(entities.get(0).getUser());
         when(mapper.toEntity(dtos.get(0))).thenReturn(entities.get(0));
         when(newsRepository.save(any(News.class))).thenReturn(entities.get(0));
         when(mapper.toDTO(entities.get(0))).thenReturn(dtos.get(0));
 
-        // when
+        // Act
         DTO.News savedNews = newsService.saveNews(USERNAME, dtos.get(0));
 
-        // then
+        // Assert
         Assertions.assertThat(savedNews).isEqualTo(dtos.get(0));
         verify(userService, times(1)).findUser(USERNAME);
         verify(newsRepository, times(1)).save(any(News.class));
@@ -168,29 +168,29 @@ class NewsServiceImplTest {
 
     @Test
     void findNewsWithMatchingTitleAndText() {
-        // given
+        // Arrange
         when(mapper.toEntity(dtos.get(0))).thenReturn(entities.get(0));
         when(newsRepository.findAll(any(Example.class))).thenReturn(entities);
         IntStream.range(0, entities.size())
                 .forEach(integer -> when(mapper.toDTO(entities.get(integer)))
                         .thenReturn(dtos.get(integer)));
 
-        // when
+        // Act
         List<DTO.News> result = newsService.findNews(dtos.get(0));
 
-        // then
+        // Assert
         Assertions.assertThat(result).hasSize(2);
     }
 
     @Test
     void findNewsWithNoMatchingNews() {
-        // given
+        // Arrange
         when(mapper.toEntity(dtos.get(0))).thenReturn(entities.get(0));
         when(newsRepository.findAll(any(Example.class))).thenReturn(new ArrayList());
-        // when
+        // Act
         List<DTO.News> result = newsService.findNews(dtos.get(0));
 
-        // then
+        // Assert
         Assertions.assertThat(result).isEmpty();
         verify(newsRepository).findAll(any(Example.class));
         verify(mapper, never()).toDTO(any(News.class));
@@ -198,10 +198,10 @@ class NewsServiceImplTest {
 
     @Test
     void saveNewsShouldThrowExceptionIfUserNotFound() throws CustomException {
-        // given
+        // Arrange
         when(userService.findUser(USERNAME)).thenThrow(CustomException.class);
 
-        // then
+        // Assert
         Assertions.assertThatThrownBy(() -> newsService.saveNews(USERNAME, dtos.get(0)))
                 .isInstanceOf(CustomException.class);
         verify(userService, times(1)).findUser(USERNAME);
@@ -210,16 +210,16 @@ class NewsServiceImplTest {
 
     @Test
     void updateNewsShouldUpdateNewsEntity() throws CustomException {
-        // given
+        // Arrange
         when(newsRepository.findById(NEWS_ID)).thenReturn(Optional.of(entities.get(0)));
         when(userService.findUser(USERNAME)).thenReturn(entities.get(0).getUser());
         when(newsRepository.save(any(News.class))).thenReturn(entities.get(0));
         when(mapper.toDTO(entities.get(0))).thenReturn(dtos.get(0));
 
-        // when
+        // Act
         DTO.News savedNews = newsService.updateNews(NEWS_ID, USERNAME, dtos.get(0));
 
-        // then
+        // Assert
         Assertions.assertThat(savedNews).isEqualTo(dtos.get(0));
         verify(newsRepository, times(2)).findById(NEWS_ID);
         verify(newsRepository, times(1)).save(any(News.class));
@@ -227,11 +227,11 @@ class NewsServiceImplTest {
 
     @Test
     void updateNewsShouldThrowExceptionIfUserNotFound() throws CustomException {
-        // given
+        // Arrange
         when(newsRepository.findById(NEWS_ID)).thenReturn(Optional.of(entities.get(0)));
         when(userService.findUser(USERNAME)).thenThrow(CustomException.class);
 
-        // then
+        // Assert
         Assertions.assertThatThrownBy(() -> newsService.updateNews(NEWS_ID ,USERNAME, dtos.get(0)))
                 .isInstanceOf(CustomException.class);
         verify(userService, times(1)).findUser(USERNAME);
@@ -244,7 +244,7 @@ class NewsServiceImplTest {
         when(newsRepository.findById(NEWS_ID)).thenReturn(Optional.of(entities.get(0)));
         when(userService.findUser(USERNAME)).thenReturn(entities.get(0).getUser());
 
-        // when
+        // Act
         newsService.deleteNews(NEWS_ID, USERNAME);
 
         // Assert
@@ -262,7 +262,7 @@ class NewsServiceImplTest {
         when(newsRepository.findById(NEWS_ID)).thenReturn(Optional.of(entities.get(0)));
         when(userService.findUser(USERNAME + 1)).thenReturn(user);
 
-        // when
+        // Act
         Assertions.assertThatThrownBy(() -> newsService.deleteNews(NEWS_ID, USERNAME + 1))
                 .isInstanceOf(CustomException.class);
     }
@@ -272,7 +272,7 @@ class NewsServiceImplTest {
         //given
         when(newsRepository.findById(NEWS_ID)).thenReturn(Optional.empty());
 
-        // then
+        // Assert
         Assertions.assertThatThrownBy(() -> newsService.deleteNews(NEWS_ID, USERNAME))
                 .isInstanceOf(CustomException.class);
     }

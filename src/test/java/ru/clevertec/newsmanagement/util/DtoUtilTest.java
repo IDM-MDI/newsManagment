@@ -22,28 +22,28 @@ class DtoUtilTest {
     }
     @Test
     void checkPageListExistWithNonNullListShouldNotThrowException() {
-        // then
+        // Assert
         Assertions.assertThatCode(() -> DtoUtil.checkPageListExist(page)).doesNotThrowAnyException();
     }
 
     @Test
     void checkPageListExistWithNullListShouldThrowException() {
-        // then
+        // Assert
         Assertions.assertThatThrownBy(() -> DtoUtil.checkPageListExist(null)).isInstanceOf(CustomException.class);
     }
 
     @Test
     void checkPageListExistWithEmptyListShouldThrowException() {
-        // given
+        // Arrange
         List<String> page = new ArrayList<>();
 
-        // then
+        // Assert
         Assertions.assertThatThrownBy(() -> DtoUtil.checkPageListExist(page)).isInstanceOf(CustomException.class);
     }
 
     @Test
     void toJsonWithNonNullMessageOrBuilderShouldReturnJsonString() {
-        // given
+        // Arrange
         String expected = """
                 {
                   "id": "1",
@@ -56,25 +56,25 @@ class DtoUtilTest {
                 .setText("This is a comment.")
                 .build();
 
-        // when
+        // Act
         String jsonString = DtoUtil.toJson(comment);
 
-        // then
+        // Assert
         Assertions.assertThat(jsonString).isEqualTo(expected);
     }
 
     @Test
     void toJsonWithNullMessageOrBuilderShouldThrowException() {
-        // given
+        // Arrange
         DTO.Comment comment = null;
 
-        // then
+        // Assert
         assertThatThrownBy(() -> DtoUtil.toJson(comment)).isInstanceOf(NullPointerException.class);
     }
 
     @Test
     void toJsonWithNonNullListOfMessageOrBuilderShouldReturnJsonString() {
-        // given
+        // Arrange
         String expected = """
                 [{
                   "id": "1",
@@ -101,32 +101,32 @@ class DtoUtilTest {
         newsList.add(news1);
         newsList.add(news2);
 
-        // when
+        // Act
         String jsonString = DtoUtil.toJson(newsList);
 
-        // then
+        // Assert
         Assertions.assertThat(jsonString).isEqualTo(expected);
     }
 
     @Test
     void toJsonWithEmptyListOfMessageOrBuilderShouldReturnEmptyJsonString() {
-        // given
+        // Arrange
         String expected = "[]";
         List<DTO.News> newsList = new ArrayList<>();
 
-        // when
+        // Act
         String jsonString = DtoUtil.toJson(newsList);
 
-        // then
+        // Assert
         Assertions.assertThat(jsonString).isEqualTo(expected);
     }
 
     @Test
     void toJsonWithNullListOfMessageOrBuilderShouldThrowException() {
-        // given
+        // Arrange
         List<DTO.News> newsList = null;
 
-        // then
+        // Assert
         assertThatThrownBy(() -> DtoUtil.toJson(newsList)).isInstanceOf(NullPointerException.class);
     }
 }

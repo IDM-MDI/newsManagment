@@ -20,7 +20,7 @@ class NewsMapperTest {
 
     @Test
     void toEntityWithValidDTOShouldReturnValidEntity() {
-        // given
+        // Arrange
         News expected = News.builder()
                 .id(1L)
                 .title("Test Title")
@@ -37,23 +37,23 @@ class NewsMapperTest {
                         .build())
                 .build();
 
-        // when
+        // Act
         News actual = newsMapper.toEntity(newsDTO);
 
-        // then
+        // Assert
         Assertions.assertThat(actual).isEqualTo(expected);
     }
 
     @Test
     void toEntityWithNullDTOShouldThrowException() {
-        // then
+        // Assert
         Assertions.assertThatThrownBy(() -> newsMapper.toEntity(null))
                 .isInstanceOf(NullPointerException.class);
     }
 
     @Test
     void toDTOWithValidEntityShouldReturnValidDTO() {
-        // given
+        // Arrange
         DTO.News expected = DTO.News.newBuilder()
                 .setId(1L)
                 .setTitle("Test Title")
@@ -70,16 +70,16 @@ class NewsMapperTest {
                 .createdDate(Date.from(Instant.ofEpochSecond(1645176000)))
                 .build();
 
-        // when
+        // Act
         DTO.News newsDTO = newsMapper.toDTO(news);
 
-        // then
+        // Assert
         Assertions.assertThat(newsDTO).isEqualTo(expected);
     }
 
     @Test
     void toDTOWithNullEntityShouldThrowException() {
-        // then
+        // Assert
         Assertions.assertThatThrownBy(() -> newsMapper.toDTO(null))
                 .isInstanceOf(NullPointerException.class);
     }

@@ -64,16 +64,16 @@ class UserServiceImplTest {
     }
     @Test
     void registrationShouldBeCorrect() throws CustomException {
-        // given
+        // Arrange
         when(repository.existsById("testuser")).thenReturn(false);
         when(passwordEncoder.encode("testpassword")).thenReturn("encodedpassword");
         when(repository.save(user)).thenReturn(user);
         when(jwtService.generateToken(user)).thenReturn("jwt");
 
-        // when
+        // Act
         DTO.AuthenticationResponse result = userService.registration(authentication);
 
-        // then
+        // Assert
         Assertions.assertThat(result).isEqualTo(response);
         verify(repository).existsById("testuser");
         verify(passwordEncoder).encode("testpassword");
@@ -83,10 +83,10 @@ class UserServiceImplTest {
 
     @Test
     void registrationUserExists() {
-        // given
+        // Arrange
         when(repository.existsById(authentication.getUsername())).thenReturn(true);
 
-        // then
+        // Assert
         Assertions.assertThatThrownBy(() -> userService.registration(authentication))
                 .isInstanceOf(CustomException.class)
                 .hasMessageContaining(USER_EXIST.toString());
@@ -96,7 +96,7 @@ class UserServiceImplTest {
 
     @Test
     void findUserShouldFound() throws CustomException {
-        // given
+        // Arrange
         when(repository.findUserByUsername(authentication.getUsername())).thenReturn(Optional.of(user));
 
         // Act
@@ -109,10 +109,10 @@ class UserServiceImplTest {
 
     @Test
     void findUserShouldNotFound() {
-        // given
+        // Arrange
         when(repository.findUserByUsername(authentication.getUsername())).thenReturn(Optional.empty());
 
-        // then
+        // Assert
         Assertions.assertThatThrownBy(() -> userService.findUser(authentication.getUsername()))
                 .isInstanceOf(CustomException.class)
                 .hasMessageContaining(USER_NOT_FOUND.toString());
@@ -122,13 +122,13 @@ class UserServiceImplTest {
 
     @Test
     void authenticateShouldBeCorrect() throws CustomException {
-        // given
+        // Arrange
         when(authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authentication.getUsername(),authentication.getPassword())))
                 .thenReturn(new UsernamePasswordAuthenticationToken(authentication.getUsername(),authentication.getPassword()));
         when(repository.findUserByUsername(authentication.getUsername())).thenReturn(Optional.of(user));
         when(jwtService.generateToken(user)).thenReturn("jwt");
 
-        // when
+        // Act
         DTO.AuthenticationResponse result = userService.authenticate(authentication);
 
         //then

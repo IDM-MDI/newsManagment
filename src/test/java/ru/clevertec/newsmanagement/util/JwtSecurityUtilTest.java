@@ -24,26 +24,26 @@ class JwtSecurityUtilTest {
 
     @Test
     void getUsernameByContextWhenAuthenticationExistsShouldReturnUsername() throws CustomException {
-        // given
+        // Arrange
         String username = "test_user";
 
         when(securityContext.getAuthentication()).thenReturn(authentication);
         when(authentication.getName()).thenReturn(username);
         SecurityContextHolder.setContext(securityContext);
 
-        // when
+        // Act
         String result = JwtSecurityUtil.getUsernameByContext();
 
-        // then
+        // Assert
         Assertions.assertThat(result).isEqualTo(username);
     }
 
     @Test
     void getUsernameByContextWhenAuthenticationDoesNotExistShouldThrowCustomException() {
-        // given
+        // Arrange
         SecurityContextHolder.clearContext();
 
-        // then
+        // Assert
         assertThatThrownBy(JwtSecurityUtil::getUsernameByContext)
                 .isInstanceOf(CustomException.class)
                 .hasMessageContaining(USER_NOT_AUTHORIZE.toString());

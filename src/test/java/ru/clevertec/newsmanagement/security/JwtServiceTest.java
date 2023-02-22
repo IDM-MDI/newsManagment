@@ -10,46 +10,43 @@ import ru.clevertec.newsmanagement.entity.User;
 class JwtServiceTest {
     private static final String TEST_SECRET_KEY = "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970";
     private static final String TEST_USERNAME = "testuser";
-    private static final String TEST_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0dXNlciIsImlhdCI6MTY3NjkzNTg3OCwiZXhwIjoxNjc3MDIyMjc4fQ.q724wL81nu22gaxazJ5qTVxFIPH5o7apGQodH2UdACo";
+    private String TEST_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0dXNlciIsImlhdCI6MTY3NjkzNTg3OCwiZXhwIjoxNjc3MDIyMjc4fQ.q724wL81nu22gaxazJ5qTVxFIPH5o7apGQodH2UdACo";
+    private User user;
     private JwtService jwtService;
     @BeforeEach
     public void setup() {
         jwtService = new JwtService();
         ReflectionTestUtils.setField(jwtService,"SECRET_KEY",TEST_SECRET_KEY);
+        user = new User(TEST_USERNAME, "password", Role.SUBSCRIBER);
+        TEST_TOKEN = jwtService.generateToken(user);
     }
 
     @Test
     void generateTokenShouldGenerateTokenWithCorrectUsername() {
-        // given
-        User user = new User(TEST_USERNAME, "password", Role.SUBSCRIBER);
-
-        // when
+        // Act
         String token = jwtService.generateToken(user);
 
-        // then
+        // Assert
         Assertions.assertThat(jwtService.extractUsername(token)).isEqualTo(TEST_USERNAME);
     }
 
     @Test
     void isTokenValidShouldReturnTrueForValidToken() {
-        // given
+        // Arrange
         User user = new User(TEST_USERNAME, "password", Role.SUBSCRIBER);
-        // when
+        // Act
         boolean isValid = jwtService.isTokenValid(TEST_TOKEN,user);
 
-        // then
+        // Assert
         Assertions.assertThat(isValid).isTrue();
     }
 
     @Test
     void extractUsernameShouldExtractUsernameFromToken() {
-        // given
-        User user = new User(TEST_USERNAME, "password", Role.SUBSCRIBER);
-
-        // when
+        // Act
         String username = jwtService.extractUsername(TEST_TOKEN);
 
-        // then
+        // Assert
         Assertions.assertThat(username).isEqualTo(TEST_USERNAME);
     }
 

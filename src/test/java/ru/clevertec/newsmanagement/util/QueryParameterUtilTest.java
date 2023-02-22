@@ -32,7 +32,7 @@ class QueryParameterUtilTest {
         //when
         DTO.Comment actual = QueryParameterUtil.getCommentByQuery(query);
 
-        // then
+        // Assert
         Assertions.assertThat(actual).isEqualTo(expected);
     }
 

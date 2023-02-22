@@ -45,31 +45,31 @@ class JwtAuthenticationFilterTest {
 
     @Test
     void doFilterInternalWithMissingAuthHeader() throws Exception {
-        // given
+        // Arrange
         when(request.getHeader("Authorization")).thenReturn(null);
 
-        // when
+        // Act
         jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
 
-        // then
+        // Assert
         verify(filterChain).doFilter(request, response);
     }
 
     @Test
     void doFilterInternalWithInvalidAuthHeader() throws Exception {
-        // given
+        // Arrange
         when(request.getHeader("Authorization")).thenReturn("invalid-auth-header");
 
-        // when
+        // Act
         jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
 
-        // then
+        // Assert
         verify(filterChain).doFilter(request, response);
     }
 
     @Test
     void doFilterInternalWithValidAuthHeader() throws Exception {
-        // given
+        // Arrange
         User user = new User(TEST_USERNAME, "password", Role.SUBSCRIBER);
 
         when(request.getHeader("Authorization")).thenReturn(TEST_AUTH_HEADER);
@@ -77,10 +77,10 @@ class JwtAuthenticationFilterTest {
         when(userDetailsService.loadUserByUsername(TEST_USERNAME)).thenReturn(user);
         when(jwtService.isTokenValid(TEST_JWT_TOKEN, user)).thenReturn(true);
 
-        // when
+        // Act
         jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
 
-        // then
+        // Assert
         verify(filterChain).doFilter(request, response);
         Assertions.assertThat(SecurityContextHolder.getContext().getAuthentication().getPrincipal())
                 .isInstanceOf(User.class)

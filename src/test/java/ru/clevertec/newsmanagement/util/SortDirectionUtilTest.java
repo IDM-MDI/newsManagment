@@ -10,63 +10,63 @@ class SortDirectionUtilTest {
 
     @Test
     void getDirectionShouldReturnDescending() {
-        // given
+        // Arrange
         Sort sort = Sort.by("name");
         String direction = "desc";
 
-        // when
+        // Act
         Sort result = SortDirectionUtil.getDirection(sort, direction);
 
-        // then
+        // Assert
         assertThat(result.getOrderFor("name").getDirection()).isEqualTo(Sort.Direction.DESC);
     }
 
     @Test
     void getDirectionShouldReturnAscending() {
-        // given
+        // Arrange
         Sort sort = Sort.by("name");
         String direction = "asc";
 
-        // when
+        // Act
         Sort result = SortDirectionUtil.getDirection(sort, direction);
 
-        // then
+        // Assert
         assertThat(result.getOrderFor("name").getDirection()).isEqualTo(Sort.Direction.ASC);
     }
 
     @Test
     void getDirectionCaseWhenInsensitiveShouldReturnDescending() {
-        // given
+        // Arrange
         Sort sort = Sort.by("name");
         String direction = "DeSc";
 
-        // when
+        // Act
         Sort result = SortDirectionUtil.getDirection(sort, direction);
 
-        // then
+        // Assert
         assertThat(result.getOrderFor("name").getDirection()).isEqualTo(Sort.Direction.DESC);
     }
 
     @Test
     void getDirectionWithNullSortShouldThrowException() {
-        // given
+        // Arrange
         String direction = "desc";
 
-        // when
+        // Act
         assertThatThrownBy(() -> SortDirectionUtil.getDirection(null, direction))
                 .isInstanceOf(NullPointerException.class);
     }
 
     @Test
     void getDirectionWithNullDirectionShouldReturnAscending() {
-        // given
+        // Arrange
         Sort sort = Sort.by("name");
         String direction = null;
 
-        // when
+        // Act
         Sort result = SortDirectionUtil.getDirection(sort, direction);
 
-        // then
+        // Assert
         assertThat(result.getOrderFor("name").getDirection()).isEqualTo(Sort.Direction.ASC);
     }
 }

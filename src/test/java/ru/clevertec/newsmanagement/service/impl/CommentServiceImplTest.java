@@ -93,25 +93,25 @@ class CommentServiceImplTest {
                         .forEach(integer -> when(mapper.toDTO(entities.get(integer)))
                                 .thenReturn(dtos.get(integer)));
 
-        // when
+        // Act
         List<DTO.Comment> result = commentService.findComments(NEWS_ID, PAGE, SIZE, FILTER, DIRECTION);
 
-        // then
+        // Assert
         Assertions.assertThat(result).hasSize(2);
         verify(commentRepository).findCommentsByNews_Id(eq(NEWS_ID), any(PageRequest.class));
     }
 
     @Test
     void findCommentShouldBeCorrect() throws CustomException {
-        // given
+        // Arrange
         when(commentRepository.findCommentByIdAndNews_Id(COMMENT_ID, NEWS_ID))
                 .thenReturn(Optional.of(entities.get(0)));
         when(mapper.toDTO(entities.get(0))).thenReturn(dtos.get(0));
 
-        // when
+        // Act
         DTO.Comment result = commentService.findComments(NEWS_ID, COMMENT_ID);
 
-        // then
+        // Assert
 
         Assertions.assertThat(result).isEqualTo(dtos.get(0));
         verify(commentRepository).findCommentByIdAndNews_Id(COMMENT_ID, NEWS_ID);
@@ -119,7 +119,7 @@ class CommentServiceImplTest {
 
     @Test
     void findCommentsWithFilter() throws CustomException {
-        // given
+        // Arrange
         when(mapper.toEntity(dtos.get(0)))
                 .thenReturn(entities.get(0));
         when(newsService.findNewsEntity(NEWS_ID))
@@ -130,10 +130,10 @@ class CommentServiceImplTest {
                 .forEach(integer -> when(mapper.toDTO(entities.get(integer)))
                         .thenReturn(dtos.get(integer)));
 
-        // when
+        // Act
         dtos = commentService.findComments(NEWS_ID, dtos.get(0));
 
-        // then
+        // Assert
         Assertions.assertThat(dtos).hasSize(2);
 
         verify(commentRepository).findAll(any(Example.class));
@@ -141,24 +141,24 @@ class CommentServiceImplTest {
 
     @Test
     void saveCommentShouldBeCorrect() throws CustomException {
-        // given
+        // Arrange
         when(newsService.findNewsEntity(NEWS_ID)).thenReturn(entities.get(0).getNews());
         when(userService.findUser(entities.get(0).getUser().getUsername())).thenReturn(entities.get(0).getUser());
         when(mapper.toEntity(dtos.get(0))).thenReturn(entities.get(0));
         when(mapper.toDTO(entities.get(0))).thenReturn(dtos.get(0));
         when(commentRepository.save(entities.get(0))).thenReturn(entities.get(0));
 
-        // when
+        // Act
         DTO.Comment result = commentService.saveComment(NEWS_ID, dtos.get(0).getUsername(), dtos.get(0));
 
-        // then
+        // Assert
         Assertions.assertThat(result).isEqualTo(dtos.get(0));
         verify(commentRepository).save(entities.get(0));
     }
 
     @Test
     void updateCommentShouldBeCorrect() throws CustomException {
-        // given
+        // Arrange
         when(userService.findUser(dtos.get(0).getUsername()))
                 .thenReturn(entities.get(0).getUser());
         when(commentRepository.findCommentByIdAndNews_Id(COMMENT_ID, NEWS_ID))
@@ -167,31 +167,31 @@ class CommentServiceImplTest {
                 .thenReturn(entities.get(0));
         when(mapper.toDTO(entities.get(0))).thenReturn(dtos.get(0));
 
-        // when
+        // Act
         DTO.Comment result = commentService.updateComment(NEWS_ID, COMMENT_ID, dtos.get(0).getUsername(), dtos.get(0));
 
-        // then
+        // Assert
         Assertions.assertThat(result).isEqualTo(dtos.get(0));
         verify(commentRepository).save(entities.get(0));
     }
 
     @Test
     void deleteCommentShouldBeCorrect() throws CustomException {
-        // given
+        // Arrange
         when(commentRepository.findCommentByIdAndNews_Id(COMMENT_ID, NEWS_ID))
                 .thenReturn(Optional.of(entities.get(0)));
         when(userService.findUser(dtos.get(0).getUsername()))
                 .thenReturn(entities.get(0).getUser());
         doNothing().when(commentRepository).deleteById(COMMENT_ID);
-        // when
+        // Act
         commentService.deleteComment(COMMENT_ID, NEWS_ID, dtos.get(0).getUsername());
 
-        // then
+        // Assert
         verify(commentRepository).deleteById(COMMENT_ID);
     }
     @Test
     void deleteCommentShouldThrowNoAccess() throws CustomException {
-        // given
+        // Arrange
         User user = User.builder()
                 .username("test")
                 .role(Role.SUBSCRIBER)
@@ -218,7 +218,7 @@ class CommentServiceImplTest {
         //when
         commentService.deleteAllComment(NEWS_ID);
 
-        // then
+        // Assert
         verify(commentRepository).findByNews_Id(NEWS_ID);
         verify(commentRepository, times(2)).deleteById(anyLong());
     }

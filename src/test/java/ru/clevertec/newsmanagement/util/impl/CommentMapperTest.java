@@ -22,7 +22,7 @@ class CommentMapperTest {
 
     @Test
     void toEntityWithValidDTOShouldReturnValidEntity() {
-        // given
+        // Arrange
         Comment expected = Comment.builder()
                 .id(1L)
                 .text("Test Text")
@@ -37,23 +37,23 @@ class CommentMapperTest {
                         .build())
                 .build();
 
-        // when
+        // Act
         Comment actual = commentMapper.toEntity(commentDTO);
 
-        // then
+        // Assert
         Assertions.assertThat(actual).isEqualTo(expected);
     }
 
     @Test
     void toEntityWithNullDTOShouldThrowException() {
-        // then
+        // Assert
         Assertions.assertThatThrownBy(() -> commentMapper.toEntity(null))
                 .isInstanceOf(NullPointerException.class);
     }
 
     @Test
     void toDTOWithValidEntityShouldReturnValidDTO() {
-        // given
+        // Arrange
         DTO.Comment expected = DTO.Comment.newBuilder()
                 .setId(1L)
                 .setUsername("Test username")
@@ -70,16 +70,16 @@ class CommentMapperTest {
                 .createdDate(Date.from(Instant.ofEpochSecond(1645176000)))
                 .build();
 
-        // when
+        // Act
         DTO.Comment CommentDTO = commentMapper.toDTO(comment);
 
-        // then
+        // Assert
         Assertions.assertThat(CommentDTO).isEqualTo(expected);
     }
 
     @Test
     void toDTOWithNullEntityShouldThrowException() {
-        // then
+        // Assert
         Assertions.assertThatThrownBy(() -> commentMapper.toDTO(null))
                 .isInstanceOf(NullPointerException.class);
     }
