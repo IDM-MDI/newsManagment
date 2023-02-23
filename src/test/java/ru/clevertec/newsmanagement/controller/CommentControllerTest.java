@@ -41,7 +41,6 @@ class CommentControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    private static final MediaType TEXT_CHARSET = MediaType.valueOf("text/plain;charset=UTF-8");
     private static final int PAGE = 0;
     private static final int SIZE = 10;
     private static final String FILTER = "id";
@@ -172,7 +171,7 @@ class CommentControllerTest {
 
                 // Assert
                 .andExpect(status().isMethodNotAllowed())
-                .andExpect(content().contentType(TEXT_CHARSET))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.exception").value("Request method \'POST\' is not supported"))
                 .andExpect(jsonPath("$.url").value("http://localhost/api/v1/news/1/comment/1"));
     }

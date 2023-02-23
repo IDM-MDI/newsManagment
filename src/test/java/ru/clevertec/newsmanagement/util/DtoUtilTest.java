@@ -1,8 +1,12 @@
 package ru.clevertec.newsmanagement.util;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import ru.clevertec.newsmanagement.exception.CustomException;
 import ru.clevertec.newsmanagement.model.DTO;
 
@@ -10,9 +14,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.Mockito.when;
+import static ru.clevertec.newsmanagement.util.DtoUtil.getJSONStringException;
 
+@ExtendWith(MockitoExtension.class)
 class DtoUtilTest {
-
+    @Mock
+    private HttpServletRequest request;
     private List<String> page;
     @BeforeEach
     void setUp() {
@@ -75,16 +83,18 @@ class DtoUtilTest {
     @Test
     void toJsonWithNonNullListOfMessageOrBuilderShouldReturnJsonString() {
         // Arrange
-        String expected = """
-                [{
-                  "id": "1",
-                  "title": "News 1",
-                  "text": "This is news 1."
-                }{
-                  "id": "2",
-                  "title": "News 2",
-                  "text": "This is news 2."
-                }]""";
+        String expected = "[\n" +
+                "{\n" +
+                "  \"id\": \"1\",\n" +
+                "  \"title\": \"News 1\",\n" +
+                "  \"text\": \"This is news 1.\"\n" +
+                "},\n" +
+                "{\n" +
+                "  \"id\": \"2\",\n" +
+                "  \"title\": \"News 2\",\n" +
+                "  \"text\": \"This is news 2.\"\n" +
+                "}\n" +
+                "]";
         DTO.News news1 = DTO.News.newBuilder()
                 .setId(1)
                 .setTitle("News 1")
@@ -128,5 +138,37 @@ class DtoUtilTest {
 
         // Assert
         assertThatThrownBy(() -> DtoUtil.toJson(newsList)).isInstanceOf(NullPointerException.class);
+    }
+
+    @Test
+    void getJSONStringExceptionShouldBeCorrect() {
+        // Arrange
+        String url = "http://localhost:8080/test";
+        String message = "test exception";
+
+        when(request.getRequestURL())
+                .thenReturn(new StringBuffer(url));
+
+        // Act
+        String actual = getJSONStringException(request, message);
+
+        // Assert
+        Assertions.assertThat(actual).isNotBlank();
+    }
+
+    @Test
+    void getJSONStringExceptionWithEmptyRequestShouldBeThrowException() {
+        // Arrange
+        String message = "test exception";
+
+        // Assert
+        Assertions.assertThatThrownBy(() -> getJSONStringException(null,message))
+                .isInstanceOf(NullPointerException.class);
+    }
+    @Test
+    void getJSONStringExceptionWithEmptyMessageShouldBeThrowException() {
+        // Assert
+        Assertions.assertThatThrownBy(() -> getJSONStringException(request,""))
+                .isInstanceOf(NullPointerException.class);
     }
 }

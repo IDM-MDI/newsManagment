@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -48,7 +49,7 @@ public class NewsController {
      * @return A JSON representation of the news found
      * @throws CustomException if an error occurs during the operation
      */
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(
             summary = "News",
             description = "API Point made for return news page"
@@ -76,7 +77,7 @@ public class NewsController {
      * @return A JSON representation of the news found
      * @throws CustomException if an error occurs during the operation
      */
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(
             summary = "News by ID",
             description = "API Point made for return news by ID"
@@ -96,7 +97,7 @@ public class NewsController {
      * @return A JSON representation of the news found
      * @throws CustomException if an error occurs during the operation
      */
-    @GetMapping("/search")
+    @GetMapping(value = "/search",produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(
             summary = "News by search",
             description = "API Point made for return news by search"
@@ -116,7 +117,7 @@ public class NewsController {
      * @return A JSON representation of the news saved
      * @throws CustomException if an error occurs during the operation
      */
-    @PostMapping
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_JOURNALIST')")
     @Operation(
             summary = "Save News",
@@ -141,7 +142,7 @@ public class NewsController {
      * @throws      CustomException if the news with the specified ID is not found
      *                              or if the user does not have permission to update it
      */
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_JOURNALIST')")
     @Operation(
             summary = "Update News",
@@ -166,7 +167,7 @@ public class NewsController {
      * @throws      CustomException if the news with the specified ID is not found
      *                              or if the user does not have permission to delete it
      */
-    @DeleteMapping("/{id}")
+    @DeleteMapping(value = "/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_JOURNALIST')")
     @Operation(
             summary = "Delete News",

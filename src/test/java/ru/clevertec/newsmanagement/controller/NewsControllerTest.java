@@ -41,8 +41,6 @@ class NewsControllerTest {
     private NewsController newsController;
     @Autowired
     private MockMvc mockMvc;
-
-    private static final MediaType TEXT_CHARSET = MediaType.valueOf("text/plain;charset=UTF-8");
     private static final int PAGE = 0;
     private static final int SIZE = 10;
     private static final String FILTER = "id";
@@ -80,7 +78,7 @@ class NewsControllerTest {
 
                 // Assert
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(TEXT_CHARSET));
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test
@@ -93,7 +91,7 @@ class NewsControllerTest {
 
                 // Assert
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(TEXT_CHARSET))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(newsList.get(0).getId()))
                 .andExpect(jsonPath("$.username").value("username"));
     }
@@ -108,7 +106,7 @@ class NewsControllerTest {
 
                 // Assert
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(TEXT_CHARSET));
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test
@@ -124,7 +122,7 @@ class NewsControllerTest {
 
                 // Assert
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(TEXT_CHARSET))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(newsList.get(0).getId()))
                 .andExpect(jsonPath("$.username").value("username"));
     }
@@ -142,7 +140,7 @@ class NewsControllerTest {
 
                 // Assert
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(TEXT_CHARSET))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(newsList.get(0).getId()))
                 .andExpect(jsonPath("$.username").value("username"));
     }
@@ -159,6 +157,6 @@ class NewsControllerTest {
 
                 // Assert
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(TEXT_CHARSET));
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 }

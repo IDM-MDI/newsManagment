@@ -36,7 +36,6 @@ class AuthenticationControllerTest {
     private static final String USERNAME = "username";
     private static final String PASSWORD = "test123";
     private static final String JWT = "jwt";
-    private static final MediaType TEXT_CHARSET = MediaType.valueOf("text/plain;charset=UTF-8");
 
     private DTO.AuthenticationRequest request;
     private DTO.AuthenticationResponse response;
@@ -64,7 +63,7 @@ class AuthenticationControllerTest {
 
                 // Assert
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(TEXT_CHARSET))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.username").value(USERNAME))
                 .andExpect(jsonPath("$.jwt").value(JWT));
     }
@@ -84,7 +83,7 @@ class AuthenticationControllerTest {
 
                 // Assert
                 .andExpect(status().isServiceUnavailable())
-                .andExpect(content().contentType(TEXT_CHARSET))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.exception").value(USER_EXIST.toString()))
                 .andExpect(jsonPath("$.url").value("http://localhost/api/v1/auth/register"));
     }
@@ -101,7 +100,7 @@ class AuthenticationControllerTest {
 
                 // Assert
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(TEXT_CHARSET))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.username").value(USERNAME))
                 .andExpect(jsonPath("$.jwt").value(JWT));
     }
@@ -122,7 +121,7 @@ class AuthenticationControllerTest {
 
                 // Assert
                 .andExpect(status().isServiceUnavailable())
-                .andExpect(content().contentType(TEXT_CHARSET))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.exception").value(USER_NOT_FOUND.toString()))
                 .andExpect(jsonPath("$.url").value("http://localhost/api/v1/auth/authenticate"));
     }
@@ -142,7 +141,7 @@ class AuthenticationControllerTest {
 
                 // Assert
                 .andExpect(status().isNotFound())
-                .andExpect(content().contentType(TEXT_CHARSET))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.exception").value(USER_NOT_FOUND.toString()))
                 .andExpect(jsonPath("$.url").value("http://localhost/api/v1/auth/authenticate"));
     }
