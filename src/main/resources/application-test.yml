@@ -13,5 +13,10 @@ spring:
     hibernate:
       ddl-auto: create-drop
     database: h2
-  flyway:
-    enabled: false
+  liquibase:
+    change-log: db/db.changelog-master.yaml
+    url: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1
+    user: username
+    password: password
+    driver-class-name: org.h2.Driver
+    contexts: test
