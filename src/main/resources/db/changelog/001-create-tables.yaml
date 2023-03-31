@@ -2,6 +2,7 @@ databaseChangeLog:
   - changeSet:
       id: 1
       author: Dayanch
+      context: dev and prod
       changes:
         - createTable:
             tableName: users
@@ -25,6 +26,7 @@ databaseChangeLog:
   - changeSet:
       id: 2
       author: Dayanch
+      context: dev and prod
       changes:
         - createTable:
             tableName: news
@@ -67,6 +69,7 @@ databaseChangeLog:
   - changeSet:
       id: 3
       author: Dayanch
+      context: dev and prod
       changes:
         - createTable:
             tableName: comments
