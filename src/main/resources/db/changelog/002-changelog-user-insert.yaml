@@ -1,7 +1,8 @@
 databaseChangeLog:
   - changeSet:
       id: 4
-      author: your-name
+      author: Dayanch
+      context: dev and prod
       changes:
         - insert:
             tableName: users
