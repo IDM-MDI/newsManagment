@@ -14,6 +14,7 @@ import ru.clevertec.newsmanagement.entity.News;
 import ru.clevertec.newsmanagement.entity.User;
 import ru.clevertec.newsmanagement.exception.CustomException;
 import ru.clevertec.newsmanagement.model.DTO;
+import ru.clevertec.newsmanagement.model.PageFilter;
 import ru.clevertec.newsmanagement.persistence.NewsRepository;
 import ru.clevertec.newsmanagement.service.CommentService;
 import ru.clevertec.newsmanagement.service.NewsService;
@@ -56,8 +57,8 @@ public class NewsServiceImpl implements NewsService {
      * {@inheritDoc}
      */
     @Override
-    public List<DTO.News> findNews(int page, int size, String filter, String direction) throws CustomException {
-        return repository.findAll(PageRequest.of(page, size, getDirection(Sort.by(filter), direction)))
+    public List<DTO.News> findNews(PageFilter page) throws CustomException {
+        return repository.findAll(PageRequest.of(page.getNumber(), page.getSize(), getDirection(Sort.by(page.getFilter()), page.getDirection())))
                 .stream()
                 .map(mapper::toDTO)
                 .toList();

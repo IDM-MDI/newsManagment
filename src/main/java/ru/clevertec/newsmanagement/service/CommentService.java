@@ -2,6 +2,7 @@ package ru.clevertec.newsmanagement.service;
 
 import ru.clevertec.newsmanagement.exception.CustomException;
 import ru.clevertec.newsmanagement.model.DTO;
+import ru.clevertec.newsmanagement.model.PageFilter;
 
 import java.util.List;
 
@@ -12,16 +13,14 @@ import java.util.List;
 public interface CommentService {
     /**
      * Finds comments related to the news.
+     *
      * @param news id of the news.
      * @param page the page number of comments to retrieve.
-     * @param size the size of each page.
-     * @param filter the filter for the comment search.
-     * @param direction the sorting direction for comments.
      * @return a list of DTO.Comment objects representing the comments.
      * @throws CustomException if there was an error while finding the comments.
      */
 
-    List<DTO.Comment> findComments(long news, int page, int size, String filter, String direction) throws CustomException;
+    List<DTO.Comment> findComments(long news, PageFilter page) throws CustomException;
 
 
     /**

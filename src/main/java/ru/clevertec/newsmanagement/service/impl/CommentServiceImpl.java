@@ -12,6 +12,7 @@ import ru.clevertec.newsmanagement.entity.Comment;
 import ru.clevertec.newsmanagement.entity.User;
 import ru.clevertec.newsmanagement.exception.CustomException;
 import ru.clevertec.newsmanagement.model.DTO;
+import ru.clevertec.newsmanagement.model.PageFilter;
 import ru.clevertec.newsmanagement.persistence.CommentRepository;
 import ru.clevertec.newsmanagement.service.CommentService;
 import ru.clevertec.newsmanagement.service.NewsService;
@@ -52,8 +53,8 @@ public class CommentServiceImpl implements CommentService {
      * {@inheritDoc}
      */
     @Override
-    public List<DTO.Comment> findComments(long news, int page, int size, String filter, String direction) throws CustomException {
-        return repository.findCommentsByNews_Id(news, PageRequest.of(page, size, getDirection(Sort.by(filter), direction)))
+    public List<DTO.Comment> findComments(long news, PageFilter page) {
+        return repository.findCommentsByNews_Id(news, PageRequest.of(page.getNumber(), page.getSize(), getDirection(Sort.by(page.getFilter()), page.getDirection())))
                 .stream()
                 .map(mapper::toDTO)
                 .toList();

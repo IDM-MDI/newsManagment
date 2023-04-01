@@ -11,6 +11,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.clevertec.newsmanagement.SystemNewsManagementApplication;
 import ru.clevertec.newsmanagement.model.DTO;
+import ru.clevertec.newsmanagement.model.PageFilter;
 import ru.clevertec.newsmanagement.service.NewsService;
 
 import java.util.Arrays;
@@ -41,10 +42,7 @@ class NewsControllerTest {
     private NewsController newsController;
     @Autowired
     private MockMvc mockMvc;
-    private static final int PAGE = 0;
-    private static final int SIZE = 10;
-    private static final String FILTER = "id";
-    private static final String DIRECTION = "asc";
+    private static final PageFilter PAGE = new PageFilter();
     private static final long NEWS_ID = 1L;
     private List<DTO.News> newsList;
 
@@ -70,7 +68,7 @@ class NewsControllerTest {
     }
     @Test
     void getNewsShouldReturnOk() throws Exception {
-        when(newsService.findNews(PAGE,SIZE,FILTER,DIRECTION))
+        when(newsService.findNews(PAGE))
                 .thenReturn(newsList);
 
         // Act
