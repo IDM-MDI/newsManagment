@@ -2,8 +2,10 @@ package ru.clevertec.newsmanagement.cache;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 public abstract class CacheManager {
     private Map<Class<?>, SortedSet<Cache>> cache;
@@ -11,7 +13,12 @@ public abstract class CacheManager {
         cache = new HashMap<>();
     }
     public SortedSet<Cache> getCache(Class<?> classname) {
-        return cache.get(classname);
+        SortedSet<Cache> caches = cache.get(classname);
+        if(Objects.isNull(caches)) {
+            caches = new TreeSet<>();
+            cache.put(classname, caches);
+        }
+        return caches;
     }
     public Optional<Cache> findByKey(SortedSet<Cache> set ,String key) {
         return set.stream()
