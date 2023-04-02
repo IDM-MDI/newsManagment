@@ -1,5 +1,6 @@
 package ru.clevertec.newsmanagement.cache;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -7,6 +8,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @Component
+@Profile("lru | lfu")
 public class CustomCacheManager {
     private Map<Class<?>, CacheList> cache;
     private CacheList bean;
