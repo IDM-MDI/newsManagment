@@ -7,9 +7,11 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import ru.clevertec.newsmanagement.cache.Cache;
-import ru.clevertec.newsmanagement.cache.CacheManager;
+import ru.clevertec.newsmanagement.cache.CacheList;
+import ru.clevertec.newsmanagement.cache.CustomCacheManager;
 import ru.clevertec.newsmanagement.cache.DeleteCache;
 import ru.clevertec.newsmanagement.cache.GetCache;
 import ru.clevertec.newsmanagement.cache.PostCache;
@@ -18,23 +20,24 @@ import ru.clevertec.newsmanagement.util.AspectUtil;
 import ru.clevertec.newsmanagement.util.SpelExpression;
 
 import java.util.Optional;
-import java.util.SortedSet;
 
 @Aspect
 @Component
 @Slf4j
+@Profile("lru | lfu")
 @RequiredArgsConstructor
 public class CacheAspect {
-    private final CacheManager cacheManager;
+    private final CustomCacheManager customCacheManager;
     @Around("@annotation(getCache)")
     public Object getCacheAdvise(ProceedingJoinPoint joinPoint, GetCache getCache) throws Throwable {
-        SortedSet<Cache> cache = cacheManager.getCache(AspectUtil.getReturnType(joinPoint));
+        CacheList cache = customCacheManager.getCache(getCache.type());
         String evaluatedKey = SpelExpression.getKeyValue(joinPoint, getCache.key());
-        Optional<Cache> cacheObject = cacheManager.findByKey(cache, evaluatedKey);
+        Optional<Cache> cacheObject = cache.remove(evaluatedKey);
         if (cacheObject.isPresent()) {
-            return cacheManager.getValue(cacheObject.get());
+            return customCacheManager.hitCache(cache, cacheObject.get());
         }
-        return cacheManager.createCache(cache, evaluatedKey, joinPoint.proceed());
+        return cache.add(evaluatedKey, joinPoint.proceed())
+                .getValue();
     }
 
 
@@ -48,9 +51,9 @@ public class CacheAspect {
      */
     @AfterReturning(value = "@annotation(saveCache)",returning = "result")
     public void saveCacheAdvise(PostCache saveCache, Object result) throws NoSuchFieldException, IllegalAccessException {
-        SortedSet<Cache> cache = cacheManager.getCache(AspectUtil.getReturnType(result));
+        CacheList cache = customCacheManager.getCache(saveCache.type());
         String id = AspectUtil.getFieldValue(result,saveCache.fieldName());
-        cacheManager.createCache(cache, id, result);
+        cache.add(id, result);
     }
 
 
@@ -64,11 +67,11 @@ public class CacheAspect {
      */
     @Around("@annotation(deleteCache)")
     public Object deleteCacheAdvise(ProceedingJoinPoint joinPoint, DeleteCache deleteCache) throws Throwable {
+        CacheList cache = customCacheManager.getCache(deleteCache.type());
         String evaluatedKey = SpelExpression.getKeyValue(joinPoint, deleteCache.key());
-        SortedSet<Cache> cache = cacheManager.getCache(AspectUtil.getReturnType(joinPoint));
-        Optional<Cache> cacheObject = cacheManager.findByKey(cache, evaluatedKey);
+        Optional<Cache> cacheObject = cache.findByKey(evaluatedKey);
         Object result = joinPoint.proceed();
-        cacheObject.ifPresent(cache::remove);
+        cacheObject.ifPresent(c -> cache.remove(c.getKey()));
         return result;
     }
 
@@ -84,10 +87,11 @@ public class CacheAspect {
     @Around("@annotation(updateCache)")
     public Object updateCacheAdvise(ProceedingJoinPoint joinPoint, UpdateCache updateCache) throws Throwable {
         String evaluatedKey = SpelExpression.getKeyValue(joinPoint, updateCache.key());
-        SortedSet<Cache> cache = cacheManager.getCache(AspectUtil.getReturnType(joinPoint));
-        Optional<Cache> cacheObject = cacheManager.findByKey(cache, evaluatedKey);
+        CacheList cache = customCacheManager.getCache(updateCache.type());
+        Optional<Cache> cacheObject = cache.findByKey(evaluatedKey);
         Object result = joinPoint.proceed();
         cacheObject.ifPresent(k -> k.setValue(result));
-        return cacheManager.createCache(cache, evaluatedKey, result);
+        return cache.add(evaluatedKey, joinPoint.proceed())
+                .getValue();
     }
 }

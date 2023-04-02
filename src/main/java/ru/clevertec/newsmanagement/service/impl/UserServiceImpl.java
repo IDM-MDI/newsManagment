@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
      * {@inheritDoc}
      */
     @Override
-    @GetCache(key = "#username")
+    @GetCache(key = "#username", type = User.class)
     public User findUser(String username) throws CustomException {
         return repository.findUserByUsername(username)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND.toString()));

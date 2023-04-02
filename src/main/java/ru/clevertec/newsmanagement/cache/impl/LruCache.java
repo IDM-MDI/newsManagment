@@ -1,23 +1,38 @@
 package ru.clevertec.newsmanagement.cache.impl;
 
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 import ru.clevertec.newsmanagement.cache.Cache;
 
+import java.util.Objects;
+
 @ToString
-@EqualsAndHashCode(callSuper = false)
-public class LruCache extends Cache implements Comparable<LruCache> {
-    private int hit;
+@Getter
+public class LruCache extends Cache implements Comparable<LruCache>{
+    private long lastAccessedTime;
+
     public LruCache(String key, Object value) {
         super(key,value);
-        hit = 1;
+        lastAccessedTime = System.currentTimeMillis();
     }
     @Override
     public void hit() {
-        hit++;
+        lastAccessedTime = System.currentTimeMillis();
     }
     @Override
     public int compareTo(LruCache o) {
-        return o.hit - hit;
+        return Math.toIntExact(o.lastAccessedTime - lastAccessedTime);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode());
     }
 }

@@ -72,7 +72,7 @@ public class NewsServiceImpl implements NewsService {
      * {@inheritDoc}
      */
     @Override
-    @GetCache(key = "#id")
+    @GetCache(key = "#id", type = DTO.News.class)
     public DTO.News findNews(long id) throws CustomException {
         return mapper.toDTO(findNewsEntity(id));
     }
@@ -82,7 +82,6 @@ public class NewsServiceImpl implements NewsService {
      * {@inheritDoc}
      */
     @Override
-    @GetCache(key = "#id")
     public News findNewsEntity(long id) throws CustomException {
         return repository.findById(id)
                 .orElseThrow(() -> new CustomException(ENTITY_NOT_FOUND.toString()));
@@ -105,7 +104,7 @@ public class NewsServiceImpl implements NewsService {
      * {@inheritDoc}
      */
     @Override
-    @PostCache(fieldName = "#news.id")
+    @PostCache(fieldName = "id", type = DTO.News.class)
     public DTO.News saveNews(String username,
                              DTO.News news) throws CustomException {
         return mapper.toDTO(repository.save(setDefaultNews(username,news)));
@@ -116,7 +115,7 @@ public class NewsServiceImpl implements NewsService {
      * {@inheritDoc}
      */
     @Override
-    @UpdateCache(key = "#id")
+    @UpdateCache(key = "#id", type = DTO.News.class)
     public DTO.News updateNews(long id,
                                String username,
                                DTO.News news) throws CustomException {
@@ -128,7 +127,7 @@ public class NewsServiceImpl implements NewsService {
      * {@inheritDoc}
      */
     @Override
-    @DeleteCache(key = "#id")
+    @DeleteCache(key = "#id", type = DTO.News.class)
     @Transactional
     public void deleteNews(long id, String username) throws CustomException {
         checkBeforeOperation(id, username);
