@@ -1,20 +1,17 @@
 package ru.clevertec.newsmanagement.cache.impl;
 
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Component;
 import ru.clevertec.newsmanagement.cache.Cache;
 import ru.clevertec.newsmanagement.cache.CacheList;
 
 import java.util.LinkedList;
 import java.util.Optional;
 
-@Component
-@Profile("lfu")
 public class LfuCacheList implements CacheList {
     private LinkedList<Cache> caches;
-
-    public LfuCacheList() {
+    private final int size;
+    public LfuCacheList(int size) {
         caches = new LinkedList<>();
+        this.size = size;
     }
 
     @Override
@@ -24,6 +21,7 @@ public class LfuCacheList implements CacheList {
 
     @Override
     public Cache add(Cache lfuCache) {
+        removeLastIfOutSize();
         LfuCache cache = (LfuCache) lfuCache;
         Optional<Cache> found = findByCount((LfuCache) lfuCache);
         found.ifPresentOrElse(
@@ -48,7 +46,7 @@ public class LfuCacheList implements CacheList {
 
     @Override
     public CacheList createList() {
-        return new LfuCacheList();
+        return new LfuCacheList(size);
     }
 
     private Optional<Cache> findByCount(LfuCache lfuCache) {
@@ -60,5 +58,10 @@ public class LfuCacheList implements CacheList {
     private void addByIndex(LfuCache lfuCache, Cache cache) {
         int index = caches.indexOf(cache);
         caches.add(index, lfuCache);
+    }
+    private void removeLastIfOutSize() {
+        if(caches.size() >= size) {
+            caches.removeLast();
+        }
     }
 }

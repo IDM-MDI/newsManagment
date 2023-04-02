@@ -1,29 +1,37 @@
 package ru.clevertec.newsmanagement.cache;
 
-import org.springframework.context.annotation.Profile;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import ru.clevertec.newsmanagement.cache.impl.LfuCacheList;
+import ru.clevertec.newsmanagement.cache.impl.LruCacheList;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 @Component
-@Profile("lru | lfu")
 public class CustomCacheManager {
     private Map<Class<?>, CacheList> cache;
-    private CacheList bean;
-    public CustomCacheManager(CacheList bean) {
+    @Value("${cache.type}")
+    private String type;
+    @Value("${cache.size}")
+    private int size;
+    public CustomCacheManager() {
         cache = new HashMap<>();
-        this.bean = bean;
     }
     public CacheList getCache(Class<?> classname) {
         CacheList list = cache.get(classname);
         if(Objects.isNull(list)) {
-            list = bean.createList();
+            list = createNewCache();
             cache.put(classname, list);
         }
         return list;
     }
+
+    private CacheList createNewCache() {
+        return "lru".equals(type) ? new LruCacheList(size) : new LfuCacheList(size);
+    }
+
     public Object hitCache(CacheList list, Cache cache) {
         cache.hit();
         list.add(cache);

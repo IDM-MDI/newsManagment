@@ -7,7 +7,6 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import ru.clevertec.newsmanagement.cache.Cache;
 import ru.clevertec.newsmanagement.cache.CacheList;
@@ -24,10 +23,18 @@ import java.util.Optional;
 @Aspect
 @Component
 @Slf4j
-@Profile("lru | lfu")
 @RequiredArgsConstructor
 public class CacheAspect {
     private final CustomCacheManager customCacheManager;
+
+    /**
+     * A method-level advice that intercepts methods annotated with {@link GetCache} annotation
+     * and provides caching functionality.
+     * @param joinPoint The join point that represents the method execution.
+     * @param getCache The annotation that indicates the method is cacheable.
+     * @return The cached value or the result of the method execution.
+     * @throws Throwable If an exception occurs during method execution.
+     */
     @Around("@annotation(getCache)")
     public Object getCacheAdvise(ProceedingJoinPoint joinPoint, GetCache getCache) throws Throwable {
         CacheList cache = customCacheManager.getCache(getCache.type());

@@ -1,20 +1,17 @@
 package ru.clevertec.newsmanagement.cache.impl;
 
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Component;
 import ru.clevertec.newsmanagement.cache.Cache;
 import ru.clevertec.newsmanagement.cache.CacheList;
 
 import java.util.LinkedList;
 import java.util.Optional;
 
-@Component
-@Profile("lru")
 public class LruCacheList implements CacheList {
     private LinkedList<Cache> caches;
-
-    public LruCacheList() {
+    private final int size;
+    public LruCacheList(int size) {
         caches = new LinkedList<>();
+        this.size = size;
     }
     @Override
     public Cache add(String key, Object value) {
@@ -23,6 +20,7 @@ public class LruCacheList implements CacheList {
 
     @Override
     public Cache add(Cache cache) {
+        removeLastIfOutSize();
         caches.addFirst(cache);
         return cache;
     }
@@ -43,6 +41,12 @@ public class LruCacheList implements CacheList {
 
     @Override
     public CacheList createList() {
-        return new LruCacheList();
+        return new LruCacheList(size);
+    }
+
+    private void removeLastIfOutSize() {
+        if(caches.size() >= size) {
+            caches.removeLast();
+        }
     }
 }
