@@ -10,10 +10,15 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
+import ru.clevertec.newsmanagement.cache.DeleteCache;
+import ru.clevertec.newsmanagement.cache.GetCache;
+import ru.clevertec.newsmanagement.cache.PostCache;
+import ru.clevertec.newsmanagement.cache.UpdateCache;
 import ru.clevertec.newsmanagement.entity.News;
 import ru.clevertec.newsmanagement.entity.User;
 import ru.clevertec.newsmanagement.exception.CustomException;
 import ru.clevertec.newsmanagement.model.DTO;
+import ru.clevertec.newsmanagement.model.PageFilter;
 import ru.clevertec.newsmanagement.persistence.NewsRepository;
 import ru.clevertec.newsmanagement.service.CommentService;
 import ru.clevertec.newsmanagement.service.NewsService;
@@ -56,8 +61,8 @@ public class NewsServiceImpl implements NewsService {
      * {@inheritDoc}
      */
     @Override
-    public List<DTO.News> findNews(int page, int size, String filter, String direction) throws CustomException {
-        return repository.findAll(PageRequest.of(page, size, getDirection(Sort.by(filter), direction)))
+    public List<DTO.News> findNews(PageFilter page) {
+        return repository.findAll(PageRequest.of(page.getNumber(), page.getSize(), getDirection(Sort.by(page.getFilter()), page.getDirection())))
                 .stream()
                 .map(mapper::toDTO)
                 .toList();
@@ -67,6 +72,7 @@ public class NewsServiceImpl implements NewsService {
      * {@inheritDoc}
      */
     @Override
+    @GetCache(key = "#id", type = DTO.News.class)
     public DTO.News findNews(long id) throws CustomException {
         return mapper.toDTO(findNewsEntity(id));
     }
@@ -98,6 +104,7 @@ public class NewsServiceImpl implements NewsService {
      * {@inheritDoc}
      */
     @Override
+    @PostCache(fieldName = "id", type = DTO.News.class)
     public DTO.News saveNews(String username,
                              DTO.News news) throws CustomException {
         return mapper.toDTO(repository.save(setDefaultNews(username,news)));
@@ -108,6 +115,7 @@ public class NewsServiceImpl implements NewsService {
      * {@inheritDoc}
      */
     @Override
+    @UpdateCache(key = "#id", type = DTO.News.class)
     public DTO.News updateNews(long id,
                                String username,
                                DTO.News news) throws CustomException {
@@ -119,6 +127,7 @@ public class NewsServiceImpl implements NewsService {
      * {@inheritDoc}
      */
     @Override
+    @DeleteCache(key = "#id", type = DTO.News.class)
     @Transactional
     public void deleteNews(long id, String username) throws CustomException {
         checkBeforeOperation(id, username);

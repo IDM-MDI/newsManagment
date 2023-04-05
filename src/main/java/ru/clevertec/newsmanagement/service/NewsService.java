@@ -3,6 +3,7 @@ package ru.clevertec.newsmanagement.service;
 import ru.clevertec.newsmanagement.entity.News;
 import ru.clevertec.newsmanagement.exception.CustomException;
 import ru.clevertec.newsmanagement.model.DTO;
+import ru.clevertec.newsmanagement.model.PageFilter;
 
 import java.util.List;
 
@@ -13,14 +14,12 @@ import java.util.List;
 public interface NewsService {
     /**
      * Returns a list of news with pagination and sorting.
+     *
      * @param page the page number.
-     * @param size the page size.
-     * @param filter the filter to be applied to the news.
-     * @param direction the direction to sort the news.
      * @return a list of news.
      * @throws CustomException if an error occurs while retrieving the news.
      */
-    List<DTO.News> findNews(int page, int size, String filter, String direction) throws CustomException;
+    List<DTO.News> findNews(PageFilter page) throws CustomException;
 
     /**
      * Returns the news with the given id.

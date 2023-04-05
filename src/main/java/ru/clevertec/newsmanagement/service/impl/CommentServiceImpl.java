@@ -8,10 +8,15 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import ru.clevertec.newsmanagement.cache.DeleteCache;
+import ru.clevertec.newsmanagement.cache.GetCache;
+import ru.clevertec.newsmanagement.cache.PostCache;
+import ru.clevertec.newsmanagement.cache.UpdateCache;
 import ru.clevertec.newsmanagement.entity.Comment;
 import ru.clevertec.newsmanagement.entity.User;
 import ru.clevertec.newsmanagement.exception.CustomException;
 import ru.clevertec.newsmanagement.model.DTO;
+import ru.clevertec.newsmanagement.model.PageFilter;
 import ru.clevertec.newsmanagement.persistence.CommentRepository;
 import ru.clevertec.newsmanagement.service.CommentService;
 import ru.clevertec.newsmanagement.service.NewsService;
@@ -52,8 +57,8 @@ public class CommentServiceImpl implements CommentService {
      * {@inheritDoc}
      */
     @Override
-    public List<DTO.Comment> findComments(long news, int page, int size, String filter, String direction) throws CustomException {
-        return repository.findCommentsByNews_Id(news, PageRequest.of(page, size, getDirection(Sort.by(filter), direction)))
+    public List<DTO.Comment> findComments(long news, PageFilter page) {
+        return repository.findCommentsByNews_Id(news, PageRequest.of(page.getNumber(), page.getSize(), getDirection(Sort.by(page.getFilter()), page.getDirection())))
                 .stream()
                 .map(mapper::toDTO)
                 .toList();
@@ -63,6 +68,7 @@ public class CommentServiceImpl implements CommentService {
      * {@inheritDoc}
      */
     @Override
+    @GetCache(key = "{#news,#id}", type = DTO.Comment.class)
     public DTO.Comment findComments(long news, long id) throws CustomException {
         return mapper.toDTO(findCommentEntity(news,id));
     }
@@ -85,6 +91,7 @@ public class CommentServiceImpl implements CommentService {
      * {@inheritDoc}
      */
     @Override
+    @PostCache(fieldName = "id", type = DTO.Comment.class)
     public DTO.Comment saveComment(long news, String username, DTO.Comment comment) throws CustomException {
         return mapper.toDTO(repository.save(setDefaultComment(news, username, comment)));
     }
@@ -94,6 +101,7 @@ public class CommentServiceImpl implements CommentService {
      * {@inheritDoc}
      */
     @Override
+    @UpdateCache(key = "#id", type = DTO.Comment.class)
     public DTO.Comment updateComment(long news, long id, String username, DTO.Comment comment) throws CustomException {
         return mapper.toDTO(repository.save(updateCommentField(news,id,username,comment)));
     }
@@ -103,6 +111,7 @@ public class CommentServiceImpl implements CommentService {
      * {@inheritDoc}
      */
     @Override
+    @DeleteCache(key = "#id", type = DTO.Comment.class)
     public void deleteComment(long id, long news, String username) throws CustomException {
         findValidEntity(news, id, username);
         repository.deleteById(id);

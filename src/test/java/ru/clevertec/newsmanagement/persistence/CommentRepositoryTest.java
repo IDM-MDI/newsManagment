@@ -13,7 +13,7 @@ import ru.clevertec.newsmanagement.entity.Comment;
 import java.util.List;
 import java.util.Optional;
 
-@ActiveProfiles("test")
+@ActiveProfiles({"test", "lru"})
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
 class CommentRepositoryTest extends PostgresTestContainer {

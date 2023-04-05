@@ -16,6 +16,7 @@ import ru.clevertec.newsmanagement.entity.Role;
 import ru.clevertec.newsmanagement.entity.User;
 import ru.clevertec.newsmanagement.exception.CustomException;
 import ru.clevertec.newsmanagement.model.DTO;
+import ru.clevertec.newsmanagement.model.PageFilter;
 import ru.clevertec.newsmanagement.persistence.CommentRepository;
 import ru.clevertec.newsmanagement.service.NewsService;
 import ru.clevertec.newsmanagement.service.UserService;
@@ -40,12 +41,9 @@ import static ru.clevertec.newsmanagement.exception.ExceptionStatus.NO_ACCESS;
 
 @ExtendWith(MockitoExtension.class)
 class CommentServiceImplTest {
+    private static final PageFilter PAGE = new PageFilter();
     private static long NEWS_ID = 1L;
     private static long COMMENT_ID = 1L;
-    private static int PAGE = 0;
-    private static int SIZE = 10;
-    private static String FILTER = "createdDate";
-    private static String DIRECTION = "desc";
     @Mock
     private CommentRepository commentRepository;
     @Mock
@@ -94,7 +92,7 @@ class CommentServiceImplTest {
                                 .thenReturn(dtos.get(integer)));
 
         // Act
-        List<DTO.Comment> result = commentService.findComments(NEWS_ID, PAGE, SIZE, FILTER, DIRECTION);
+        List<DTO.Comment> result = commentService.findComments(NEWS_ID,PAGE);
 
         // Assert
         Assertions.assertThat(result).hasSize(2);

@@ -10,7 +10,7 @@ import ru.clevertec.newsmanagement.entity.User;
 
 import java.util.Optional;
 
-@ActiveProfiles("test")
+@ActiveProfiles({"test", "lru"})
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class UserRepositoryTest extends PostgresTestContainer {
     @Autowired

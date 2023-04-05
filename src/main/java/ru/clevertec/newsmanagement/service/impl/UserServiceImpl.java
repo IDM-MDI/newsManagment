@@ -6,6 +6,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import ru.clevertec.newsmanagement.cache.GetCache;
 import ru.clevertec.newsmanagement.entity.Role;
 import ru.clevertec.newsmanagement.entity.User;
 import ru.clevertec.newsmanagement.exception.CustomException;
@@ -52,6 +53,7 @@ public class UserServiceImpl implements UserService {
      * {@inheritDoc}
      */
     @Override
+    @GetCache(key = "#username", type = User.class)
     public User findUser(String username) throws CustomException {
         return repository.findUserByUsername(username)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND.toString()));

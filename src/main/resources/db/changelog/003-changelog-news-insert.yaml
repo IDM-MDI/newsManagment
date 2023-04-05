@@ -2,7 +2,7 @@ databaseChangeLog:
   - changeSet:
       id: 5
       author: Dayanch
-      context: dev and prod
+      context: dev OR prod
       changes:
         - insert:
             tableName: news

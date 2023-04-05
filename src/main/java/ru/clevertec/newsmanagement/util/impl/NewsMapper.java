@@ -48,6 +48,7 @@ public class NewsMapper implements ModelMapper<News, DTO.News> {
                         .setSeconds(instant.getEpochSecond())
                         .setNanos(instant.getNano())
                         .build())
+                .setUsername(news.getUser().getUsername())
                 .build();
     }
 }

@@ -16,6 +16,7 @@ import ru.clevertec.newsmanagement.entity.Role;
 import ru.clevertec.newsmanagement.entity.User;
 import ru.clevertec.newsmanagement.exception.CustomException;
 import ru.clevertec.newsmanagement.model.DTO;
+import ru.clevertec.newsmanagement.model.PageFilter;
 import ru.clevertec.newsmanagement.persistence.NewsRepository;
 import ru.clevertec.newsmanagement.service.CommentService;
 import ru.clevertec.newsmanagement.service.UserService;
@@ -61,10 +62,7 @@ class NewsServiceImplTest {
     private static final String USERNAME = "user1";
     private static final String TITLE = "Test Title";
     private static final String TEXT = "Test Text";
-    private static final int PAGE = 0;
-    private static final int SIZE = 2;
-    private static final String FILTER = "id";
-    private static final String DIRECTION = "asc";
+    private static final PageFilter PAGE = new PageFilter();
 
 
     @BeforeEach
@@ -101,7 +99,7 @@ class NewsServiceImplTest {
                         .thenReturn(dtos.get(integer)));
 
         // Act
-        List<DTO.News> result = newsService.findNews(PAGE, SIZE, FILTER, DIRECTION);
+        List<DTO.News> result = newsService.findNews(PAGE);
 
         // Assert
         Assertions.assertThat(result).isEqualTo(dtos);

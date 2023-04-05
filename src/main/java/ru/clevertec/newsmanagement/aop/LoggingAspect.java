@@ -134,6 +134,6 @@ public class LoggingAspect {
         log.info(AFTER_LAYER,
                 joinPoint.getTarget().getClass().getCanonicalName(),
                 joinPoint.getSignature().getName(),
-                result.toString());
+                result);
     }
 }
