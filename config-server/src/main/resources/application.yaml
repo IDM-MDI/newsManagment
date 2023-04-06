@@ -1,0 +1,34 @@
+server:
+    port: 8888
+    servlet:
+        context-path: /config
+
+eureka:
+    client:
+        service-url:
+            defaultZone: http://server:8761/eureka
+
+spring:
+  application:
+    name: service-config
+  cloud:
+    config:
+      server:
+        git:
+            uri: ${GIT_CONFIG_URI}
+            search-paths:
+              - '{application}-{profile}'
+            username: ${GIT_CONFIG_USERNAME}
+            password: ${GIT_CONFIG_PASSWORD}
+        default-label: master
+
+management:
+    health:
+        livenessstate:
+            enabled: true
+        readinessstate:
+            enabled: true
+    endpoint:
+        health:
+          probes:
+              enabled: true

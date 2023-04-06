@@ -1,6 +1,20 @@
 version: '3'
 services:
-  db:
+  server:
+    build: ./server/.
+    ports:
+      - "8761:8761"
+    networks:
+      - news-management-network
+  config-server:
+    build: ./config-server/.
+    ports:
+      - "8888:8888"
+    depends_on:
+      - server
+    networks:
+      - news-management-network
+  news-comment-db:
     image: postgres:15-alpine
     environment:
       POSTGRES_USER: username
@@ -9,14 +23,20 @@ services:
     ports:
       - "5432:5432"
     restart: always
-  app:
-    build: .
+    networks:
+      - news-management-network
+  news-service:
+    build: ./news-service/.
+    ports:
+      - "8080"
     env_file:
       - .env
-    ports:
-      - "8080:8080"
-    volumes:
-      - .:/app
-    restart: always
     depends_on:
-      - db
+      - server
+      - config-server
+      - news-comment-db
+    networks:
+      - news-management-network
+
+networks:
+  news-management-network:

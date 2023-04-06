@@ -1,13 +1,11 @@
 HELP.md
 .gradle
-htmlReport
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
 
 ### STS ###
-.env
 .apt_generated
 .classpath
 .factorypath

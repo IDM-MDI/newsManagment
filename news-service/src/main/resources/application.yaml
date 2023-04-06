@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: news-service
+  cloud:
+    config:
+      uri: http://server:8888/config
+      name: news-service
+      label: ${PROFILE}
