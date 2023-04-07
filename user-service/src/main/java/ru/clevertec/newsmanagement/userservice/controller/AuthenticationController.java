@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.clevertec.newsmanagement.userservice.model.DTO;
 import ru.clevertec.newsmanagement.userservice.service.UserService;
+import ru.clevertec.newsmanagement.userservice.util.JwtSecurityUtil;
 
 import static ru.clevertec.newsmanagement.userservice.util.JsonUtil.toJson;
 
@@ -81,5 +82,22 @@ public class AuthenticationController {
     @GetMapping(value = "/validateToken",produces = MediaType.APPLICATION_JSON_VALUE)
     public String validateToken(@RequestParam(name = "token") @NotBlank @Valid String token) {
         return toJson(service.validateToken(token));
+    }
+
+    /**
+     * Endpoint for by context get user
+     * @return a JSON string representation of the authenticated user
+     */
+    @Operation(
+            summary = "User validating by token",
+            description = "API Point made for validating token"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "User authenticated"
+    )
+    @GetMapping(value = "/context",produces = MediaType.APPLICATION_JSON_VALUE)
+    public String getUserByContext() {
+        return toJson(JwtSecurityUtil.getUserByContext());
     }
 }

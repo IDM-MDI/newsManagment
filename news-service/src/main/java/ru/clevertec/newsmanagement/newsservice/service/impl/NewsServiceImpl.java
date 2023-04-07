@@ -23,10 +23,12 @@ import ru.clevertec.newsmanagement.newsservice.persistence.NewsRepository;
 import ru.clevertec.newsmanagement.newsservice.service.CommentService;
 import ru.clevertec.newsmanagement.newsservice.service.NewsService;
 import ru.clevertec.newsmanagement.newsservice.util.impl.NewsMapper;
+import ru.clevertec.newsmanagement.newsservice.validator.UserValidator;
 
 import java.util.List;
 
 import static ru.clevertec.newsmanagement.newsservice.exception.ExceptionStatus.ENTITY_NOT_FOUND;
+import static ru.clevertec.newsmanagement.newsservice.exception.ExceptionStatus.NO_ACCESS;
 import static ru.clevertec.newsmanagement.newsservice.util.ExampleUtil.ENTITY_SEARCH_MATCHER;
 import static ru.clevertec.newsmanagement.newsservice.util.SortDirectionUtil.getDirection;
 
@@ -137,11 +139,11 @@ public class NewsServiceImpl implements NewsService {
      * @throws CustomException if the user is not authorized to perform the operation
      */
     private void checkBeforeOperation(long id) throws CustomException {
-//        if(UserValidator.isUserInvalid(
-//                findNewsEntity(id).getUser(),
-//                userService.findUser(username))) {            TODO:REFACTOR
-//            throw new CustomException(NO_ACCESS.toString());
-//        }
+        if(UserValidator.isUserInvalid(
+                findNewsEntity(id).getUsername(),
+                userClient.userByContext())) {
+            throw new CustomException(NO_ACCESS.toString());
+        }
     }
 
 
@@ -182,8 +184,7 @@ public class NewsServiceImpl implements NewsService {
      * @throws CustomException if the user does not exist
      */
     private News setDefaultNews(DTO.News client) throws CustomException {
-//        String username = userClient.getUserContext();        TODO:REFACTOR
-        String username = "asb";
+        String username = userClient.userByContext().getUsername();
         News result = mapper.toEntity(client);
         result.setUsername(username);
         return result;

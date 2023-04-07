@@ -3,9 +3,10 @@ package ru.clevertec.newsmanagement.userservice.util;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import ru.clevertec.newsmanagement.userservice.entity.User;
 import ru.clevertec.newsmanagement.userservice.exception.CustomException;
+import ru.clevertec.newsmanagement.userservice.model.DTO;
 import ru.clevertec.newsmanagement.userservice.validator.JwtValidator;
 
 import static ru.clevertec.newsmanagement.userservice.exception.ExceptionStatus.USER_NOT_AUTHORIZE;
@@ -23,13 +24,14 @@ public class JwtSecurityUtil {
      * Retrieves the username of the currently authenticated user from the security context.
      * @return the username of the currently authenticated user
      */
-    public static String getUsernameByContext() {
+    public static DTO.AuthenticationResponse getUserByContext() {
         if(JwtValidator.isSecurityAuthenticationEmpty()) {
             throw new CustomException(USER_NOT_AUTHORIZE.toString());
         }
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String name = authentication.getName();
-        log.info("User with username {}", name);
-        return name;
+        User authentication = (User) SecurityContextHolder.getContext().getAuthentication();
+        return DTO.AuthenticationResponse.newBuilder()
+                .setUsername(authentication.getUsername())
+                .setRole(authentication.getRole().name())
+                .build();
     }
 }

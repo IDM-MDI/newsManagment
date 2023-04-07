@@ -21,10 +21,12 @@ import ru.clevertec.newsmanagement.newsservice.persistence.CommentRepository;
 import ru.clevertec.newsmanagement.newsservice.service.CommentService;
 import ru.clevertec.newsmanagement.newsservice.service.NewsService;
 import ru.clevertec.newsmanagement.newsservice.util.impl.CommentMapper;
+import ru.clevertec.newsmanagement.newsservice.validator.UserValidator;
 
 import java.util.List;
 
 import static ru.clevertec.newsmanagement.newsservice.exception.ExceptionStatus.ENTITY_NOT_FOUND;
+import static ru.clevertec.newsmanagement.newsservice.exception.ExceptionStatus.NO_ACCESS;
 import static ru.clevertec.newsmanagement.newsservice.util.ExampleUtil.ENTITY_SEARCH_MATCHER;
 import static ru.clevertec.newsmanagement.newsservice.util.SortDirectionUtil.getDirection;
 
@@ -135,7 +137,8 @@ public class CommentServiceImpl implements CommentService {
     private Comment setDefaultComment(long news, DTO.Comment comment) throws CustomException {
         Comment result = mapper.toEntity(comment);
         result.setNews(newsService.findNewsEntity(news));
-//        result.setUsername(userService.findUser(username));       TODO:REFACTOR
+        DTO.User user = userClient.userByContext();
+        result.setUsername(user.getUsername());
         return result;
     }
 
@@ -164,10 +167,10 @@ public class CommentServiceImpl implements CommentService {
      */
     private Comment findValidEntity(long news, long id) throws CustomException {
         Comment entity = findCommentEntity(news, id);
-//        User user = userService.findUser(username);
-//        if(UserValidator.isUserInvalid(entity.getUser(), user)) {
-//            throw new CustomException(NO_ACCESS.toString());      TODO:REFACTOR
-//        }
+        DTO.User user = userClient.userByContext();
+        if(UserValidator.isUserInvalid(entity.getUsername(), user)) {
+            throw new CustomException(NO_ACCESS.toString());
+        }
         return entity;
     }
 
