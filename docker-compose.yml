@@ -39,6 +39,29 @@ services:
     networks:
       - news-management-network
     restart: always
+  user-db:
+      image: postgres:15-alpine
+      environment:
+        POSTGRES_USER: username
+        POSTGRES_PASSWORD: password
+        POSTGRES_DB: news_management
+      ports:
+        - "5431:5431"
+      restart: always
+      networks:
+        - news-management-network
+  user-service:
+      build: ./user-service/.
+      ports:
+        - "8081:8081"
+      env_file:
+        - .env
+      depends_on:
+        - config-server
+        - user-db
+      networks:
+        - news-management-network
+      restart: always
 
 networks:
   news-management-network:
