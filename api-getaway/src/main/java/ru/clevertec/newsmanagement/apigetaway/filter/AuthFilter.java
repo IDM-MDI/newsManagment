@@ -36,7 +36,7 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
 
             return webClientBuilder.build()
                     .post()
-                    .uri("http://user-service/users/api/v1/validateToken?token=" + splitedAuthorization[1])
+                    .uri("http://user-service/users/api/v1/auth/validateToken?token=" + splitedAuthorization[1])
                     .retrieve()
                     .bodyToMono(DTO.AuthenticationResponse.class)
                     .map(response -> {

@@ -5,30 +5,6 @@ databaseChangeLog:
       context: dev OR prod
       changes:
         - createTable:
-            tableName: users
-            columns:
-              - column:
-                  name: username
-                  type: varchar(255)
-                  constraints:
-                    - primaryKey: true
-                    - nullable: false
-              - column:
-                  name: password
-                  type: varchar(255)
-                  constraints:
-                    - nullable: false
-              - column:
-                  name: role
-                  type: varchar(255)
-                  constraints:
-                    - nullable: false
-  - changeSet:
-      id: 2
-      author: Dayanch
-      context: dev OR prod
-      changes:
-        - createTable:
             tableName: news
             columns:
               - column:
@@ -58,16 +34,8 @@ databaseChangeLog:
                   type: timestamp
                   constraints:
                     - nullable: false
-        - addForeignKeyConstraint:
-            baseTableName: news
-            baseColumnNames:
-              - username
-            referencedTableName: users
-            referencedColumnNames:
-              - username
-            constraintName: FK_NEWS_ON_USERNAME
   - changeSet:
-      id: 3
+      id: 2
       author: Dayanch
       context: dev OR prod
       changes:
@@ -101,19 +69,3 @@ databaseChangeLog:
                   type: timestamp
                   constraints:
                     - nullable: false
-        - addForeignKeyConstraint:
-            baseTableName: comments
-            baseColumnNames:
-              - news_id
-            referencedTableName: news
-            referencedColumnNames:
-              - id
-            constraintName: FK_COMMENTS_ON_NEWS
-        - addForeignKeyConstraint:
-            baseTableName: comments
-            baseColumnNames:
-              - username
-            referencedTableName: users
-            referencedColumnNames:
-              - username
-            constraintName: FK_COMMENTS_ON_USERNAME

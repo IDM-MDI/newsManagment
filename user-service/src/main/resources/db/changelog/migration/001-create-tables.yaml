@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: Dayanch
+      context: dev OR prod
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: username
+                  type: varchar(255)
+                  constraints:
+                    - primaryKey: true
+                    - nullable: false
+              - column:
+                  name: password
+                  type: varchar(255)
+                  constraints:
+                    - nullable: false
+              - column:
+                  name: role
+                  type: varchar(255)
+                  constraints:
+                    - nullable: false

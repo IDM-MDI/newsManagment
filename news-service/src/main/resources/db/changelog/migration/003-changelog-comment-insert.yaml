@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 6
+      id: 4
       author: Dayanch
       context: dev OR prod
       changes:
