@@ -41,7 +41,11 @@ import static ru.clevertec.newsmanagement.newsservice.util.QueryParameterUtil.ge
 public class CommentController {
     private final CommentService service;
 
-    //TODO: JAVADOC
+    /**
+     * API Point made for returning news page.
+     * @param page representation of pageable
+     * @return A JSON representation of the comment found
+     */
     @GetMapping(value = "/{news}/comment", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(
             summary = "News Comments",

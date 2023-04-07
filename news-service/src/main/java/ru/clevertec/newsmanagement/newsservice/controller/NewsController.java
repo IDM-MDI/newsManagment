@@ -38,7 +38,11 @@ import static ru.clevertec.newsmanagement.newsservice.util.QueryParameterUtil.ge
 public class NewsController {
     private final NewsService service;
 
-    //TODO: JAVADOC
+    /**
+     * API Point made for returning news page.
+     * @param page representation of pageable
+     * @return A JSON representation of the news found
+     */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(
             summary = "News",
