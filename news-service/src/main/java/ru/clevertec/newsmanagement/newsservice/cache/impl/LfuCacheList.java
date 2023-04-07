@@ -1,7 +1,7 @@
 package ru.clevertec.newsmanagement.newsservice.cache.impl;
 
-import ru.clevertec.newsmanagement.cache.Cache;
-import ru.clevertec.newsmanagement.cache.CacheList;
+import ru.clevertec.newsmanagement.newsservice.cache.Cache;
+import ru.clevertec.newsmanagement.newsservice.cache.CacheList;
 
 import java.util.LinkedList;
 import java.util.Optional;

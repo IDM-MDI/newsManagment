@@ -2,8 +2,8 @@ package ru.clevertec.newsmanagement.newsservice.cache;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import ru.clevertec.newsmanagement.cache.impl.LfuCacheList;
-import ru.clevertec.newsmanagement.cache.impl.LruCacheList;
+import ru.clevertec.newsmanagement.newsservice.cache.impl.LfuCacheList;
+import ru.clevertec.newsmanagement.newsservice.cache.impl.LruCacheList;
 
 import java.util.HashMap;
 import java.util.Map;

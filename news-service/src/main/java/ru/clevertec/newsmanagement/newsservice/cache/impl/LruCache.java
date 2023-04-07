@@ -2,7 +2,7 @@ package ru.clevertec.newsmanagement.newsservice.cache.impl;
 
 import lombok.Getter;
 import lombok.ToString;
-import ru.clevertec.newsmanagement.cache.Cache;
+import ru.clevertec.newsmanagement.newsservice.cache.Cache;
 
 import java.util.Objects;
 
