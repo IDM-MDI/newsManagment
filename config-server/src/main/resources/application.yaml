@@ -7,20 +7,16 @@ eureka:
     client:
         service-url:
             defaultZone: http://server:8761/eureka
-
 spring:
   application:
     name: service-config
+  profiles:
+    active: native
   cloud:
     config:
       server:
-        git:
-            uri: ${GIT_CONFIG_URI}
-            search-paths:
-              - '{application}-{profile}'
-            username: ${GIT_CONFIG_USERNAME}
-            password: ${GIT_CONFIG_PASSWORD}
-        default-label: master
+        native:
+          search-locations: classpath:/config
 
 management:
     health:

@@ -8,6 +8,8 @@ services:
       - news-management-network
   config-server:
     build: ./config-server/.
+    env_file:
+      - .env
     ports:
       - "8888:8888"
     depends_on:
@@ -32,11 +34,11 @@ services:
     env_file:
       - .env
     depends_on:
-      - server
       - config-server
       - news-comment-db
     networks:
       - news-management-network
+    restart: always
 
 networks:
   news-management-network:
