@@ -6,7 +6,7 @@ import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFac
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-import ru.clevertec.newsmanagement.apigetaway.model.DTO;
+import ru.clevertec.newsmanagement.apigetaway.model.User;
 import ru.clevertec.newsmanagement.apigetaway.validator.AuthenticationValidator;
 
 @Component
@@ -38,7 +38,7 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
                     .post()
                     .uri("http://user-service/users/api/v1/auth/validateToken?token=" + splitedAuthorization[1])
                     .retrieve()
-                    .bodyToMono(DTO.AuthenticationResponse.class)
+                    .bodyToMono(User.class)
                     .map(response -> {
                         exchange.getRequest().mutate().header("username", response.getUsername());
                         exchange.getRequest().mutate().header("role", response.getRole());

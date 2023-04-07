@@ -6,16 +6,47 @@ services:
       - "8761:8761"
     networks:
       - news-management-network
-  config-server:
-    build: ./config-server/.
-    env_file:
-      - .env
+  api-getaway:
+    build: ./api-getaway/.
     ports:
-      - "8888:8888"
+      - "8765:8765"
     depends_on:
       - server
     networks:
       - news-management-network
+  config-server:
+    build: ./config-server/.
+    ports:
+      - "8888:8888"
+    depends_on:
+      - server
+      - api-getaway
+    networks:
+      - news-management-network
+  user-db:
+      image: postgres:15-alpine
+      environment:
+        POSTGRES_USER: username
+        POSTGRES_PASSWORD: password
+        POSTGRES_DB: user_management
+      ports:
+        - "5431:5432"
+      restart: always
+      networks:
+        - news-management-network
+  user-service:
+      build: ./user-service/.
+      ports:
+        - "8081:8081"
+      env_file:
+        - .env
+      depends_on:
+        - config-server
+        - api-getaway
+        - user-db
+      networks:
+        - news-management-network
+      restart: always
   news-comment-db:
     image: postgres:15-alpine
     environment:
@@ -36,32 +67,11 @@ services:
     depends_on:
       - config-server
       - news-comment-db
+      - api-getaway
+      - user-service
     networks:
       - news-management-network
     restart: always
-  user-db:
-      image: postgres:15-alpine
-      environment:
-        POSTGRES_USER: username
-        POSTGRES_PASSWORD: password
-        POSTGRES_DB: news_management
-      ports:
-        - "5431:5431"
-      restart: always
-      networks:
-        - news-management-network
-  user-service:
-      build: ./user-service/.
-      ports:
-        - "8081:8081"
-      env_file:
-        - .env
-      depends_on:
-        - config-server
-        - user-db
-      networks:
-        - news-management-network
-      restart: always
 
 networks:
   news-management-network:

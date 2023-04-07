@@ -1,8 +1,0 @@
-syntax = "proto3";
-package ru.clevertec.newsmanagement.apigetaway.model;
-
-message AuthenticationResponse {
-  string username = 1;
-  string role = 2;
-  string jwt = 3;
-}

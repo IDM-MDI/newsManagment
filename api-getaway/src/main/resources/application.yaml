@@ -29,8 +29,18 @@ spring:
           uri: lb://news-service
           predicates:
             - Path=/news/**
+            - Header=Authorization
           filters:
             - AuthFilter
+        - id: news-comment-service-id
+          uri: lb://news-service
+          predicates:
+            - Path=/news/**
+            - Method=GET
+        - id: user-service-id
+          uri: lb://user-service
+          predicates:
+            - Path=/users/**
 eureka:
   client:
     service-url:

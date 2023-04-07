@@ -14,11 +14,11 @@ import ru.clevertec.newsmanagement.newsservice.cache.DeleteCache;
 import ru.clevertec.newsmanagement.newsservice.cache.GetCache;
 import ru.clevertec.newsmanagement.newsservice.cache.PostCache;
 import ru.clevertec.newsmanagement.newsservice.cache.UpdateCache;
-import ru.clevertec.newsmanagement.newsservice.client.UserClient;
 import ru.clevertec.newsmanagement.newsservice.entity.News;
 import ru.clevertec.newsmanagement.newsservice.exception.CustomException;
 import ru.clevertec.newsmanagement.newsservice.model.DTO;
 import ru.clevertec.newsmanagement.newsservice.model.PageFilter;
+import ru.clevertec.newsmanagement.newsservice.model.UserDTO;
 import ru.clevertec.newsmanagement.newsservice.persistence.NewsRepository;
 import ru.clevertec.newsmanagement.newsservice.service.CommentService;
 import ru.clevertec.newsmanagement.newsservice.service.NewsService;
@@ -43,7 +43,6 @@ import static ru.clevertec.newsmanagement.newsservice.util.SortDirectionUtil.get
 @EnableTransactionManagement(proxyTargetClass = true)
 public class NewsServiceImpl implements NewsService {
     private final NewsRepository repository;
-    private final UserClient userClient;
     private final NewsMapper mapper;
     private CommentService commentService;
 
@@ -104,8 +103,8 @@ public class NewsServiceImpl implements NewsService {
      */
     @Override
     @PostCache(fieldName = "id", type = DTO.News.class)
-    public DTO.News saveNews(DTO.News news) throws CustomException {
-        return mapper.toDTO(repository.save(setDefaultNews(news)));
+    public DTO.News saveNews(DTO.News news, UserDTO user) throws CustomException {
+        return mapper.toDTO(repository.save(setDefaultNews(news, user)));
     }
 
 
@@ -115,8 +114,8 @@ public class NewsServiceImpl implements NewsService {
     @Override
     @UpdateCache(key = "#id", type = DTO.News.class)
     public DTO.News updateNews(long id,
-                               DTO.News news) throws CustomException {
-        return mapper.toDTO(repository.save(updateNewsField(id, news)));
+                               DTO.News news, UserDTO user) throws CustomException {
+        return mapper.toDTO(repository.save(updateNewsField(id, news, user)));
     }
 
 
@@ -126,8 +125,8 @@ public class NewsServiceImpl implements NewsService {
     @Override
     @DeleteCache(key = "#id", type = DTO.News.class)
     @Transactional
-    public void deleteNews(long id) throws CustomException {
-        checkBeforeOperation(id);
+    public void deleteNews(long id, UserDTO user) throws CustomException {
+        checkBeforeOperation(id, user);
         commentService.deleteAllComment(id);
         repository.deleteById(id);
     }
@@ -135,13 +134,15 @@ public class NewsServiceImpl implements NewsService {
 
     /**
      * Throws a CustomException if the user attempting the operation is not authorized.
-     * @param id the ID of the news entity to check authorization for
+     *
+     * @param id   the ID of the news entity to check authorization for
+     * @param user
      * @throws CustomException if the user is not authorized to perform the operation
      */
-    private void checkBeforeOperation(long id) throws CustomException {
+    private void checkBeforeOperation(long id, UserDTO user) throws CustomException {
         if(UserValidator.isUserInvalid(
                 findNewsEntity(id).getUsername(),
-                userClient.userByContext())) {
+                user)) {
             throw new CustomException(NO_ACCESS.toString());
         }
     }
@@ -149,13 +150,15 @@ public class NewsServiceImpl implements NewsService {
 
     /**
      * Updates the fields of a news entity with the corresponding fields from a DTO.News object.
-     * @param id the ID of the news entity to update
+     *
+     * @param id     the ID of the news entity to update
      * @param client the DTO.News object containing the updated fields
+     * @param user
      * @return the updated news entity
      * @throws CustomException if the news entity does not exist
      */
-    private News updateNewsField(long id, DTO.News client) throws CustomException {
-        checkBeforeOperation(id);
+    private News updateNewsField(long id, DTO.News client, UserDTO user) throws CustomException {
+        checkBeforeOperation(id, user);
         News fromDB = findNewsEntity(id);
         fromDB.setTitle(client.getTitle());
         fromDB.setText(client.getText());
@@ -180,11 +183,12 @@ public class NewsServiceImpl implements NewsService {
      * and sets the user field to the User object corresponding to the given username.
      *
      * @param client the DTO.News object containing the fields for the news entity
+     * @param user
      * @return the new news entity
      * @throws CustomException if the user does not exist
      */
-    private News setDefaultNews(DTO.News client) throws CustomException {
-        String username = userClient.userByContext().getUsername();
+    private News setDefaultNews(DTO.News client, UserDTO user) throws CustomException {
+        String username = user.getUsername();
         News result = mapper.toEntity(client);
         result.setUsername(username);
         return result;

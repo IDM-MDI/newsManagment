@@ -1,5 +1,6 @@
 package ru.clevertec.newsmanagement.userservice.service.impl;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -7,6 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
 import ru.clevertec.newsmanagement.userservice.entity.Role;
 import ru.clevertec.newsmanagement.userservice.entity.User;
@@ -78,12 +80,13 @@ public class UserServiceImpl implements UserService {
     }
     //TODO: JAVADOC
     @Override
-    public DTO.AuthenticationResponse validateToken(String token) {
+    public DTO.AuthenticationResponse validateToken(String token, HttpServletRequest request) {
         User user = (User) detailsService.loadUserByUsername(jwtService.extractUsername(token));
         if (!jwtService.isTokenValid(token, user)) {
             throw new CustomException(JWT_NOT_VALID.toString());
         }
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         SecurityContextHolder.getContext().setAuthentication(authToken);
         return DTO.AuthenticationResponse.newBuilder()
                 .setUsername(user.getUsername())

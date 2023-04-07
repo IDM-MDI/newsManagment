@@ -2,6 +2,7 @@ package ru.clevertec.newsmanagement.userservice.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
@@ -79,9 +80,9 @@ public class AuthenticationController {
             responseCode = "200",
             description = "User authenticated"
     )
-    @GetMapping(value = "/validateToken",produces = MediaType.APPLICATION_JSON_VALUE)
-    public String validateToken(@RequestParam(name = "token") @NotBlank @Valid String token) {
-        return toJson(service.validateToken(token));
+    @PostMapping(value = "/validateToken",produces = MediaType.APPLICATION_JSON_VALUE)
+    public String validateToken(@RequestParam(name = "token") @NotBlank @Valid String token, HttpServletRequest request) {
+        return toJson(service.validateToken(token,request));
     }
 
     /**

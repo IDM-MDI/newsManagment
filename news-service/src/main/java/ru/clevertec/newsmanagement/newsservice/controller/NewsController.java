@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.clevertec.newsmanagement.newsservice.model.DTO;
 import ru.clevertec.newsmanagement.newsservice.model.PageFilter;
 import ru.clevertec.newsmanagement.newsservice.service.NewsService;
+import ru.clevertec.newsmanagement.newsservice.util.QueryParameterUtil;
 
 import static ru.clevertec.newsmanagement.newsservice.util.JsonUtil.toJson;
 import static ru.clevertec.newsmanagement.newsservice.util.QueryParameterUtil.getNewsByQuery;
@@ -106,9 +107,8 @@ public class NewsController {
             description = "News created"
     )
     @SecurityRequirement(name = "Bearer Authentication")
-    public String saveNews(@RequestBody @Valid DTO.News news) {
-//        return toJson(service.saveNews(getUsernameByContext(),news));
-        return toJson(service.saveNews(news));
+    public String saveNews(@RequestBody @Valid DTO.News news, HttpServletRequest request) {
+        return toJson(service.saveNews(news,QueryParameterUtil.getUser(request)));
     }
 
 
@@ -130,9 +130,9 @@ public class NewsController {
     )
     @SecurityRequirement(name = "Bearer Authentication")
     public String updateNews(@PathVariable @Min(1) long id,
-                              @RequestBody @Valid DTO.News news) {
-//        return toJson(service.updateNews(id,getUsernameByContext(),news));    TODO:REFACTOR
-        return toJson(service.updateNews(id,news));
+                              @RequestBody @Valid DTO.News news,
+                             HttpServletRequest request) {
+        return toJson(service.updateNews(id,news,QueryParameterUtil.getUser(request)));
     }
 
 
@@ -152,9 +152,8 @@ public class NewsController {
             description = "News deleted"
     )
     @SecurityRequirement(name = "Bearer Authentication")
-    public ResponseEntity<String> deleteNews(@PathVariable @Min(1) long id) {
-//        service.deleteNews(id,getUsernameByContext());    TODO:REFACTOR
-        service.deleteNews(id);
+    public ResponseEntity<String> deleteNews(@PathVariable @Min(1) long id, HttpServletRequest request) {
+        service.deleteNews(id, QueryParameterUtil.getUser(request));
         return ResponseEntity.ok("The news successfully was deleted");
     }
 }

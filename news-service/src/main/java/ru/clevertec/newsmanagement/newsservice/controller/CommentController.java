@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.clevertec.newsmanagement.newsservice.model.DTO;
 import ru.clevertec.newsmanagement.newsservice.model.PageFilter;
 import ru.clevertec.newsmanagement.newsservice.service.CommentService;
+import ru.clevertec.newsmanagement.newsservice.util.QueryParameterUtil;
 
 import static ru.clevertec.newsmanagement.newsservice.util.JsonUtil.toJson;
 import static ru.clevertec.newsmanagement.newsservice.util.QueryParameterUtil.getCommentByQuery;
@@ -117,9 +118,9 @@ public class CommentController {
     )
     @SecurityRequirement(name = "Bearer Authentication")
     public String saveComment(@Parameter(description = "News ID") @PathVariable @Min(1) long news,
-                                   @RequestBody @Valid DTO.Comment comment) {
-//        return toJson(service.saveComment(news,getUsernameByContext(),comment));  TODO:REFACTOR
-        return toJson(service.saveComment(news,comment));
+                                   @RequestBody @Valid DTO.Comment comment,
+                              HttpServletRequest request) {
+        return toJson(service.saveComment(news,comment, QueryParameterUtil.getUser(request)));
     }
 
 
@@ -144,9 +145,9 @@ public class CommentController {
     @SecurityRequirement(name = "Bearer Authentication")
     public String updateNews(@Parameter(description = "News ID") @PathVariable @Min(1) long news,
                                  @Parameter(description = "Comment ID") @PathVariable @Min(1) long id,
-                              @RequestBody @Valid DTO.Comment comment) {
-//        return toJson(service.updateComment(news,id,getUsernameByContext(),comment)); TODO:REFACTOR
-        return toJson(service.updateComment(news,id,comment));
+                              @RequestBody @Valid DTO.Comment comment,
+                             HttpServletRequest request) {
+        return toJson(service.updateComment(news,id,comment,QueryParameterUtil.getUser(request)));
     }
 
 
@@ -169,9 +170,9 @@ public class CommentController {
     )
     @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<String> deleteComment(@Parameter(description = "News ID") @PathVariable @Min(1) long news,
-                                                @Parameter(description = "Comment ID") @PathVariable @Min(1) long id) {
-//        service.deleteComment(id,news,getUsernameByContext());    TODO:REFACTOR
-        service.deleteComment(id,news);
+                                                @Parameter(description = "Comment ID") @PathVariable @Min(1) long id,
+                                                HttpServletRequest request) {
+        service.deleteComment(id,news, QueryParameterUtil.getUser(request));
         return ResponseEntity.ok("The comment successfully was deleted");
     }
 }

@@ -1,6 +1,7 @@
 package ru.clevertec.newsmanagement.userservice.service;
 
 
+import jakarta.servlet.http.HttpServletRequest;
 import ru.clevertec.newsmanagement.userservice.entity.User;
 import ru.clevertec.newsmanagement.userservice.model.DTO;
 
@@ -31,5 +32,5 @@ public interface UserService {
      */
     DTO.AuthenticationResponse authenticate(DTO.AuthenticationRequest authentication);
 
-    DTO.AuthenticationResponse validateToken(String token);
+    DTO.AuthenticationResponse validateToken(String token, HttpServletRequest request);
 }

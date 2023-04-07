@@ -1,9 +1,10 @@
 package ru.clevertec.newsmanagement.newsservice.util;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 import ru.clevertec.newsmanagement.newsservice.model.DTO;
+import ru.clevertec.newsmanagement.newsservice.model.UserDTO;
 
 import java.util.Map;
 import java.util.Objects;
@@ -14,7 +15,7 @@ import java.util.Objects;
  * Provides methods for parsing query parameters and converting them into {@link DTO.Comment} and {@link DTO.News}.
  * @author Dayanch
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
 public class QueryParameterUtil {
     private static final String USERNAME = "username";
     private static final String TEXT = "text";
@@ -56,5 +57,13 @@ public class QueryParameterUtil {
     private static String parseToString(Map<String,String[]> query, String queryName) {
         String[] strings = query.get(queryName);
         return (Objects.isNull(strings) || strings.length == 0) ? "" : strings[0];
+    }
+
+    public static UserDTO getUser(HttpServletRequest request) {
+        return UserDTO.builder()
+                .username(request.getHeader("username"))
+                .role(request.getHeader("role"))
+                .jwt(request.getHeader("auth-token"))
+                .build();
     }
 }

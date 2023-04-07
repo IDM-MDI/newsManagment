@@ -12,11 +12,11 @@ import ru.clevertec.newsmanagement.newsservice.cache.DeleteCache;
 import ru.clevertec.newsmanagement.newsservice.cache.GetCache;
 import ru.clevertec.newsmanagement.newsservice.cache.PostCache;
 import ru.clevertec.newsmanagement.newsservice.cache.UpdateCache;
-import ru.clevertec.newsmanagement.newsservice.client.UserClient;
 import ru.clevertec.newsmanagement.newsservice.entity.Comment;
 import ru.clevertec.newsmanagement.newsservice.exception.CustomException;
 import ru.clevertec.newsmanagement.newsservice.model.DTO;
 import ru.clevertec.newsmanagement.newsservice.model.PageFilter;
+import ru.clevertec.newsmanagement.newsservice.model.UserDTO;
 import ru.clevertec.newsmanagement.newsservice.persistence.CommentRepository;
 import ru.clevertec.newsmanagement.newsservice.service.CommentService;
 import ru.clevertec.newsmanagement.newsservice.service.NewsService;
@@ -39,7 +39,6 @@ import static ru.clevertec.newsmanagement.newsservice.util.SortDirectionUtil.get
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository repository;
-    private final UserClient userClient;
     private final CommentMapper mapper;
     private NewsService newsService;
 
@@ -91,8 +90,8 @@ public class CommentServiceImpl implements CommentService {
      */
     @Override
     @PostCache(fieldName = "id", type = DTO.Comment.class)
-    public DTO.Comment saveComment(long news, DTO.Comment comment) throws CustomException {
-        return mapper.toDTO(repository.save(setDefaultComment(news, comment)));
+    public DTO.Comment saveComment(long news, DTO.Comment comment, UserDTO user) throws CustomException {
+        return mapper.toDTO(repository.save(setDefaultComment(news, comment, user)));
     }
 
 
@@ -101,8 +100,8 @@ public class CommentServiceImpl implements CommentService {
      */
     @Override
     @UpdateCache(key = "#id", type = DTO.Comment.class)
-    public DTO.Comment updateComment(long news, long id, DTO.Comment comment) throws CustomException {
-        return mapper.toDTO(repository.save(updateCommentField(news,id, comment)));
+    public DTO.Comment updateComment(long news, long id, DTO.Comment comment, UserDTO user) throws CustomException {
+        return mapper.toDTO(repository.save(updateCommentField(news,id, comment, user)));
     }
 
 
@@ -111,8 +110,8 @@ public class CommentServiceImpl implements CommentService {
      */
     @Override
     @DeleteCache(key = "#id", type = DTO.Comment.class)
-    public void deleteComment(long id, long news) throws CustomException {
-        findValidEntity(news, id);
+    public void deleteComment(long id, long news, UserDTO user) throws CustomException {
+        findValidEntity(news, id, user);
         repository.deleteById(id);
     }
 
@@ -129,15 +128,16 @@ public class CommentServiceImpl implements CommentService {
 
     /**
      * Sets the default fields for creating a new comment.
-     * @param news the ID of the news to add the comment to.
+     *
+     * @param news    the ID of the news to add the comment to.
      * @param comment the DTO.Comment instance to create.
+     * @param user
      * @return the created Comment entity.
      * @throws CustomException if the news or user is not found.
      */
-    private Comment setDefaultComment(long news, DTO.Comment comment) throws CustomException {
+    private Comment setDefaultComment(long news, DTO.Comment comment, UserDTO user) throws CustomException {
         Comment result = mapper.toEntity(comment);
         result.setNews(newsService.findNewsEntity(news));
-        DTO.User user = userClient.userByContext();
         result.setUsername(user.getUsername());
         return result;
     }
@@ -145,14 +145,16 @@ public class CommentServiceImpl implements CommentService {
 
     /**
      * Updates the text field of an existing comment.
-     * @param news the ID of the news that contains the comment.
-     * @param id the ID of the comment to update.
+     *
+     * @param news    the ID of the news that contains the comment.
+     * @param id      the ID of the comment to update.
      * @param comment the DTO.Comment instance to update.
+     * @param user
      * @return the updated Comment entity.
      * @throws CustomException if the news or user is not found, or the comment does not belong to the user.
      */
-    private Comment updateCommentField(long news, long id, DTO.Comment comment) throws CustomException {
-        Comment entity = findValidEntity(news, id);
+    private Comment updateCommentField(long news, long id, DTO.Comment comment, UserDTO user) throws CustomException {
+        Comment entity = findValidEntity(news, id, user);
         entity.setText(comment.getText());
         return entity;
     }
@@ -162,12 +164,12 @@ public class CommentServiceImpl implements CommentService {
      *
      * @param news The id of the news the Comment belongs to
      * @param id   The id of the Comment entity
+     * @param user
      * @return The Comment entity if it exists and the user has access to it
      * @throws CustomException If the Comment entity does not exist or the user does not have access to it
      */
-    private Comment findValidEntity(long news, long id) throws CustomException {
+    private Comment findValidEntity(long news, long id, UserDTO user) throws CustomException {
         Comment entity = findCommentEntity(news, id);
-        DTO.User user = userClient.userByContext();
         if(UserValidator.isUserInvalid(entity.getUsername(), user)) {
             throw new CustomException(NO_ACCESS.toString());
         }

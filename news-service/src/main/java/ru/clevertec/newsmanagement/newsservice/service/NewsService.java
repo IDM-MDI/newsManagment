@@ -4,6 +4,7 @@ package ru.clevertec.newsmanagement.newsservice.service;
 import ru.clevertec.newsmanagement.newsservice.entity.News;
 import ru.clevertec.newsmanagement.newsservice.model.DTO;
 import ru.clevertec.newsmanagement.newsservice.model.PageFilter;
+import ru.clevertec.newsmanagement.newsservice.model.UserDTO;
 
 import java.util.List;
 
@@ -39,9 +40,10 @@ public interface NewsService {
      * Saves a new news entry for the given username.
      *
      * @param news the news entry to be saved.
+     * @param user
      * @return the saved news entry.
      */
-    DTO.News saveNews(DTO.News news);
+    DTO.News saveNews(DTO.News news, UserDTO user);
 
 
     /**
@@ -49,16 +51,18 @@ public interface NewsService {
      *
      * @param id   the id of the news entry to be updated.
      * @param news the updated news entry.
+     * @param user
      * @return the updated news entry.
      */
-    DTO.News updateNews(long id, DTO.News news);
+    DTO.News updateNews(long id, DTO.News news, UserDTO user);
 
     /**
      * Deletes the news entry with the given id for the given username.
      *
-     * @param id the id of the news entry to be deleted.
+     * @param id   the id of the news entry to be deleted.
+     * @param user
      */
-    void deleteNews(long id);
+    void deleteNews(long id, UserDTO user);
 
 
     /**

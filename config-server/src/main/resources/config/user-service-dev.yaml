@@ -5,7 +5,7 @@ jwt:
   key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
 spring:
   datasource:
-    url: jdbc:postgresql://user-db:5431/news_management
+    url: jdbc:postgresql://user-db:5432/user_management
     username: username
     password: password
     driver-class-name: org.postgresql.Driver
@@ -16,7 +16,7 @@ spring:
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml
     clear-check-sums: true
-    url: jdbc:postgresql://user-db:5431/news_management
+    url: jdbc:postgresql://user-db:5432/user_management
     user: username
     password: password
     driver-class-name: org.postgresql.Driver

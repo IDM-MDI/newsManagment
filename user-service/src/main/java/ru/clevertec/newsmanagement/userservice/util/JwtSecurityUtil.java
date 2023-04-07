@@ -1,10 +1,10 @@
 package ru.clevertec.newsmanagement.userservice.util;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import ru.clevertec.newsmanagement.userservice.entity.User;
 import ru.clevertec.newsmanagement.userservice.exception.CustomException;
 import ru.clevertec.newsmanagement.userservice.model.DTO;
 import ru.clevertec.newsmanagement.userservice.validator.JwtValidator;
@@ -16,7 +16,7 @@ import static ru.clevertec.newsmanagement.userservice.exception.ExceptionStatus.
  * A utility class for handling JWT security related operations.
  * @author Dayanch
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
 @Slf4j
 public class JwtSecurityUtil {
 
@@ -28,10 +28,13 @@ public class JwtSecurityUtil {
         if(JwtValidator.isSecurityAuthenticationEmpty()) {
             throw new CustomException(USER_NOT_AUTHORIZE.toString());
         }
-        User authentication = (User) SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        GrantedAuthority grantedAuthority = authentication.getAuthorities().stream()
+                .toList()
+                .get(0);
         return DTO.AuthenticationResponse.newBuilder()
-                .setUsername(authentication.getUsername())
-                .setRole(authentication.getRole().name())
+                .setUsername(authentication.getName())
+                .setRole(grantedAuthority.getAuthority().substring(5))
                 .build();
     }
 }
