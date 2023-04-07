@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
-import ru.clevertec.newsmanagement.exception.CustomException;
+import ru.clevertec.newsmanagement.userservice.exception.CustomException;
 
 import java.sql.SQLException;
 
-import static ru.clevertec.newsmanagement.util.DtoUtil.getJSONStringException;
+import static ru.clevertec.newsmanagement.userservice.util.JsonUtil.getJSONStringException;
 
 
 /**
