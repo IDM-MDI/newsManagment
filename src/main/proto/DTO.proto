@@ -25,7 +25,8 @@ message AuthenticationRequest {
 
 message AuthenticationResponse {
   string username = 1;
-  string jwt = 2;
+  string role = 2;
+  string jwt = 3;
 }
 
 message Exception {
