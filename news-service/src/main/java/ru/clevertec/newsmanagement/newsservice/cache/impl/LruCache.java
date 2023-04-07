@@ -8,17 +8,20 @@ import java.util.Objects;
 
 @ToString
 @Getter
-public class LruCache extends Cache implements Comparable<LruCache>{
+public class LruCache extends Cache implements Comparable<LruCache> {
+
     private long lastAccessedTime;
 
     public LruCache(String key, Object value) {
         super(key,value);
         lastAccessedTime = System.currentTimeMillis();
     }
+
     @Override
     public void hit() {
         lastAccessedTime = System.currentTimeMillis();
     }
+
     @Override
     public int compareTo(LruCache o) {
         return Math.toIntExact(o.lastAccessedTime - lastAccessedTime);

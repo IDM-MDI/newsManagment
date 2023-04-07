@@ -20,6 +20,7 @@ import java.time.Instant;
  */
 @UtilityClass
 public class JsonUtil {
+
     /**
      * Converts a protobuf message to JSON string format.
      * @param messageOrBuilder the protobuf message to convert
@@ -30,6 +31,7 @@ public class JsonUtil {
     public static String toJson(MessageOrBuilder messageOrBuilder) {
         return JsonFormat.printer().print(messageOrBuilder);
     }
+
     /**
      * Generates a JSON string representation of an exception in the format of a
      * {@link DTO.Exception} protobuf message.

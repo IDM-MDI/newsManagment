@@ -36,6 +36,7 @@ import static ru.clevertec.newsmanagement.newsservice.util.QueryParameterUtil.ge
 @RequiredArgsConstructor
 @Validated
 public class NewsController {
+
     private final NewsService service;
 
     /**

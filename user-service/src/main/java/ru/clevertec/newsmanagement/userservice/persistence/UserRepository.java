@@ -13,6 +13,7 @@ import java.util.Optional;
  */
 @Repository
 public interface UserRepository extends JpaRepository<User,String> {
+
     /**
      * Finds a user by their username.
      * @param username the username of the user to be found

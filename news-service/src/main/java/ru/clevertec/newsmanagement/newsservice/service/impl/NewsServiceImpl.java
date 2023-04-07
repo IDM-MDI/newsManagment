@@ -42,6 +42,7 @@ import static ru.clevertec.newsmanagement.newsservice.util.SortDirectionUtil.get
 @RequiredArgsConstructor
 @EnableTransactionManagement(proxyTargetClass = true)
 public class NewsServiceImpl implements NewsService {
+
     private final NewsRepository repository;
     private final NewsMapper mapper;
     private CommentService commentService;
@@ -136,7 +137,7 @@ public class NewsServiceImpl implements NewsService {
      * Throws a CustomException if the user attempting the operation is not authorized.
      *
      * @param id   the ID of the news entity to check authorization for
-     * @param user
+     * @param user user by context
      * @throws CustomException if the user is not authorized to perform the operation
      */
     private void checkBeforeOperation(long id, UserDTO user) throws CustomException {
@@ -153,7 +154,7 @@ public class NewsServiceImpl implements NewsService {
      *
      * @param id     the ID of the news entity to update
      * @param client the DTO.News object containing the updated fields
-     * @param user
+     * @param user user by context
      * @return the updated news entity
      * @throws CustomException if the news entity does not exist
      */
@@ -183,7 +184,7 @@ public class NewsServiceImpl implements NewsService {
      * and sets the user field to the User object corresponding to the given username.
      *
      * @param client the DTO.News object containing the fields for the news entity
-     * @param user
+     * @param user user by context
      * @return the new news entity
      * @throws CustomException if the user does not exist
      */

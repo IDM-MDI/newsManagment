@@ -59,6 +59,13 @@ public class QueryParameterUtil {
         return (Objects.isNull(strings) || strings.length == 0) ? "" : strings[0];
     }
 
+    /**
+     * Returns a UserDTO object constructed from the headers of the given HttpServletRequest object.
+     * The returned UserDTO object has its username, role, and jwt fields set to the values of the
+     * "username", "role", and "auth-token" headers of the HttpServletRequest object, respectively.
+     * @param request the HttpServletRequest object to extract user information from
+     * @return a UserDTO object constructed from the headers of the given HttpServletRequest object
+     */
     public static UserDTO getUser(HttpServletRequest request) {
         return UserDTO.builder()
                 .username(request.getHeader("username"))

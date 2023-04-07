@@ -39,6 +39,7 @@ import static ru.clevertec.newsmanagement.newsservice.util.QueryParameterUtil.ge
 @RequiredArgsConstructor
 @Validated
 public class CommentController {
+
     private final CommentService service;
 
     /**

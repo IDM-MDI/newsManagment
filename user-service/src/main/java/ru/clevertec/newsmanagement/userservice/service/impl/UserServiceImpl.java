@@ -31,6 +31,7 @@ import static ru.clevertec.newsmanagement.userservice.exception.ExceptionStatus.
 @RequiredArgsConstructor
 @Slf4j
 public class UserServiceImpl implements UserService {
+
     private final AuthenticationManager authenticationManager;
     private final UserDetailsService detailsService;
     private final UserRepository repository;
@@ -78,7 +79,14 @@ public class UserServiceImpl implements UserService {
                 .setJwt(jwtService.generateToken(user))
                 .build();
     }
-    //TODO: JAVADOC
+
+    /**
+     * Validates the given JWT token and sets the authentication context for the user associated with the token.
+     * @param token the JWT token to validate
+     * @param request the HttpServletRequest associated with the request
+     * @return an AuthenticationResponse DTO containing information about the authenticated user and the JWT token
+     * @throws CustomException if the JWT token is not valid
+     */
     @Override
     public DTO.AuthenticationResponse validateToken(String token, HttpServletRequest request) {
         User user = (User) detailsService.loadUserByUsername(jwtService.extractUsername(token));

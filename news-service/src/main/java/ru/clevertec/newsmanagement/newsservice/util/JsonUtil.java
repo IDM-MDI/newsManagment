@@ -21,6 +21,7 @@ import java.util.List;
  */
 @UtilityClass
 public class JsonUtil {
+
     /**
      * Converts a protobuf message to JSON string format.
      * @param messageOrBuilder the protobuf message to convert

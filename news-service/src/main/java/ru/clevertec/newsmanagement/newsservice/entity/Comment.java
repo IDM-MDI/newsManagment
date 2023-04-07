@@ -31,6 +31,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Comment {
+
     /**
      * The unique identifier of the comment.
      */

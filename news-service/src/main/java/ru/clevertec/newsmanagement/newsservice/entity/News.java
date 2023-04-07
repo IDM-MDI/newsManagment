@@ -30,6 +30,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class News {
+
     /**
      * The unique identifier for the news.
      */

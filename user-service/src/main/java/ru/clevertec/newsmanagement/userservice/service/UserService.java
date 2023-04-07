@@ -11,6 +11,7 @@ import ru.clevertec.newsmanagement.userservice.model.DTO;
  * @author Dayanch
  */
 public interface UserService {
+
     /**
      * Retrieves a user by their username.
      * @param username the username to search for

@@ -11,6 +11,7 @@ import java.util.Objects;
 @Getter
 @Setter
 public abstract class Cache {
+
     private String key;
     private Object value;
 
@@ -31,5 +32,6 @@ public abstract class Cache {
     public int hashCode() {
         return value.hashCode() + key.hashCode();
     }
+
     public abstract void hit();
 }

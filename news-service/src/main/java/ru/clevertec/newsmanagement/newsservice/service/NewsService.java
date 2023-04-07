@@ -13,6 +13,7 @@ import java.util.List;
  * @author Dayanch
  */
 public interface NewsService {
+
     /**
      * Returns a list of news with pagination and sorting.
      *
@@ -40,7 +41,7 @@ public interface NewsService {
      * Saves a new news entry for the given username.
      *
      * @param news the news entry to be saved.
-     * @param user
+     * @param user user by context
      * @return the saved news entry.
      */
     DTO.News saveNews(DTO.News news, UserDTO user);
@@ -51,7 +52,7 @@ public interface NewsService {
      *
      * @param id   the id of the news entry to be updated.
      * @param news the updated news entry.
-     * @param user
+     * @param user user by context
      * @return the updated news entry.
      */
     DTO.News updateNews(long id, DTO.News news, UserDTO user);
@@ -60,7 +61,7 @@ public interface NewsService {
      * Deletes the news entry with the given id for the given username.
      *
      * @param id   the id of the news entry to be deleted.
-     * @param user
+     * @param user user by context
      */
     void deleteNews(long id, UserDTO user);
 

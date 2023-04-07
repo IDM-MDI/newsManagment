@@ -6,18 +6,31 @@ import ru.clevertec.newsmanagement.newsservice.cache.CacheList;
 import java.util.LinkedList;
 import java.util.Optional;
 
+/**
+ * Implementation of CacheList.
+ * @author Dayanch
+ */
 public class LruCacheList implements CacheList {
+
     private LinkedList<Cache> caches;
     private final int size;
+
     public LruCacheList(int size) {
         caches = new LinkedList<>();
         this.size = size;
     }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Cache add(String key, Object value) {
         return add(new LruCache(key, value));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Cache add(Cache cache) {
         removeLastIfOutSize();
@@ -25,6 +38,9 @@ public class LruCacheList implements CacheList {
         return cache;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Cache> remove(String key) {
         Optional<Cache> byKey = findByKey(key);
@@ -32,6 +48,9 @@ public class LruCacheList implements CacheList {
         return byKey;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Cache> findByKey(String key) {
         return caches.stream()
@@ -39,11 +58,10 @@ public class LruCacheList implements CacheList {
                 .findFirst();
     }
 
-    @Override
-    public CacheList createList() {
-        return new LruCacheList(size);
-    }
-
+    /**
+     * Removes the last cache in the list if the size of the list is greater than or equal to the maximum size allowed.
+     * This method is called when a new cache is added to the list to ensure that the list does not grow beyond the maximum size.
+     */
     private void removeLastIfOutSize() {
         if(caches.size() >= size) {
             caches.removeLast();

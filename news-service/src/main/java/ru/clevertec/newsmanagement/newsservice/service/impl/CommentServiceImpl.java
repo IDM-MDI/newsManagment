@@ -38,6 +38,7 @@ import static ru.clevertec.newsmanagement.newsservice.util.SortDirectionUtil.get
 @Slf4j
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
+
     private final CommentRepository repository;
     private final CommentMapper mapper;
     private NewsService newsService;
@@ -131,7 +132,7 @@ public class CommentServiceImpl implements CommentService {
      *
      * @param news    the ID of the news to add the comment to.
      * @param comment the DTO.Comment instance to create.
-     * @param user
+     * @param user user by context
      * @return the created Comment entity.
      * @throws CustomException if the news or user is not found.
      */
@@ -149,7 +150,7 @@ public class CommentServiceImpl implements CommentService {
      * @param news    the ID of the news that contains the comment.
      * @param id      the ID of the comment to update.
      * @param comment the DTO.Comment instance to update.
-     * @param user
+     * @param user user by context
      * @return the updated Comment entity.
      * @throws CustomException if the news or user is not found, or the comment does not belong to the user.
      */
@@ -164,7 +165,7 @@ public class CommentServiceImpl implements CommentService {
      *
      * @param news The id of the news the Comment belongs to
      * @param id   The id of the Comment entity
-     * @param user
+     * @param user user by context
      * @return The Comment entity if it exists and the user has access to it
      * @throws CustomException If the Comment entity does not exist or the user does not have access to it
      */

@@ -11,6 +11,7 @@ import ru.clevertec.newsmanagement.apigetaway.validator.AuthenticationValidator;
 
 @Component
 public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> {
+
     private final WebClient.Builder webClientBuilder;
 
     public AuthFilter(WebClient.Builder webClientBuilder) {

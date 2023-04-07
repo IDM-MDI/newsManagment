@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort;
  */
 @UtilityClass
 public class SortDirectionUtil {
+
     private static final String DESC = "desc";
 
     /**

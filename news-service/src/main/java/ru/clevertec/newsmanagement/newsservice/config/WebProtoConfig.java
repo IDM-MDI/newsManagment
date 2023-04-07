@@ -16,6 +16,7 @@ import java.util.List;
  */
 @Configuration
 public class WebProtoConfig implements WebMvcConfigurer {
+
     /**
      * Adds a {@link ProtobufHttpMessageConverter} to the list of {@link HttpMessageConverter}s used by Spring MVC.
      * @param converters the list of {@link HttpMessageConverter} to extend

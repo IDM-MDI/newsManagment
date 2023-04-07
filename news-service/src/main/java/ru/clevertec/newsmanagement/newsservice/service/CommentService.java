@@ -46,7 +46,7 @@ public interface CommentService {
      *
      * @param news    id of the news.
      * @param comment the comment to save.
-     * @param user
+     * @param user user by context
      * @return a DTO.Comment object representing the saved comment.
      */
     DTO.Comment saveComment(long news, DTO.Comment comment, UserDTO user);
@@ -58,7 +58,7 @@ public interface CommentService {
      * @param news    id of the news.
      * @param id      id of the comment to update.
      * @param comment the updated comment to save.
-     * @param user
+     * @param user user by context
      * @return a DTO.Comment object representing the updated comment.
      */
     DTO.Comment updateComment(long news, long id, DTO.Comment comment, UserDTO user);
@@ -69,13 +69,13 @@ public interface CommentService {
      *
      * @param id   id of the comment to delete.
      * @param news id of the news.
-     * @param user
+     * @param user user by context
      */
     void deleteComment(long id, long news, UserDTO user);
 
 
     /**
-     * Deletes all comments related to to news.
+     * Deletes all comments related to news.
      * @param news id of the news.
      */
     void deleteAllComment(long news);

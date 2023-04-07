@@ -7,15 +7,19 @@ import ru.clevertec.newsmanagement.newsservice.cache.Cache;
 @ToString
 @Getter
 public class LfuCache extends Cache implements Comparable<LfuCache> {
+
     private int count;
+
     public LfuCache(String key, Object value) {
         super(key,value);
         count = 1;
     }
+
     @Override
     public void hit() {
         count++;
     }
+
     @Override
     public int compareTo(LfuCache o) {
         return o.count - count;

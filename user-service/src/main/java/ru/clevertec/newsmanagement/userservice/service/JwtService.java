@@ -23,6 +23,7 @@ import java.util.function.Function;
 @Service
 @Slf4j
 public class JwtService {
+
     /**
      * A secret key used to sign the JWT token.
      */
