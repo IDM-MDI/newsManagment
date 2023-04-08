@@ -7,7 +7,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.clevertec.newsmanagement.userservice.model.DTO;
 import ru.clevertec.newsmanagement.userservice.service.UserService;
-import ru.clevertec.newsmanagement.userservice.util.JwtSecurityUtil;
 
 import static ru.clevertec.newsmanagement.userservice.util.JsonUtil.toJson;
 
@@ -84,22 +82,5 @@ public class AuthenticationController {
     @PostMapping(value = "/validateToken",produces = MediaType.APPLICATION_JSON_VALUE)
     public String validateToken(@RequestParam(name = "token") @NotBlank @Valid String token, HttpServletRequest request) {
         return toJson(service.validateToken(token,request));
-    }
-
-    /**
-     * Endpoint for by context get user
-     * @return a JSON string representation of the authenticated user
-     */
-    @Operation(
-            summary = "User validating by token",
-            description = "API Point made for validating token"
-    )
-    @ApiResponse(
-            responseCode = "200",
-            description = "User authenticated"
-    )
-    @GetMapping(value = "/context",produces = MediaType.APPLICATION_JSON_VALUE)
-    public String getUserByContext() {
-        return toJson(JwtSecurityUtil.getUserByContext());
     }
 }
