@@ -77,6 +77,7 @@ public class ExceptionController {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(getJSONStringException(request, exception.getMessage()));
     }
+
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NoHandlerFoundException.class)
     public ResponseEntity<String> handleNoHandlerFoundException(NoHandlerFoundException exception, HttpServletRequest request) {

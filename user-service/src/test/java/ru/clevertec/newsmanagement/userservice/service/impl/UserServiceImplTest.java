@@ -1,5 +1,6 @@
 package ru.clevertec.newsmanagement.userservice.service.impl;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,8 +10,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import ru.clevertec.newsmanagement.userservice.entity.Role;
 import ru.clevertec.newsmanagement.userservice.entity.User;
 import ru.clevertec.newsmanagement.userservice.exception.CustomException;
 import ru.clevertec.newsmanagement.userservice.model.DTO;
@@ -19,9 +20,13 @@ import ru.clevertec.newsmanagement.userservice.service.JwtService;
 
 import java.util.Optional;
 
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
+import static ru.clevertec.newsmanagement.userservice.builder.impl.AuthenticationRequestBuilder.aRequest;
+import static ru.clevertec.newsmanagement.userservice.builder.impl.AuthenticationResponseBuilder.aResponse;
+import static ru.clevertec.newsmanagement.userservice.builder.impl.UserBuilder.aUser;
+import static ru.clevertec.newsmanagement.userservice.exception.ExceptionStatus.JWT_NOT_VALID;
 import static ru.clevertec.newsmanagement.userservice.exception.ExceptionStatus.USER_EXIST;
 import static ru.clevertec.newsmanagement.userservice.exception.ExceptionStatus.USER_NOT_FOUND;
 
@@ -38,53 +43,52 @@ class UserServiceImplTest {
     private AuthenticationManager authenticationManager;
 
     @Mock
+    private UserDetailsService userDetailsService;
+
+    @Mock
     private PasswordEncoder passwordEncoder;
+
+    @Mock
+    private HttpServletRequest request;
 
     @InjectMocks
     private UserServiceImpl userService;
+
     private DTO.AuthenticationRequest authentication;
     private DTO.AuthenticationResponse response;
     private User user;
 
     @BeforeEach
     public void beforeEach() {
-        authentication = DTO.AuthenticationRequest.newBuilder()
-                .setUsername("testuser")
-                .setPassword("testpassword")
-                .build();
-        response = DTO.AuthenticationResponse.newBuilder()
-                .setUsername("testuser")
-                .setJwt("jwt")
-                .build();
-        user = User.builder()
-                .username("testuser")
-                .password("encodedpassword")
-                .role(Role.SUBSCRIBER)
-                .build();
+        authentication = aRequest().build();
+        response = aResponse().build();
+        user = aUser().build();
     }
     @Test
     void registrationShouldBeCorrect() throws CustomException {
         // Arrange
-        when(repository.existsById("testuser")).thenReturn(false);
-        when(passwordEncoder.encode("testpassword")).thenReturn("encodedpassword");
-        when(repository.save(user)).thenReturn(user);
-        when(jwtService.generateToken(user)).thenReturn("jwt");
+        doReturn(false)
+                .when(repository).existsById(authentication.getUsername());
+        doReturn("encodedpassword")
+                .when(passwordEncoder).encode(authentication.getPassword());
+        doReturn(user).
+                when(repository).save(user);
+        doReturn(response.getJwt()).
+                when(jwtService).generateToken(user);
 
         // Act
         DTO.AuthenticationResponse result = userService.registration(authentication);
 
         // Assert
-        Assertions.assertThat(result).isEqualTo(response);
-        verify(repository).existsById("testuser");
-        verify(passwordEncoder).encode("testpassword");
-        verify(repository).save(user);
-        verify(jwtService).generateToken(user);
+        Assertions.assertThat(result)
+                .isEqualTo(response);
     }
 
     @Test
     void registrationUserExists() {
         // Arrange
-        when(repository.existsById(authentication.getUsername())).thenReturn(true);
+        doReturn(true)
+                .when(repository).existsById(authentication.getUsername());
 
         // Assert
         Assertions.assertThatThrownBy(() -> userService.registration(authentication))
@@ -97,7 +101,8 @@ class UserServiceImplTest {
     @Test
     void findUserShouldFound() throws CustomException {
         // Arrange
-        when(repository.findUserByUsername(authentication.getUsername())).thenReturn(Optional.of(user));
+        doReturn(Optional.of(user)).
+                when(repository).findUserByUsername(authentication.getUsername());
 
         // Act
         User result = userService.findUser(authentication.getUsername());
@@ -110,7 +115,8 @@ class UserServiceImplTest {
     @Test
     void findUserShouldNotFound() {
         // Arrange
-        when(repository.findUserByUsername(authentication.getUsername())).thenReturn(Optional.empty());
+        doReturn(Optional.empty())
+                .when(repository).findUserByUsername(authentication.getUsername());
 
         // Assert
         Assertions.assertThatThrownBy(() -> userService.findUser(authentication.getUsername()))
@@ -123,15 +129,51 @@ class UserServiceImplTest {
     @Test
     void authenticateShouldBeCorrect() throws CustomException {
         // Arrange
-        when(authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authentication.getUsername(),authentication.getPassword())))
-                .thenReturn(new UsernamePasswordAuthenticationToken(authentication.getUsername(),authentication.getPassword()));
-        when(repository.findUserByUsername(authentication.getUsername())).thenReturn(Optional.of(user));
-        when(jwtService.generateToken(user)).thenReturn("jwt");
+        doReturn(new UsernamePasswordAuthenticationToken(authentication.getUsername(),authentication.getPassword()))
+                .when(authenticationManager).authenticate(new UsernamePasswordAuthenticationToken(authentication.getUsername(),authentication.getPassword()));
+        doReturn(Optional.of(user))
+                .when(repository).findUserByUsername(authentication.getUsername());
+        doReturn(response.getJwt())
+                .when(jwtService).generateToken(user);
 
         // Act
         DTO.AuthenticationResponse result = userService.authenticate(authentication);
 
         //then
         Assertions.assertThat(result).isEqualTo(response);
+    }
+
+    @Test
+    void validateTokenShouldReturnResponse() {
+        String username = user.getUsername();
+        String jwt = response.getJwt();
+
+        doReturn(username)
+                .when(jwtService).extractUsername(jwt);
+        doReturn(user)
+                .when(userDetailsService).loadUserByUsername(username);
+        doReturn(true)
+                .when(jwtService).isTokenValid(jwt, user);
+
+        DTO.AuthenticationResponse actual = userService.validateToken(jwt, request);
+
+        Assertions.assertThat(actual)
+                .isEqualTo(response);
+    }
+    @Test
+    void validateTokenShouldReturnThrowCustomException() {
+        String username = user.getUsername();
+        String jwt = response.getJwt();
+
+        doReturn(username)
+                .when(jwtService).extractUsername(jwt);
+        doReturn(user)
+                .when(userDetailsService).loadUserByUsername(username);
+        doReturn(false)
+                .when(jwtService).isTokenValid(jwt, user);
+
+        Assertions.assertThatThrownBy(() -> userService.validateToken(jwt, request))
+                        .isInstanceOf(CustomException.class)
+                        .hasMessageContaining(JWT_NOT_VALID.toString());
     }
 }

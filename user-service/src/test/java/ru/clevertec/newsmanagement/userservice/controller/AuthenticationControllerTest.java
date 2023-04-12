@@ -1,5 +1,6 @@
 package ru.clevertec.newsmanagement.userservice.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +17,16 @@ import ru.clevertec.newsmanagement.userservice.exception.CustomException;
 import ru.clevertec.newsmanagement.userservice.model.DTO;
 import ru.clevertec.newsmanagement.userservice.service.UserService;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ru.clevertec.newsmanagement.userservice.builder.impl.AuthenticationRequestBuilder.aRequest;
+import static ru.clevertec.newsmanagement.userservice.builder.impl.AuthenticationResponseBuilder.aResponse;
+import static ru.clevertec.newsmanagement.userservice.exception.ExceptionStatus.JWT_NOT_VALID;
 import static ru.clevertec.newsmanagement.userservice.exception.ExceptionStatus.USER_EXIST;
 import static ru.clevertec.newsmanagement.userservice.exception.ExceptionStatus.USER_NOT_FOUND;
 import static ru.clevertec.newsmanagement.userservice.util.JsonUtil.toJson;
@@ -36,24 +42,13 @@ class AuthenticationControllerTest extends PostgresTestContainer {
     @Autowired
     private MockMvc mockMvc;
 
-    private static final String USERNAME = "username";
-    private static final String PASSWORD = "test123";
-    private static final String JWT = "jwt";
-    private static final String ROLE = "TEST";
-
     private DTO.AuthenticationRequest request;
     private DTO.AuthenticationResponse response;
+
     @BeforeEach
     public void setup() {
-        request = DTO.AuthenticationRequest.newBuilder()
-                .setUsername(USERNAME)
-                .setPassword(PASSWORD)
-                .build();
-        response = DTO.AuthenticationResponse.newBuilder()
-                .setUsername(USERNAME)
-                .setRole(ROLE)
-                .setJwt(JWT)
-                .build();
+        request = aRequest().build();
+        response = aResponse().build();
     }
 
     @Test
@@ -69,16 +64,12 @@ class AuthenticationControllerTest extends PostgresTestContainer {
                 // Assert
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.username").value(USERNAME))
-                .andExpect(jsonPath("$.jwt").value(JWT));
+                .andExpect(jsonPath("$.username").value(response.getUsername()))
+                .andExpect(jsonPath("$.jwt").value(response.getJwt()));
     }
     @Test
     void registerWithExistingUsernameShouldReturnServiceUnavailable() throws Exception {
         // Arrange
-        DTO.AuthenticationRequest request = DTO.AuthenticationRequest.newBuilder()
-                .setUsername(USERNAME)
-                .setPassword(PASSWORD)
-                .build();
         when(userService.registration(request)).thenThrow(new CustomException(USER_EXIST.toString()));
 
         // Act
@@ -106,17 +97,42 @@ class AuthenticationControllerTest extends PostgresTestContainer {
                 // Assert
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.username").value(USERNAME))
-                .andExpect(jsonPath("$.jwt").value(JWT));
+                .andExpect(jsonPath("$.username").value(response.getUsername()))
+                .andExpect(jsonPath("$.jwt").value(response.getJwt()));
+    }
+    @Test
+    void validateTokenShouldReturnOk() throws Exception {
+        String token = "token";
+        // Arrange
+        when(userService.validateToken(eq(token),any(HttpServletRequest.class))).thenReturn(response);
+
+        // Act
+        mockMvc.perform(post("/api/v1/auth/validateToken?token=" + token))
+                // Assert
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.username").value(response.getUsername()))
+                .andExpect(jsonPath("$.jwt").value(response.getJwt()));
+    }
+
+    @Test
+    void validateTokenShouldThrowCustomException() throws Exception {
+        String token = "token";
+        // Arrange
+        when(userService.validateToken(eq(token),any(HttpServletRequest.class))).thenThrow(new CustomException(JWT_NOT_VALID.toString()));
+
+        // Act
+        mockMvc.perform(post("/api/v1/auth/validateToken?token=" + token))
+                // Assert
+                .andExpect(status().isServiceUnavailable())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.exception").value(JWT_NOT_VALID.toString()))
+                .andExpect(jsonPath("$.url").value("http://localhost/api/v1/auth/validateToken"));
     }
 
     @Test
     void authenticateWithExistingUsernameShouldReturnServiceUnavailable() throws Exception {
         // Arrange
-        DTO.AuthenticationRequest request = DTO.AuthenticationRequest.newBuilder()
-                .setUsername(USERNAME)
-                .setPassword(PASSWORD)
-                .build();
         when(userService.authenticate(request)).thenThrow(new CustomException(USER_NOT_FOUND.toString()));
 
         // Act
@@ -133,10 +149,6 @@ class AuthenticationControllerTest extends PostgresTestContainer {
     @Test
     void authenticateWithExistingUsernameShouldReturnUsernameNotFound() throws Exception {
         // Arrange
-        DTO.AuthenticationRequest request = DTO.AuthenticationRequest.newBuilder()
-                .setUsername(USERNAME)
-                .setPassword(PASSWORD)
-                .build();
         when(userService.authenticate(request)).thenThrow(new UsernameNotFoundException(USER_NOT_FOUND.toString()));
 
         // Act

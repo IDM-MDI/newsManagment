@@ -51,6 +51,7 @@ public class UserServiceImpl implements UserService {
         return DTO.AuthenticationResponse.newBuilder()
                 .setUsername(saved.getUsername())
                 .setJwt(jwtService.generateToken(saved))
+                .setRole(saved.getRole().name())
                 .build();
     }
 
@@ -77,6 +78,7 @@ public class UserServiceImpl implements UserService {
         return DTO.AuthenticationResponse.newBuilder()
                 .setUsername(user.getUsername())
                 .setJwt(jwtService.generateToken(user))
+                .setRole(user.getRole().name())
                 .build();
     }
 
