@@ -1,6 +1,6 @@
 cache:
-  size: 10
-  type: lfu
+  size: {CACHE_SIZE}
+  type: {CACHE_TYPE}
 spring:
   datasource:
     url: jdbc:postgresql://news-comment-db:5432/news_management
