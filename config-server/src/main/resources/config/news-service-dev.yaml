@@ -1,0 +1,24 @@
+cache:
+  size: {CACHE_SIZE}
+  type: {CACHE_TYPE}
+spring:
+  datasource:
+    url: jdbc:postgresql://news-comment-db:5432/news_management
+    username: username
+    password: password
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    database: postgresql
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+    clear-check-sums: true
+    url: jdbc:postgresql://news-comment-db:5432/news_management
+    user: username
+    password: password
+    driver-class-name: org.postgresql.Driver
+    contexts: dev
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html

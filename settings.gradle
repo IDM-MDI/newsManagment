@@ -1,1 +1,2 @@
 rootProject.name = 'newsManagment'
+include('user-service','news-service', 'server', 'config-server', 'api-gateway','log-service', 'exception-service')

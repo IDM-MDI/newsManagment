@@ -1,0 +1,15 @@
+syntax = "proto3";
+package ru.clevertec.newsmanagement.userservice.model;
+
+import "google/protobuf/timestamp.proto";
+
+message AuthenticationRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message AuthenticationResponse {
+  string username = 1;
+  string role = 2;
+  string jwt = 3;
+}

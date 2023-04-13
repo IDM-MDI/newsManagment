@@ -1,0 +1,201 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: Dayanch
+      context: test
+      changes:
+        - createTable:
+            tableName: news
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    - primaryKey: true
+                    - nullable: false
+              - column:
+                  name: title
+                  type: varchar(255)
+                  constraints:
+                    - nullable: false
+              - column:
+                  name: text
+                  type: text
+                  constraints:
+                    - nullable: false
+              - column:
+                  name: username
+                  type: varchar(255)
+                  constraints:
+                    - nullable: false
+              - column:
+                  name: created_date
+                  type: timestamp
+                  constraints:
+                    - nullable: false
+  - changeSet:
+      id: 2
+      author: Dayanch
+      context: test
+      changes:
+        - createTable:
+            tableName: comments
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    - primaryKey: true
+                    - nullable: false
+              - column:
+                  name: text
+                  type: varchar(255)
+                  constraints:
+                    - nullable: false
+              - column:
+                  name: username
+                  type: varchar(255)
+                  constraints:
+                    - nullable: false
+              - column:
+                  name: news_id
+                  type: bigint
+                  constraints:
+                    - nullable: false
+              - column:
+                  name: created_date
+                  type: timestamp
+                  constraints:
+                    - nullable: false
+  - changeSet:
+      id: 3
+      author: Dayanch
+      context: test
+      changes:
+        - insert:
+            tableName: news
+            columns:
+              - column:
+                  name: title
+                  value: This is template title 1
+              - column:
+                  name: text
+                  value: This is template text 1
+              - column:
+                  name: username
+                  value: journalist1
+              - column:
+                  name: created_date
+                  value: '2023-02-14 01:01:00'
+        - insert:
+            tableName: news
+            columns:
+              - column:
+                  name: title
+                  value: This is template title 2
+              - column:
+                  name: text
+                  value: This is template text 2
+              - column:
+                  name: username
+                  value: journalist1
+              - column:
+                  name: created_date
+                  value: '2023-02-14 02:02:00'
+        - insert:
+            tableName: news
+            columns:
+              - column:
+                  name: title
+                  value: This is template title 3
+              - column:
+                  name: text
+                  value: This is template text 3
+              - column:
+                  name: username
+                  value: journalist1
+              - column:
+                  name: created_date
+                  value: '2023-02-14 03:03:00'
+  - changeSet:
+      id: 4
+      author: Dayanch
+      context: test
+      changes:
+        - insert:
+            tableName: comments
+            columns:
+              - column:
+                  name: text
+                  value: 'This is template text subscriber 1 for news id 1'
+              - column:
+                  name: username
+                  value: 'subscriber1'
+              - column:
+                  name: news_id
+                  value: 1
+              - column:
+                  name: created_date
+                  value: '2023-03-31 01:01:00'
+        - insert:
+            tableName: comments
+            columns:
+              - column:
+                  name: text
+                  value: 'This is template text subscriber 1 for news id 1'
+              - column:
+                  name: username
+                  value: 'subscriber1'
+              - column:
+                  name: news_id
+                  value: 2
+              - column:
+                  name: created_date
+                  value: '2023-03-31 01:02:00'
+        - insert:
+            tableName: comments
+            columns:
+              - column:
+                  name: text
+                  value: 'This is template text subscriber 1 for news id 1'
+              - column:
+                  name: username
+                  value: 'subscriber1'
+              - column:
+                  name: news_id
+                  value: 3
+              - column:
+                  name: created_date
+                  value: '2023-03-31 01:03:00'
+        - insert:
+            tableName: comments
+            columns:
+              - column:
+                  name: text
+                  value: 'This is template text subscriber 1 for news id 1'
+              - column:
+                  name: username
+                  value: 'subscriber1'
+              - column:
+                  name: news_id
+                  value: 1
+              - column:
+                  name: created_date
+                  value: '2023-03-31 01:04:00'
+        - insert:
+            tableName: comments
+            columns:
+              - column:
+                  name: text
+                  value: 'This is template text subscriber 1 for news id 1'
+              - column:
+                  name: username
+                  value: 'subscriber1'
+              - column:
+                  name: news_id
+                  value: 2
+              - column:
+                  name: created_date
+                  value: '2023-03-31 01:05:00'

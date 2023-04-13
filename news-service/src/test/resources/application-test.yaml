@@ -1,0 +1,11 @@
+logging:
+  level:
+    org.springframework: INFO
+cache:
+  size: 10
+  type: lfu
+
+spring:
+  liquibase:
+    change-log: db/db.changelog-master.yaml
+    contexts: test

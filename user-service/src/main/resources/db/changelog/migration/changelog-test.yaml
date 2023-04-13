@@ -1,0 +1,66 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: Dayanch
+      context: test
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: username
+                  type: varchar(255)
+                  constraints:
+                    - primaryKey: true
+                    - nullable: false
+              - column:
+                  name: password
+                  type: varchar(255)
+                  constraints:
+                    - nullable: false
+              - column:
+                  name: role
+                  type: varchar(255)
+                  constraints:
+                    - nullable: false
+  - changeSet:
+      id: 2
+      author: Dayanch
+      context: test
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: username
+                  value: admin1
+              - column:
+                  name: password
+                  value: $2a$10$g/B4L7GJkeNHVJS5P6466uv75p1U.GnUO.U6Rh9eHd1/MHpGmVuMO
+              - column:
+                  name: role
+                  value: ADMIN
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: username
+                  value: journalist1
+              - column:
+                  name: password
+                  value: $2a$10$sOBcm4DVxx3glPe9gyISNuZsb.AcuvEIyg9W26MBEmcx1Jd.x9uL.
+              - column:
+                  name: role
+                  value: JOURNALIST
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: username
+                  value: subscriber1
+              - column:
+                  name: password
+                  value: $2a$10$.U.I.u9CUsEtOFM8e2aB2OYnNkp3eqwB7o7L9W1QZDthMGGFdQqZm
+              - column:
+                  name: role
+                  value: SUBSCRIBER

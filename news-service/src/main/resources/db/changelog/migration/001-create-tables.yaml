@@ -1,0 +1,71 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: Dayanch
+      context: dev OR prod
+      changes:
+        - createTable:
+            tableName: news
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    - primaryKey: true
+                    - nullable: false
+              - column:
+                  name: title
+                  type: varchar(255)
+                  constraints:
+                    - nullable: false
+              - column:
+                  name: text
+                  type: text
+                  constraints:
+                    - nullable: false
+              - column:
+                  name: username
+                  type: varchar(255)
+                  constraints:
+                    - nullable: false
+              - column:
+                  name: created_date
+                  type: timestamp
+                  constraints:
+                    - nullable: false
+  - changeSet:
+      id: 2
+      author: Dayanch
+      context: dev OR prod
+      changes:
+        - createTable:
+            tableName: comments
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    - primaryKey: true
+                    - nullable: false
+              - column:
+                  name: text
+                  type: varchar(255)
+                  constraints:
+                    - nullable: false
+              - column:
+                  name: username
+                  type: varchar(255)
+                  constraints:
+                    - nullable: false
+              - column:
+                  name: news_id
+                  type: bigint
+                  constraints:
+                    - nullable: false
+              - column:
+                  name: created_date
+                  type: timestamp
+                  constraints:
+                    - nullable: false

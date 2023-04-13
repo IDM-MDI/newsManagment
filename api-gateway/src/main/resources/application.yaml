@@ -1,0 +1,47 @@
+server:
+  port: 8765
+  servlet:
+    context-path: /getaway
+management:
+  health:
+    livenessState:
+      enabled: true
+    readinessState:
+      enabled: true
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: getaway
+spring:
+  application:
+    name: api-getaway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: news-service-id
+          uri: lb://news-service
+          predicates:
+            - Path=/news/**
+            - Header=Authorization
+          filters:
+            - AuthFilter
+        - id: news-comment-service-id
+          uri: lb://news-service
+          predicates:
+            - Path=/news/**
+            - Method=GET
+        - id: user-service-id
+          uri: lb://user-service
+          predicates:
+            - Path=/users/**
+eureka:
+  client:
+    service-url:
+      defaultZone: http://server:8761/eureka
