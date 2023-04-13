@@ -1,7 +1,6 @@
 package ru.clevertec.newsmanagement.newsservice.service;
 
 
-import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import ru.clevertec.newsmanagement.newsservice.entity.News;
 import ru.clevertec.newsmanagement.newsservice.model.DTO;
