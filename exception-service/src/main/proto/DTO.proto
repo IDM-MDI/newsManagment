@@ -1,0 +1,10 @@
+syntax = "proto3";
+package ru.clevertec.newsmanagement.exceptionservice.model;
+
+import "google/protobuf/timestamp.proto";
+
+message Exception {
+  string exception = 1;
+  string url = 2;
+  google.protobuf.Timestamp createdDate = 3;
+}

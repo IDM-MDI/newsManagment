@@ -1,15 +1,14 @@
 package ru.clevertec.newsmanagement.logservice;
 
-import ch.qos.logback.classic.Logger;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -21,6 +20,7 @@ import java.util.Arrays;
  */
 @Aspect
 @Component
+@Slf4j
 @RequiredArgsConstructor
 public class LoggingAspect {
 
@@ -47,21 +47,25 @@ public class LoggingAspect {
     /**
      * A pointcut expression for methods in the persistence layer (i.e. Spring Data repositories).
      */
-    @Pointcut("this(org.springframework.data.repository.Repository)")
+    @Pointcut("within(@org.springframework.stereotype.Repository *)")
     public void inPersistenceLayer() {}
 
 
     /**
      * A pointcut expression for methods in the service layer (i.e. classes in the ru.clevertec.newsmanagement.newsservice.service.impl package).
      */
-    @Pointcut("execution(* ru.clevertec.newsmanagement.*.service.impl.*.*(*))")
+    @Pointcut("within(@org.springframework.stereotype.Service *)")
     public void inServiceLayer() {}
 
 
     /**
      * A pointcut expression for methods in the controller layer (i.e. classes in the ru.clevertec.newsmanagement.newsservice.controller package).
      */
-    @Pointcut("execution(* ru.clevertec.newsmanagement.*.controller.*.*(*))")
+    @Pointcut("@annotation(org.springframework.web.bind.annotation.PostMapping) || " +
+            "@annotation(org.springframework.web.bind.annotation.PatchMapping) || " +
+            "@annotation(org.springframework.web.bind.annotation.PutMapping) ||" +
+            "@annotation(org.springframework.web.bind.annotation.GetMapping) || " +
+            "@annotation(org.springframework.web.bind.annotation.DeleteMapping)")
     public void inControllerLayer() {}
 
 
@@ -83,8 +87,7 @@ public class LoggingAspect {
      */
     @AfterThrowing(value = "inServiceLayer()", throwing = "exception")
     public void afterThrowing(CustomException exception) {
-        Logger logger = (Logger) LoggerFactory.getLogger(CustomException.class);
-        logger.error(exception.getMessage());
+        log.error(exception.getMessage());
     }
 
 
@@ -96,8 +99,7 @@ public class LoggingAspect {
     @Before("inControllerLayer()")
     public void beforeControllerLayerLogging(JoinPoint joinPoint) {
         beforeLayerLogging(joinPoint);
-        Logger logger = (Logger) LoggerFactory.getLogger(joinPoint.getTarget().getClass());
-        logger.info("URL: {}, Method: {}",
+        log.info("URL: {}, Method: {}",
                 request.getRequestURL().toString(),
                 request.getMethod());
     }
@@ -121,8 +123,7 @@ public class LoggingAspect {
      * @param joinPoint a special object that stores information about the method
      */
     private static void beforeLayerLogging(JoinPoint joinPoint) {
-        Logger logger = (Logger) LoggerFactory.getLogger(joinPoint.getTarget().getClass());
-        logger.info(BEFORE_LAYER,
+        log.info(BEFORE_LAYER,
                 joinPoint.getTarget().getClass().getCanonicalName(),
                 joinPoint.getSignature().getName(),
                 Arrays.toString(joinPoint.getArgs()));
@@ -134,8 +135,7 @@ public class LoggingAspect {
      * @param result the object that is returned by the method
      */
     private static void afterLayerLogging(JoinPoint joinPoint, Object result) {
-        Logger logger = (Logger) LoggerFactory.getLogger(joinPoint.getTarget().getClass());
-        logger.info(AFTER_LAYER,
+        log.info(AFTER_LAYER,
                 joinPoint.getTarget().getClass().getCanonicalName(),
                 joinPoint.getSignature().getName(),
                 result);

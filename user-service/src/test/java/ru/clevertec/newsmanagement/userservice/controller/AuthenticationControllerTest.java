@@ -19,7 +19,8 @@ import ru.clevertec.newsmanagement.userservice.service.UserService;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -54,7 +55,8 @@ class AuthenticationControllerTest extends PostgresTestContainer {
     @Test
     void registerShouldReturnOk() throws Exception {
         // Arrange
-        when(userService.registration(request)).thenReturn(response);
+        doReturn(response)
+                .when(userService).registration(request);
 
         // Act
         mockMvc.perform(post("/api/v1/auth/register")
@@ -70,7 +72,8 @@ class AuthenticationControllerTest extends PostgresTestContainer {
     @Test
     void registerWithExistingUsernameShouldReturnServiceUnavailable() throws Exception {
         // Arrange
-        when(userService.registration(request)).thenThrow(new CustomException(USER_EXIST.toString()));
+        doThrow(new CustomException(USER_EXIST.toString()))
+                .when(userService).registration(request);
 
         // Act
         mockMvc.perform(post("/api/v1/auth/register")
@@ -87,7 +90,8 @@ class AuthenticationControllerTest extends PostgresTestContainer {
     @Test
     void authenticateShouldReturnOk() throws Exception {
         // Arrange
-        when(userService.authenticate(request)).thenReturn(response);
+        doReturn(response)
+                .when(userService).authenticate(request);
 
         // Act
         mockMvc.perform(post("/api/v1/auth/authenticate")
@@ -104,7 +108,8 @@ class AuthenticationControllerTest extends PostgresTestContainer {
     void validateTokenShouldReturnOk() throws Exception {
         String token = "token";
         // Arrange
-        when(userService.validateToken(eq(token),any(HttpServletRequest.class))).thenReturn(response);
+        doReturn(response)
+                .when(userService).validateToken(eq(token),any(HttpServletRequest.class));
 
         // Act
         mockMvc.perform(post("/api/v1/auth/validateToken?token=" + token))
@@ -119,7 +124,8 @@ class AuthenticationControllerTest extends PostgresTestContainer {
     void validateTokenShouldThrowCustomException() throws Exception {
         String token = "token";
         // Arrange
-        when(userService.validateToken(eq(token),any(HttpServletRequest.class))).thenThrow(new CustomException(JWT_NOT_VALID.toString()));
+        doThrow(new CustomException(JWT_NOT_VALID.toString())).
+                when(userService).validateToken(eq(token),any(HttpServletRequest.class));
 
         // Act
         mockMvc.perform(post("/api/v1/auth/validateToken?token=" + token))
@@ -133,7 +139,8 @@ class AuthenticationControllerTest extends PostgresTestContainer {
     @Test
     void authenticateWithExistingUsernameShouldReturnServiceUnavailable() throws Exception {
         // Arrange
-        when(userService.authenticate(request)).thenThrow(new CustomException(USER_NOT_FOUND.toString()));
+        doThrow(new CustomException(USER_NOT_FOUND.toString())).
+                when(userService).authenticate(request);
 
         // Act
         mockMvc.perform(post("/api/v1/auth/authenticate")
@@ -149,7 +156,8 @@ class AuthenticationControllerTest extends PostgresTestContainer {
     @Test
     void authenticateWithExistingUsernameShouldReturnUsernameNotFound() throws Exception {
         // Arrange
-        when(userService.authenticate(request)).thenThrow(new UsernameNotFoundException(USER_NOT_FOUND.toString()));
+        doThrow(new UsernameNotFoundException(USER_NOT_FOUND.toString()))
+                .when(userService).authenticate(request);
 
         // Act
         mockMvc.perform(post("/api/v1/auth/authenticate")

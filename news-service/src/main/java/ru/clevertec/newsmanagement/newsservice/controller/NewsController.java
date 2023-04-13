@@ -24,7 +24,7 @@ import ru.clevertec.newsmanagement.newsservice.model.PageFilter;
 import ru.clevertec.newsmanagement.newsservice.service.NewsService;
 import ru.clevertec.newsmanagement.newsservice.util.QueryParameterUtil;
 
-import static ru.clevertec.newsmanagement.newsservice.util.JsonUtil.toJson;
+import static ru.clevertec.newsmanagement.exceptionservice.util.JsonUtil.toJson;
 import static ru.clevertec.newsmanagement.newsservice.util.QueryParameterUtil.getNewsByQuery;
 
 /**

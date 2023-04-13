@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.clevertec.newsmanagement.userservice.model.DTO;
 import ru.clevertec.newsmanagement.userservice.service.UserService;
 
-import static ru.clevertec.newsmanagement.userservice.util.JsonUtil.toJson;
+import static ru.clevertec.newsmanagement.exceptionservice.util.JsonUtil.toJson;
 
 
 /**

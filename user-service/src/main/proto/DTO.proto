@@ -13,9 +13,3 @@ message AuthenticationResponse {
   string role = 2;
   string jwt = 3;
 }
-
-message Exception {
-  string exception = 1;
-  string url = 2;
-  google.protobuf.Timestamp createdDate = 3;
-}
