@@ -7,7 +7,7 @@ services:
     networks:
       - news-management-network
   api-getaway:
-    build: ./api-getaway/.
+    build: ./api-gateway/.
     ports:
       - "8765:8765"
     depends_on:
