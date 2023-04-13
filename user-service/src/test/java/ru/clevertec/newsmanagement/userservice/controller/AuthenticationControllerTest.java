@@ -25,12 +25,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ru.clevertec.newsmanagement.exceptionservice.util.JsonUtil.toJson;
 import static ru.clevertec.newsmanagement.userservice.builder.impl.AuthenticationRequestBuilder.aRequest;
 import static ru.clevertec.newsmanagement.userservice.builder.impl.AuthenticationResponseBuilder.aResponse;
 import static ru.clevertec.newsmanagement.userservice.exception.ExceptionStatus.JWT_NOT_VALID;
 import static ru.clevertec.newsmanagement.userservice.exception.ExceptionStatus.USER_EXIST;
 import static ru.clevertec.newsmanagement.userservice.exception.ExceptionStatus.USER_NOT_FOUND;
-import static ru.clevertec.newsmanagement.userservice.util.JsonUtil.toJson;
 
 @SpringBootTest(classes = UserServiceApplication.class)
 @AutoConfigureMockMvc
