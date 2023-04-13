@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -20,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.clevertec.newsmanagement.newsservice.model.DTO;
-import ru.clevertec.newsmanagement.newsservice.model.PageFilter;
 import ru.clevertec.newsmanagement.newsservice.service.CommentService;
 import ru.clevertec.newsmanagement.newsservice.util.QueryParameterUtil;
 
@@ -59,7 +59,7 @@ public class CommentController {
     public String getNewsComment(@Parameter(description = "News ID")
                                      @PathVariable long news,
                                  @Parameter(description = "Pageable")
-                                 @Valid PageFilter page) {
+                                 @Valid Pageable page) {
         return toJson(service.findComments(news,page));
     }
 

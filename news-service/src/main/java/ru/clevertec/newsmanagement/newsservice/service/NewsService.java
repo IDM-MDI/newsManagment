@@ -1,9 +1,10 @@
 package ru.clevertec.newsmanagement.newsservice.service;
 
 
+import jakarta.validation.Valid;
+import org.springframework.data.domain.Pageable;
 import ru.clevertec.newsmanagement.newsservice.entity.News;
 import ru.clevertec.newsmanagement.newsservice.model.DTO;
-import ru.clevertec.newsmanagement.newsservice.model.PageFilter;
 import ru.clevertec.newsmanagement.newsservice.model.UserDTO;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public interface NewsService {
      * @param page the page number.
      * @return a list of news.
      */
-    List<DTO.News> findNews(PageFilter page);
+    List<DTO.News> findNews(Pageable page);
 
     /**
      * Returns the news with the given id.

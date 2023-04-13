@@ -7,8 +7,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @Configuration
-@EntityScan(basePackages = "ru.clevertec.newsmanagement.userservice")
-@EnableJpaRepositories(basePackages = "ru.clevertec.newsmanagement.userservice")
+@EntityScan(basePackages = "ru.clevertec.newsmanagement")
+@EnableJpaRepositories(basePackages = "ru.clevertec.newsmanagement")
 @EnableJpaAuditing
 @RequiredArgsConstructor
 public class PersistenceConfig {

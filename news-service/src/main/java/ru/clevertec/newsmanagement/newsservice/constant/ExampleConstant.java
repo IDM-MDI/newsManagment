@@ -1,4 +1,4 @@
-package ru.clevertec.newsmanagement.newsservice.util;
+package ru.clevertec.newsmanagement.newsservice.constant;
 
 import lombok.experimental.UtilityClass;
 import org.springframework.data.domain.ExampleMatcher;
@@ -7,7 +7,7 @@ import org.springframework.data.domain.ExampleMatcher;
  * @author Dayanch
  */
 @UtilityClass
-public class ExampleUtil {
+public class ExampleConstant {
     public static ExampleMatcher ENTITY_SEARCH_MATCHER = ExampleMatcher
             .matchingAll()
             .withIgnoreCase()

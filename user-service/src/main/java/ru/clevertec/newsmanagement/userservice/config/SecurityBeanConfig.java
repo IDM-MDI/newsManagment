@@ -11,9 +11,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import ru.clevertec.newsmanagement.exceptionservice.exception.CustomException;
 import ru.clevertec.newsmanagement.userservice.persistence.UserRepository;
 
-import static ru.clevertec.newsmanagement.userservice.exception.ExceptionStatus.USER_NOT_FOUND;
+import static ru.clevertec.newsmanagement.exceptionservice.exception.ExceptionStatus.USER_NOT_FOUND;
+
 
 /**
  * Configuration class for security-related beans.
@@ -37,7 +39,7 @@ public class SecurityBeanConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> repository.findUserByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND.toString()));
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND.toString()));
     }
 
 

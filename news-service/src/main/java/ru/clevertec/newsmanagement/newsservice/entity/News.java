@@ -9,12 +9,15 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * Represents a news article.
@@ -25,10 +28,12 @@ import java.util.Date;
 @Entity
 @Table(name = "news")
 @EntityListeners(AuditingEntityListener.class)
-@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
+@ToString
 public class News {
 
     /**
@@ -67,4 +72,17 @@ public class News {
     @CreatedDate
     @Column(name = "created_date",updatable = false, nullable = false)
     private Date createdDate;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        News news = (News) o;
+        return id.equals(news.id) && title.equals(news.title) && text.equals(news.text) && username.equals(news.username) && createdDate.equals(news.createdDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title, text, username, createdDate);
+    }
 }

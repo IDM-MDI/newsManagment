@@ -5,19 +5,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Example;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
+import ru.clevertec.newsmanagement.exceptionservice.exception.CustomException;
 import ru.clevertec.newsmanagement.newsservice.cache.DeleteCache;
 import ru.clevertec.newsmanagement.newsservice.cache.GetCache;
 import ru.clevertec.newsmanagement.newsservice.cache.PostCache;
 import ru.clevertec.newsmanagement.newsservice.cache.UpdateCache;
 import ru.clevertec.newsmanagement.newsservice.entity.News;
-import ru.clevertec.newsmanagement.newsservice.exception.CustomException;
 import ru.clevertec.newsmanagement.newsservice.model.DTO;
-import ru.clevertec.newsmanagement.newsservice.model.PageFilter;
 import ru.clevertec.newsmanagement.newsservice.model.UserDTO;
 import ru.clevertec.newsmanagement.newsservice.persistence.NewsRepository;
 import ru.clevertec.newsmanagement.newsservice.service.CommentService;
@@ -27,10 +25,9 @@ import ru.clevertec.newsmanagement.newsservice.validator.UserValidator;
 
 import java.util.List;
 
-import static ru.clevertec.newsmanagement.newsservice.exception.ExceptionStatus.ENTITY_NOT_FOUND;
-import static ru.clevertec.newsmanagement.newsservice.exception.ExceptionStatus.NO_ACCESS;
-import static ru.clevertec.newsmanagement.newsservice.util.ExampleUtil.ENTITY_SEARCH_MATCHER;
-import static ru.clevertec.newsmanagement.newsservice.util.SortDirectionUtil.getDirection;
+import static ru.clevertec.newsmanagement.exceptionservice.exception.ExceptionStatus.ENTITY_NOT_FOUND;
+import static ru.clevertec.newsmanagement.exceptionservice.exception.ExceptionStatus.NO_ACCESS;
+import static ru.clevertec.newsmanagement.newsservice.constant.ExampleConstant.ENTITY_SEARCH_MATCHER;
 
 
 /**
@@ -60,8 +57,8 @@ public class NewsServiceImpl implements NewsService {
      * {@inheritDoc}
      */
     @Override
-    public List<DTO.News> findNews(PageFilter page) {
-        return repository.findAll(PageRequest.of(page.getNumber(), page.getSize(), getDirection(Sort.by(page.getFilter()), page.getDirection())))
+    public List<DTO.News> findNews(Pageable page) {
+        return repository.findAll(page)
                 .stream()
                 .map(mapper::toDTO)
                 .toList();
@@ -72,7 +69,7 @@ public class NewsServiceImpl implements NewsService {
      */
     @Override
     @GetCache(key = "#id", type = DTO.News.class)
-    public DTO.News findNews(long id) throws CustomException {
+    public DTO.News findNews(long id) {
         return mapper.toDTO(findNewsEntity(id));
     }
 

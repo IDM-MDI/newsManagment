@@ -26,6 +26,7 @@ public class CommentMapper implements ModelMapper<Comment, DTO .Comment> {
         return Comment.builder()
                 .id(comment.getId())
                 .text(comment.getText())
+                .username(comment.getUsername())
                 .createdDate(
                         Date.from(Instant.ofEpochSecond(comment.getCreatedDate().getSeconds(),
                                 comment.getCreatedDate().getNanos()))

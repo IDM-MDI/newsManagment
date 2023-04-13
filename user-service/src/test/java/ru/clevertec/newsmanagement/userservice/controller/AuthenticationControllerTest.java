@@ -8,12 +8,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.clevertec.newsmanagement.exceptionservice.exception.CustomException;
 import ru.clevertec.newsmanagement.userservice.UserServiceApplication;
 import ru.clevertec.newsmanagement.userservice.container.PostgresTestContainer;
-import ru.clevertec.newsmanagement.userservice.exception.CustomException;
 import ru.clevertec.newsmanagement.userservice.model.DTO;
 import ru.clevertec.newsmanagement.userservice.service.UserService;
 
@@ -25,12 +24,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ru.clevertec.newsmanagement.exceptionservice.exception.ExceptionStatus.JWT_NOT_VALID;
+import static ru.clevertec.newsmanagement.exceptionservice.exception.ExceptionStatus.USER_EXIST;
+import static ru.clevertec.newsmanagement.exceptionservice.exception.ExceptionStatus.USER_NOT_FOUND;
 import static ru.clevertec.newsmanagement.exceptionservice.util.JsonUtil.toJson;
 import static ru.clevertec.newsmanagement.userservice.builder.impl.AuthenticationRequestBuilder.aRequest;
 import static ru.clevertec.newsmanagement.userservice.builder.impl.AuthenticationResponseBuilder.aResponse;
-import static ru.clevertec.newsmanagement.userservice.exception.ExceptionStatus.JWT_NOT_VALID;
-import static ru.clevertec.newsmanagement.userservice.exception.ExceptionStatus.USER_EXIST;
-import static ru.clevertec.newsmanagement.userservice.exception.ExceptionStatus.USER_NOT_FOUND;
 
 @SpringBootTest(classes = UserServiceApplication.class)
 @AutoConfigureMockMvc
@@ -156,7 +155,7 @@ class AuthenticationControllerTest extends PostgresTestContainer {
     @Test
     void authenticateWithExistingUsernameShouldReturnUsernameNotFound() throws Exception {
         // Arrange
-        doThrow(new UsernameNotFoundException(USER_NOT_FOUND.toString()))
+        doThrow(new CustomException(USER_NOT_FOUND.toString()))
                 .when(userService).authenticate(request);
 
         // Act
@@ -165,7 +164,7 @@ class AuthenticationControllerTest extends PostgresTestContainer {
                         .content(toJson(request)))
 
                 // Assert
-                .andExpect(status().isNotFound())
+                .andExpect(status().isServiceUnavailable())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.exception").value(USER_NOT_FOUND.toString()))
                 .andExpect(jsonPath("$.url").value("http://localhost/api/v1/auth/authenticate"));

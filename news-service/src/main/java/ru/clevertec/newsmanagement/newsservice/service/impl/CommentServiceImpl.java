@@ -5,17 +5,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Example;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import ru.clevertec.newsmanagement.exceptionservice.exception.CustomException;
 import ru.clevertec.newsmanagement.newsservice.cache.DeleteCache;
 import ru.clevertec.newsmanagement.newsservice.cache.GetCache;
 import ru.clevertec.newsmanagement.newsservice.cache.PostCache;
 import ru.clevertec.newsmanagement.newsservice.cache.UpdateCache;
 import ru.clevertec.newsmanagement.newsservice.entity.Comment;
-import ru.clevertec.newsmanagement.newsservice.exception.CustomException;
 import ru.clevertec.newsmanagement.newsservice.model.DTO;
-import ru.clevertec.newsmanagement.newsservice.model.PageFilter;
 import ru.clevertec.newsmanagement.newsservice.model.UserDTO;
 import ru.clevertec.newsmanagement.newsservice.persistence.CommentRepository;
 import ru.clevertec.newsmanagement.newsservice.service.CommentService;
@@ -25,10 +23,9 @@ import ru.clevertec.newsmanagement.newsservice.validator.UserValidator;
 
 import java.util.List;
 
-import static ru.clevertec.newsmanagement.newsservice.exception.ExceptionStatus.ENTITY_NOT_FOUND;
-import static ru.clevertec.newsmanagement.newsservice.exception.ExceptionStatus.NO_ACCESS;
-import static ru.clevertec.newsmanagement.newsservice.util.ExampleUtil.ENTITY_SEARCH_MATCHER;
-import static ru.clevertec.newsmanagement.newsservice.util.SortDirectionUtil.getDirection;
+import static ru.clevertec.newsmanagement.exceptionservice.exception.ExceptionStatus.ENTITY_NOT_FOUND;
+import static ru.clevertec.newsmanagement.exceptionservice.exception.ExceptionStatus.NO_ACCESS;
+import static ru.clevertec.newsmanagement.newsservice.constant.ExampleConstant.ENTITY_SEARCH_MATCHER;
 
 /**
  * Service implementation for managing comments.
@@ -56,8 +53,8 @@ public class CommentServiceImpl implements CommentService {
      * {@inheritDoc}
      */
     @Override
-    public List<DTO.Comment> findComments(long news, PageFilter page) {
-        return repository.findCommentsByNews_Id(news, PageRequest.of(page.getNumber(), page.getSize(), getDirection(Sort.by(page.getFilter()), page.getDirection())))
+    public List<DTO.Comment> findComments(long news, Pageable page) {
+        return repository.findCommentsByNews_Id(news, page)
                 .stream()
                 .map(mapper::toDTO)
                 .toList();

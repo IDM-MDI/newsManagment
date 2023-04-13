@@ -10,17 +10,17 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
+import ru.clevertec.newsmanagement.exceptionservice.exception.CustomException;
 import ru.clevertec.newsmanagement.userservice.entity.Role;
 import ru.clevertec.newsmanagement.userservice.entity.User;
-import ru.clevertec.newsmanagement.userservice.exception.CustomException;
 import ru.clevertec.newsmanagement.userservice.model.DTO;
 import ru.clevertec.newsmanagement.userservice.persistence.UserRepository;
 import ru.clevertec.newsmanagement.userservice.service.JwtService;
 import ru.clevertec.newsmanagement.userservice.service.UserService;
 
-import static ru.clevertec.newsmanagement.userservice.exception.ExceptionStatus.JWT_NOT_VALID;
-import static ru.clevertec.newsmanagement.userservice.exception.ExceptionStatus.USER_EXIST;
-import static ru.clevertec.newsmanagement.userservice.exception.ExceptionStatus.USER_NOT_FOUND;
+import static ru.clevertec.newsmanagement.exceptionservice.exception.ExceptionStatus.JWT_NOT_VALID;
+import static ru.clevertec.newsmanagement.exceptionservice.exception.ExceptionStatus.USER_EXIST;
+import static ru.clevertec.newsmanagement.exceptionservice.exception.ExceptionStatus.USER_NOT_FOUND;
 
 
 /**

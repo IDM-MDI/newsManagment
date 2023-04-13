@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -20,12 +21,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.clevertec.newsmanagement.newsservice.model.DTO;
-import ru.clevertec.newsmanagement.newsservice.model.PageFilter;
 import ru.clevertec.newsmanagement.newsservice.service.NewsService;
-import ru.clevertec.newsmanagement.newsservice.util.QueryParameterUtil;
 
 import static ru.clevertec.newsmanagement.exceptionservice.util.JsonUtil.toJson;
 import static ru.clevertec.newsmanagement.newsservice.util.QueryParameterUtil.getNewsByQuery;
+import static ru.clevertec.newsmanagement.newsservice.util.QueryParameterUtil.getUser;
 
 /**
  * REST controller for News operations.
@@ -53,7 +53,7 @@ public class NewsController {
             responseCode = "200",
             description = "News found"
     )
-    public String findNews(@Parameter(description = "Pageable") @Valid PageFilter page) {
+    public String findNews(@Parameter(description = "Pageable") @Valid Pageable page) {
         return toJson(service.findNews(page));
     }
 
@@ -113,7 +113,7 @@ public class NewsController {
     )
     @SecurityRequirement(name = "Bearer Authentication")
     public String saveNews(@RequestBody @Valid DTO.News news, HttpServletRequest request) {
-        return toJson(service.saveNews(news,QueryParameterUtil.getUser(request)));
+        return toJson(service.saveNews(news,getUser(request)));
     }
 
 
@@ -137,7 +137,7 @@ public class NewsController {
     public String updateNews(@PathVariable @Min(1) long id,
                               @RequestBody @Valid DTO.News news,
                              HttpServletRequest request) {
-        return toJson(service.updateNews(id,news,QueryParameterUtil.getUser(request)));
+        return toJson(service.updateNews(id,news, getUser(request)));
     }
 
 
@@ -158,7 +158,7 @@ public class NewsController {
     )
     @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<String> deleteNews(@PathVariable @Min(1) long id, HttpServletRequest request) {
-        service.deleteNews(id, QueryParameterUtil.getUser(request));
+        service.deleteNews(id, getUser(request));
         return ResponseEntity.ok("The news successfully was deleted");
     }
 }

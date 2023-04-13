@@ -1,8 +1,8 @@
 package ru.clevertec.newsmanagement.newsservice.service;
 
 
+import org.springframework.data.domain.Pageable;
 import ru.clevertec.newsmanagement.newsservice.model.DTO;
-import ru.clevertec.newsmanagement.newsservice.model.PageFilter;
 import ru.clevertec.newsmanagement.newsservice.model.UserDTO;
 
 import java.util.List;
@@ -20,7 +20,7 @@ public interface CommentService {
      * @return a list of DTO.Comment objects representing the comments.
      */
 
-    List<DTO.Comment> findComments(long news, PageFilter page);
+    List<DTO.Comment> findComments(long news, Pageable page);
 
 
     /**

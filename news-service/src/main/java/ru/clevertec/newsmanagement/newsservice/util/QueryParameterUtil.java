@@ -48,18 +48,6 @@ public class QueryParameterUtil {
                 .build();
     }
     /**
-     * Parses the given query parameter and returns a string.
-     * If the query parameter is not found, an empty string will be used.
-     * @param query the map of query parameters
-     * @param queryName the name of the query parameter
-     * @return the parsed string value of the query parameter
-     */
-    private static String parseToString(Map<String,String[]> query, String queryName) {
-        String[] strings = query.get(queryName);
-        return (Objects.isNull(strings) || strings.length == 0) ? "" : strings[0];
-    }
-
-    /**
      * Returns a UserDTO object constructed from the headers of the given HttpServletRequest object.
      * The returned UserDTO object has its username, role, and jwt fields set to the values of the
      * "username", "role", and "auth-token" headers of the HttpServletRequest object, respectively.
@@ -72,5 +60,17 @@ public class QueryParameterUtil {
                 .role(request.getHeader("role"))
                 .jwt(request.getHeader("auth-token"))
                 .build();
+    }
+
+    /**
+     * Parses the given query parameter and returns a string.
+     * If the query parameter is not found, an empty string will be used.
+     * @param query the map of query parameters
+     * @param queryName the name of the query parameter
+     * @return the parsed string value of the query parameter
+     */
+    private static String parseToString(Map<String,String[]> query, String queryName) {
+        String[] strings = query.get(queryName);
+        return (Objects.isNull(strings) || strings.length == 0) ? "" : strings[0];
     }
 }

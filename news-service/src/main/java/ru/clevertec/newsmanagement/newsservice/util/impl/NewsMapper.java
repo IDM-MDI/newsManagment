@@ -26,6 +26,7 @@ public class NewsMapper implements ModelMapper<News, DTO.News> {
                 .id(newsDTO.getId())
                 .title(newsDTO.getTitle())
                 .text(newsDTO.getText())
+                .username(newsDTO.getUsername())
                 .createdDate(
                         Date.from(Instant.ofEpochSecond(newsDTO.getCreatedDate().getSeconds(),
                                 newsDTO.getCreatedDate().getNanos())))

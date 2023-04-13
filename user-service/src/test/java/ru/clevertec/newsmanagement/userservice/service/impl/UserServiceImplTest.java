@@ -12,8 +12,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import ru.clevertec.newsmanagement.exceptionservice.exception.CustomException;
 import ru.clevertec.newsmanagement.userservice.entity.User;
-import ru.clevertec.newsmanagement.userservice.exception.CustomException;
 import ru.clevertec.newsmanagement.userservice.model.DTO;
 import ru.clevertec.newsmanagement.userservice.persistence.UserRepository;
 import ru.clevertec.newsmanagement.userservice.service.JwtService;
@@ -23,12 +23,12 @@ import java.util.Optional;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static ru.clevertec.newsmanagement.exceptionservice.exception.ExceptionStatus.JWT_NOT_VALID;
+import static ru.clevertec.newsmanagement.exceptionservice.exception.ExceptionStatus.USER_EXIST;
+import static ru.clevertec.newsmanagement.exceptionservice.exception.ExceptionStatus.USER_NOT_FOUND;
 import static ru.clevertec.newsmanagement.userservice.builder.impl.AuthenticationRequestBuilder.aRequest;
 import static ru.clevertec.newsmanagement.userservice.builder.impl.AuthenticationResponseBuilder.aResponse;
 import static ru.clevertec.newsmanagement.userservice.builder.impl.UserBuilder.aUser;
-import static ru.clevertec.newsmanagement.userservice.exception.ExceptionStatus.JWT_NOT_VALID;
-import static ru.clevertec.newsmanagement.userservice.exception.ExceptionStatus.USER_EXIST;
-import static ru.clevertec.newsmanagement.userservice.exception.ExceptionStatus.USER_NOT_FOUND;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
@@ -65,7 +65,7 @@ class UserServiceImplTest {
         user = aUser().build();
     }
     @Test
-    void registrationShouldBeCorrect() throws CustomException {
+    void registrationShouldBeCorrect() {
         // Arrange
         doReturn(false)
                 .when(repository).existsById(authentication.getUsername());

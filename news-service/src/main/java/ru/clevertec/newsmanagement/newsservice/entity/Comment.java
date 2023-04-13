@@ -12,12 +12,15 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * This is an entity class for representing a comment on a news ID.
@@ -26,10 +29,12 @@ import java.util.Date;
 @Entity
 @Table(name = "comments")
 @EntityListeners(AuditingEntityListener.class)
-@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
+@ToString
 public class Comment {
 
     /**
@@ -57,6 +62,7 @@ public class Comment {
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "news_id", updatable = false, nullable = false)
+    @ToString.Exclude
     private News news;
 
 
@@ -66,4 +72,17 @@ public class Comment {
     @CreatedDate
     @Column(name = "created_date",nullable = false)
     private Date createdDate;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Comment comment = (Comment) o;
+        return id.equals(comment.id) && text.equals(comment.text) && username.equals(comment.username) && createdDate.equals(comment.createdDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, text, username, createdDate);
+    }
 }

@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -60,21 +59,6 @@ public class ExceptionController {
                                         .getDefaultMessage()
                         )
                 );
-    }
-
-
-    /**
-     * Handles UsernameNotFoundException and returns a custom exception response with the corresponding HTTP status code.
-     * @param exception the exception to be handled
-     * @param request the HTTP request
-     * @return the custom exception response
-     */
-    @ExceptionHandler(UsernameNotFoundException.class)
-    public ResponseEntity<String> handleUsernameNotFoundException(UsernameNotFoundException exception, HttpServletRequest request) {
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(getJSONStringException(request, exception.getMessage()));
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
